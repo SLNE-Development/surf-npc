@@ -43,7 +43,7 @@ class NpcListCommand(commandName: String) : CommandAPICommand(commandName) {
                             variableValue(npc.uniqueName)
                             appendSpace()
                             info("(${npc.id})")
-                            if(npc.isStatic()) {
+                            if (npc.isStatic()) {
                                 appendSpace()
                                 spacer("(Static)")
                             }
