@@ -31,7 +31,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             /**
              * Skin data can be created using the DSL or by using the SurfNpcApi#getSkin function.
              */
-            skin = dev.slne.surf.npc.api.dsl.skin {
+            skin {
                 ownerName = "CastCrafter"
                 value = "SkinValue"
                 signature = "SkinSignature"
@@ -40,7 +40,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             /**
              * Location can be created using the DSL.
              */
-            location = dev.slne.surf.npc.api.dsl.location {
+            location {
                 world = "world"
                 x = 0.0
                 y = 0.0
