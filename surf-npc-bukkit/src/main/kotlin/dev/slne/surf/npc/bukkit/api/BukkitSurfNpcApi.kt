@@ -33,7 +33,8 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         location: NpcLocation,
         global: Boolean,
         rotationType: NpcRotationType,
-        fixedRotation: NpcRotation?
+        fixedRotation: NpcRotation?,
+        persistent: Boolean
     ): NpcCreationResult {
         return npcController.createNpc(
             uniqueName,
@@ -42,7 +43,8 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
             location,
             rotationType,
             fixedRotation ?: BukkitNpcRotation(0f, 0f),
-            global
+            global,
+            persistent
         )
     }
 

@@ -97,7 +97,9 @@ class BukkitStorageService : StorageService, Services.Fallback {
             .filter { it.toString().endsWith(".yml") }
             .forEach(Files::delete)
 
-        npcController.getNpcs().forEach { npc ->
+        val staticNpcs = npcController.getNpcs().filter { it.isStatic() }
+
+        staticNpcs.forEach { npc ->
             val file = npcFolder.resolve("${npc.uniqueName}.yml").toFile()
             val config = YamlConfiguration()
 
@@ -118,8 +120,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
             config.save(file)
         }
 
-        logger().atInfo().log("Successfully saved ${npcController.getNpcs().size} NPCs to files!")
-        return npcController.getNpcs().size
+        logger().atInfo().log("Successfully saved ${staticNpcs.size} NPCs to files!")
+        return staticNpcs.size
     }
 
     override fun import(fileName: String): Boolean {

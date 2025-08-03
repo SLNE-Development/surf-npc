@@ -43,6 +43,10 @@ class NpcListCommand(commandName: String) : CommandAPICommand(commandName) {
                             variableValue(npc.uniqueName)
                             appendSpace()
                             info("(${npc.id})")
+                            if (npc.isStatic()) {
+                                appendSpace()
+                                spacer("(Static)")
+                            }
                             clickRunsCommand("/npc info ${npc.uniqueName}")
                         }
                     )
