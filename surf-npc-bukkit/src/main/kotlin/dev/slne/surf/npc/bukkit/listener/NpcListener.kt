@@ -71,7 +71,7 @@ class NpcListener : PacketListener {
                     }
 
                     WrapperPlayClientInteractEntity.InteractAction.INTERACT -> {
-                        if(packet.hand != InteractionHand.MAIN_HAND) {
+                        if (packet.hand != InteractionHand.MAIN_HAND) {
                             return
                         }
 
