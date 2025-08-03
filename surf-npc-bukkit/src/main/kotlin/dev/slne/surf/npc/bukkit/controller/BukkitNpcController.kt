@@ -125,15 +125,13 @@ class BukkitNpcController : NpcController, Services.Fallback {
             )
         )
 
-        if(persistent) {
-            npc.addProperty(
-                BukkitNpcProperty(
-                    NpcProperty.Internal.PERSISTENCE, true, propertyTypeRegistry.get(
-                        NpcPropertyType.Types.BOOLEAN
-                    ) ?: error("BOOLEAN property type not found")
-                )
+        npc.addProperty(
+            BukkitNpcProperty(
+                NpcProperty.Internal.PERSISTENCE, persistent, propertyTypeRegistry.get(
+                    NpcPropertyType.Types.BOOLEAN
+                ) ?: error("BOOLEAN property type not found")
             )
-        }
+        )
 
         this.registerNpc(npc)
 

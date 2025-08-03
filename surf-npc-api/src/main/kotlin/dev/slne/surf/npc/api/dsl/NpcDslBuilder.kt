@@ -49,6 +49,11 @@ class NpcDslBuilder {
     var fixedRotation: NpcRotation? = null
 
     /**
+     * Whether the NPC should be persistent. Defaults to false.
+     */
+    var persistent: Boolean = false
+
+    /**
      * Configures the skin of the NPC using a DSL block.
      *
      * @param block The DSL block for configuring the skin.
@@ -141,6 +146,7 @@ fun npc(block: NpcDslBuilder.() -> Unit): NpcCreationResult {
         location = builder.location,
         global = builder.global,
         rotationType = builder.rotationType,
-        fixedRotation = builder.fixedRotation
+        fixedRotation = builder.fixedRotation,
+        persistent = builder.persistent
     )
 }

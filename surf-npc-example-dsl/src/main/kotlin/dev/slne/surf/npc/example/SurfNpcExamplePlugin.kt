@@ -48,6 +48,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             }
             global = true
             rotationType = NpcRotationType.PER_PLAYER
+            persistent = false // This is already the default value, but can be set explicitly if needed.
         }
 
         /**
