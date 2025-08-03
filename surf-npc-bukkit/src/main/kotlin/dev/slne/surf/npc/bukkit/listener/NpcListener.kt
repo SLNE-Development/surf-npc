@@ -60,7 +60,7 @@ class NpcListener : PacketListener {
                 val packet = WrapperPlayClientInteractEntity(event)
                 val npc = npcController.getNpc(packet.entityId) ?: return
 
-                when(packet.action) {
+                when (packet.action) {
                     WrapperPlayClientInteractEntity.InteractAction.ATTACK -> {
                         plugin.launch(plugin.entityDispatcher(player)) {
                             NpcInteractEvent(
