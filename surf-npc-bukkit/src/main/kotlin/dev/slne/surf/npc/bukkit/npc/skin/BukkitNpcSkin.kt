@@ -1,4 +1,4 @@
-package dev.slne.surf.npc.bukkit.skin
+package dev.slne.surf.npc.bukkit.npc.skin
 
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 

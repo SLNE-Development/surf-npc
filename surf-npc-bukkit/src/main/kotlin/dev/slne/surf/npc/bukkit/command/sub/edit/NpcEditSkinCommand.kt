@@ -9,8 +9,8 @@ import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
+import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.plugin
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.skinDataFromName
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
@@ -36,21 +36,27 @@ class NpcEditSkinCommand(commandName: String) : CommandAPICommand(commandName) {
                 val skinData = skinDataFromName(skinPlayer)
 
 
-                npc.addProperty(BukkitNpcProperty(
-                    NpcProperty.Internal.SKIN_OWNER,
-                    skinData.ownerName,
-                    propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
-                ))
-                npc.addProperty(BukkitNpcProperty(
-                    NpcProperty.Internal.SKIN_TEXTURE,
-                    skinData.value,
-                    propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
-                ))
-                npc.addProperty(BukkitNpcProperty(
-                    NpcProperty.Internal.SKIN_SIGNATURE,
-                    skinData.signature,
-                    propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
-                ))
+                npc.addProperty(
+                    BukkitNpcProperty(
+                        NpcProperty.Internal.SKIN_OWNER,
+                        skinData.ownerName,
+                        propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
+                    )
+                )
+                npc.addProperty(
+                    BukkitNpcProperty(
+                        NpcProperty.Internal.SKIN_TEXTURE,
+                        skinData.value,
+                        propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
+                    )
+                )
+                npc.addProperty(
+                    BukkitNpcProperty(
+                        NpcProperty.Internal.SKIN_SIGNATURE,
+                        skinData.signature,
+                        propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
+                    )
+                )
                 npc.refresh()
 
                 player.sendText {

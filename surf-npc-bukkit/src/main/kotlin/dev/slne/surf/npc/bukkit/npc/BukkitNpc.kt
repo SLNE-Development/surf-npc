@@ -16,8 +16,8 @@ import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.bukkit.*
 import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
-import dev.slne.surf.npc.bukkit.rotation.BukkitNpcRotation
+import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
+import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
 import dev.slne.surf.npc.bukkit.util.toLocation
 import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.npc.core.property.propertyTypeRegistry

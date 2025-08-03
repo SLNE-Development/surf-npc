@@ -1,4 +1,4 @@
-package dev.slne.surf.npc.bukkit.property
+package dev.slne.surf.npc.bukkit.npc.property
 
 import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType

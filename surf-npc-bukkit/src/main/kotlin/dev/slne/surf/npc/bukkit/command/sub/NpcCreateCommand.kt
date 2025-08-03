@@ -6,18 +6,16 @@ import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.stringArgument
 import dev.jorel.commandapi.kotlindsl.textArgument
-
-import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
+import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.bukkit.command.argument.rotationTypeArgument
 import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
+import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
 import dev.slne.surf.npc.bukkit.plugin
-import dev.slne.surf.npc.bukkit.rotation.BukkitNpcRotation
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.skinDataFromName
 import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
-
 import net.kyori.adventure.text.minimessage.MiniMessage
 
 class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
@@ -34,7 +32,7 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
             val rotationType: NpcRotationType by args
             val location = player.location
 
-            if(!this.isValidName(name)) {
+            if (!this.isValidName(name)) {
                 player.sendText {
                     appendPrefix()
                     error("Der Npc Name ist ungültig.")
@@ -63,7 +61,7 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
 
                 val npc = npcController.getNpc(uniqueName)
 
-                if(npc == null) {
+                if (npc == null) {
                     player.sendText {
                         appendPrefix()
                         error("Der Npc konnte nicht erstellt werden: ${npcResult.name}")
@@ -71,7 +69,7 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
                     return@launch
                 }
 
-                if(npcResult == NpcCreationResult.SUCCESS) {
+                if (npcResult == NpcCreationResult.SUCCESS) {
                     player.sendText {
                         appendPrefix()
                         success("Der Npc wurde erfolgreich erstellt.")

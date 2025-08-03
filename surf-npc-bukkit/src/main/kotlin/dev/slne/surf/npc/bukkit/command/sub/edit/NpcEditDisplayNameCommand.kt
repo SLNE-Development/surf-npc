@@ -8,7 +8,7 @@ import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
+import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.miniMessage
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
@@ -25,11 +25,14 @@ class NpcEditDisplayNameCommand(commandName: String) : CommandAPICommand(command
 
             val name = miniMessage.deserialize(displayName)
 
-            npc.addProperty(BukkitNpcProperty(
-                NpcProperty.Internal.DISPLAYNAME,
-                name,
-                propertyTypeRegistry.get(NpcPropertyType.Types.COMPONENT) ?: return@playerExecutor
-            ))
+            npc.addProperty(
+                BukkitNpcProperty(
+                    NpcProperty.Internal.DISPLAYNAME,
+                    name,
+                    propertyTypeRegistry.get(NpcPropertyType.Types.COMPONENT)
+                        ?: return@playerExecutor
+                )
+            )
 
             npc.refresh()
 

@@ -1,4 +1,4 @@
-package dev.slne.surf.npc.bukkit.rotation
+package dev.slne.surf.npc.bukkit.npc.rotation
 
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 

@@ -1,4 +1,4 @@
-package dev.slne.surf.npc.bukkit.property.impl
+package dev.slne.surf.npc.bukkit.npc.property.impl
 
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.util.miniMessage

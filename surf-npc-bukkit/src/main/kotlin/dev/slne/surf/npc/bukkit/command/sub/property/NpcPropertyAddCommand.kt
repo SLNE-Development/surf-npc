@@ -4,12 +4,11 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.stringArgument
-
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.command.argument.npcPropertyTypeArgument
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
+import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
@@ -28,14 +27,16 @@ class NpcPropertyAddCommand(commandName: String) : CommandAPICommand(commandName
 
             val exists = npc.hasProperty(key)
 
-            npc.addProperty(BukkitNpcProperty(
-                key, propertyType.decode(value), propertyType
-            ))
+            npc.addProperty(
+                BukkitNpcProperty(
+                    key, propertyType.decode(value), propertyType
+                )
+            )
 
             player.sendText {
                 appendPrefix()
 
-                if(exists) {
+                if (exists) {
                     success("Die Property '${key}' wurde erfolgreich dem NPC '${npc.uniqueName}' neu gesetzt.")
                 } else {
                     success("Die Property '${key}' wurde erfolgreich zum NPC '${npc.uniqueName}' hinzugefügt.")

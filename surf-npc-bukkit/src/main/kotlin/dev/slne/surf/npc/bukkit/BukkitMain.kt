@@ -8,17 +8,17 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.NpcCommand
 import dev.slne.surf.npc.bukkit.listener.ConnectionListener
 import dev.slne.surf.npc.bukkit.listener.NpcListener
-import dev.slne.surf.npc.bukkit.property.impl.BooleanPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.ComponentPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.DoublePropertyType
-import dev.slne.surf.npc.bukkit.property.impl.FloatPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.IntPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.BooleanPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.ComponentPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.DoublePropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.FloatPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.IntPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.LongPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.NamedTextColorPropertyType
 import dev.slne.surf.npc.bukkit.npc.property.impl.NpcLocationPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.LongPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.NamedTextColorPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.NpcRotationPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.StringPropertyType
-import dev.slne.surf.npc.bukkit.property.impl.UuidPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.NpcRotationPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.StringPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.UuidPropertyType
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.npc.core.service.storageService
 

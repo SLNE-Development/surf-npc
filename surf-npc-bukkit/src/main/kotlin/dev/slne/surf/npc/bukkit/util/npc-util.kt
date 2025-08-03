@@ -2,10 +2,17 @@ package dev.slne.surf.npc.bukkit.util
 
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.bukkit.skin.BukkitSNpcSkinData
+import dev.slne.surf.npc.bukkit.npc.skin.BukkitSNpcSkinData
 import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
 import dev.slne.surf.surfapi.core.api.util.logger
-
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -14,15 +21,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.bukkit.Bukkit
 import org.bukkit.Location
-
-import io.ktor.client.*
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.timeout
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.isSuccess
-import io.ktor.serialization.kotlinx.json.*
 
 suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO) {
     val uuid = PlayerLookupService.getUuid(name) ?: return@withContext skinDataDefault()
@@ -34,14 +32,16 @@ suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO
     }
 
     try {
-        val response: HttpResponse = client.get("https://sessionserver.mojang.com/session/minecraft/profile/$uuid?unsigned=false") {
-            timeout {
-                requestTimeoutMillis = 15_000
+        val response: HttpResponse =
+            client.get("https://sessionserver.mojang.com/session/minecraft/profile/$uuid?unsigned=false") {
+                timeout {
+                    requestTimeoutMillis = 15_000
+                }
             }
-        }
 
         if (!response.status.isSuccess()) {
-            logger().atSevere().log("Error retrieving skin data for $name: ${response.status.value} - ${response.status.description}")
+            logger().atSevere()
+                .log("Error retrieving skin data for $name: ${response.status.value} - ${response.status.description}")
             return@withContext skinDataDefault()
         }
 
@@ -53,8 +53,10 @@ suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO
         } ?: return@withContext skinDataDefault()
 
         val textureObj = textureProperty.jsonObject
-        val value = textureObj["value"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
-        val signature = textureObj["signature"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
+        val value =
+            textureObj["value"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
+        val signature =
+            textureObj["signature"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
 
         return@withContext BukkitSNpcSkinData(name, value, signature)
     } catch (e: Exception) {
@@ -66,8 +68,7 @@ suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO
 }
 
 
-
-fun skinDataDefault() : NpcSkin {
+fun skinDataDefault(): NpcSkin {
     return BukkitSNpcSkinData(
         "default",
         "ewogICJ0aW1lc3RhbXAiIDogMTc0ODc1ODY4OTg4NCwKICAicHJvZmlsZUlkIiA6ICI2NGY0MGFiNzFmM2E0NGZiYjg0N2I5ZWFhOWZjNDRlNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJvZGF2aWRjZXNhciIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mNzY5YmJiOWZiMjMxNjgwODEzMWU2YzJkMDJjZTE0ZTNhYWI2NzRkZWI0YjU1OGJiMjY1YzMxNDFkMTk5YjA4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
