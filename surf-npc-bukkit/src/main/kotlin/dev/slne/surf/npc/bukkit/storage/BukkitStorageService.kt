@@ -97,7 +97,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
             .filter { it.toString().endsWith(".yml") }
             .forEach(Files::delete)
 
-        npcController.getNpcs().forEach { npc ->
+        npcController.getNpcs().filter { it.isStatic() }.forEach { npc ->
             val file = npcFolder.resolve("${npc.uniqueName}.yml").toFile()
             val config = YamlConfiguration()
 

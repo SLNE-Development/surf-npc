@@ -30,6 +30,7 @@ interface NpcController {
      * @param rotationType The type of rotation for the NPC.
      * @param rotation The rotation values for the NPC.
      * @param global Whether the NPC is globally visible.
+     * @param persistent Whether the NPC should persist across server restarts.
      * @return The result of the NPC creation.
      */
     fun createNpc(
@@ -39,7 +40,8 @@ interface NpcController {
         location: NpcLocation,
         rotationType: NpcRotationType,
         rotation: NpcRotation,
-        global: Boolean
+        global: Boolean,
+        persistent: Boolean = false
     ): NpcCreationResult
 
     /**

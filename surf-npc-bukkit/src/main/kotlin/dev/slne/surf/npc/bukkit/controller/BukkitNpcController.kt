@@ -40,7 +40,8 @@ class BukkitNpcController : NpcController, Services.Fallback {
         location: NpcLocation,
         rotationType: NpcRotationType,
         rotation: NpcRotation,
-        global: Boolean
+        global: Boolean,
+        persistent: Boolean
     ): NpcCreationResult {
         val id = random.nextInt()
         val nameTagId = random.nextInt()
@@ -123,6 +124,16 @@ class BukkitNpcController : NpcController, Services.Fallback {
                 ) ?: error("BOOLEAN property type not found")
             )
         )
+
+        if(persistent) {
+            npc.addProperty(
+                BukkitNpcProperty(
+                    NpcProperty.Internal.PERSISTENCE, true, propertyTypeRegistry.get(
+                        NpcPropertyType.Types.BOOLEAN
+                    ) ?: error("BOOLEAN property type not found")
+                )
+            )
+        }
 
         this.registerNpc(npc)
 
