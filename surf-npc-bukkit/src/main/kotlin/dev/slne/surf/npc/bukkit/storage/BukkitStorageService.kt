@@ -118,8 +118,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
             config.save(file)
         }
 
-        logger().atInfo().log("Successfully saved ${npcController.getNpcs().size} NPCs to files!")
-        return npcController.getNpcs().size
+        logger().atInfo().log("Successfully saved ${npcController.getNpcs().filter { it.isStatic() }.size} NPCs to files!")
+        return npcController.getNpcs().filter { it.isStatic() }.size
     }
 
     override fun import(fileName: String): Boolean {
