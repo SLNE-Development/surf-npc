@@ -3,6 +3,7 @@ package dev.slne.surf.npc.bukkit.listener
 import com.github.retrooper.packetevents.event.PacketListener
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
+import com.github.retrooper.packetevents.protocol.player.InteractionHand
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
@@ -59,15 +60,31 @@ class NpcListener : PacketListener {
                 val packet = WrapperPlayClientInteractEntity(event)
                 val npc = npcController.getNpc(packet.entityId) ?: return
 
-                if (packet.action != WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
-                    return
-                }
+                when (packet.action) {
+                    WrapperPlayClientInteractEntity.InteractAction.ATTACK -> {
+                        plugin.launch(plugin.entityDispatcher(player)) {
+                            NpcInteractEvent(
+                                npc,
+                                player
+                            ).callEvent()
+                        }
+                    }
 
-                plugin.launch(plugin.entityDispatcher(player)) {
-                    NpcInteractEvent(
-                        npc,
-                        player
-                    ).callEvent()
+                    WrapperPlayClientInteractEntity.InteractAction.INTERACT -> {
+                        if (packet.hand != InteractionHand.MAIN_HAND) {
+                            return
+                        }
+
+                        plugin.launch(plugin.entityDispatcher(player)) {
+                            NpcInteractEvent(
+                                npc,
+                                player
+                            ).callEvent()
+                        }
+                    }
+                    WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT -> {
+                        // This is already handled by INTERACT action, so we can ignore it.
+                    }
                 }
             }
         }
