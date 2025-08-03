@@ -7,7 +7,7 @@ import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.surfNpcApi
-import net.kyori.adventure.text.Component
+import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
 
 /**
  * Builder class for creating NPCs using a DSL.
@@ -16,7 +16,7 @@ class NpcDslBuilder {
     /**
      * The display name of the NPC.
      */
-    lateinit var displayName: Component
+    lateinit var displayName: SurfComponentBuilder.() -> Unit
 
     /**
      * The unique name of the NPC.
@@ -135,7 +135,7 @@ suspend fun skin(name: String): NpcSkin {
 fun npc(block: NpcDslBuilder.() -> Unit): NpcCreationResult {
     val builder = NpcDslBuilder().apply(block)
     return surfNpcApi.createNpc(
-        displayName = builder.displayName,
+        displayName = SurfComponentBuilder.builder().apply(builder.displayName).build(),
         uniqueName = builder.uniqueName,
         skin = builder.skin,
         location = builder.location,

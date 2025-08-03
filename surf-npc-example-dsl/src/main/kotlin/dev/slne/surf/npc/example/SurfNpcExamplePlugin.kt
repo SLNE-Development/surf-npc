@@ -19,8 +19,13 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
          * Creates an example NPC using the DSL provided by the Surf-NPC API.
          */
         npc {
-            displayName =
-                MiniMessage.miniMessage().deserialize("<rainbow>Example Npc by surf-npc-example")
+            displayName = {
+                append(
+                    MiniMessage.miniMessage()
+                        .deserialize("<rainbow>Example Npc by surf-npc-example")
+                )
+            }
+
             uniqueName = "example_npc"
 
             /**
