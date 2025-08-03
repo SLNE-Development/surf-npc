@@ -130,6 +130,12 @@ interface SurfNpcApi {
         type: NpcPropertyType
     ): NpcProperty
 
+    /**
+     * Retrieves the skin data for the specified player name.
+     *
+     * @param name The name of the player whose skin data should be retrieved.
+     * @return The skin data of the player.
+     */
     suspend fun getSkin(name: String): NpcSkin
 
     /**
@@ -202,9 +208,26 @@ interface SurfNpcApi {
         worldName: String
     ): NpcLocation
 
+    /**
+     * Registers a new property type for NPCs.
+     *
+     * @param type The property type to register.
+     */
     fun registerPropertyType(type: NpcPropertyType)
+
+    /**
+     * Unregisters a previously registered property type.
+     *
+     * @param type The property type to unregister.
+     */
     fun unregisterPropertyType(type: NpcPropertyType)
 
+    /**
+     * Retrieves a registered property type by its ID.
+     *
+     * @param id The ID of the property type.
+     * @return The found property type or null if not present.
+     */
     fun getPropertyType(id: String): NpcPropertyType?
 
     companion object {
