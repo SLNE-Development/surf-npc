@@ -52,5 +52,10 @@ interface NpcProperty {
          * The fixed rotation value for the NPC.
          */
         const val ROTATION_FIXED = "rotation"
+
+        /**
+         * The persistence of the NPC.
+         */
+        const val PERSISTENCE = "persistence"
     }
 }

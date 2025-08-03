@@ -30,6 +30,7 @@ interface SurfNpcApi {
      * @param global Whether the NPC is global (default: true).
      * @param rotationType The rotation type of the NPC (default: FIXED).
      * @param fixedRotation The fixed rotation of the NPC, if applicable (default: null).
+     * @param persistent Whether the NPC should be persistent (default: false).
      * @return The result of the NPC creation.
      */
     fun createNpc(
@@ -39,7 +40,8 @@ interface SurfNpcApi {
         location: NpcLocation,
         global: Boolean = true,
         rotationType: NpcRotationType = NpcRotationType.PER_PLAYER,
-        fixedRotation: NpcRotation? = null
+        fixedRotation: NpcRotation? = null,
+        persistent: Boolean = false
     ): NpcCreationResult
 
     /**
