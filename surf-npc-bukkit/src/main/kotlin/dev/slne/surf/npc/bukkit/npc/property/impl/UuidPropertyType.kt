@@ -1,7 +1,7 @@
 package dev.slne.surf.npc.bukkit.npc.property.impl
 
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import java.util.UUID
+import java.util.*
 
 class UuidPropertyType(override val id: String) : NpcPropertyType {
     override fun encode(value: Any): String {

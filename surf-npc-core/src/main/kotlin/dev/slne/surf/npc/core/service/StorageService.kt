@@ -2,8 +2,6 @@ package dev.slne.surf.npc.core.service
 
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.surfapi.core.api.util.requiredService
-import org.jetbrains.annotations.Blocking
-import java.nio.file.Path
 
 /**
  * Service for managing the storage and persistence of NPCs.

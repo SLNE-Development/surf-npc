@@ -15,9 +15,12 @@ class NpcLocationPropertyType(override val id: String) : NpcPropertyType {
         require(parts.size == 4) { "Invalid location format: $value" }
 
         val worldName = parts[0]
-        val x = parts[1].toDoubleOrNull() ?: throw IllegalArgumentException("Invalid X coordinate: ${parts[1]}")
-        val y = parts[2].toDoubleOrNull() ?: throw IllegalArgumentException("Invalid Y coordinate: ${parts[2]}")
-        val z = parts[3].toDoubleOrNull() ?: throw IllegalArgumentException("Invalid Z coordinate: ${parts[3]}")
+        val x = parts[1].toDoubleOrNull()
+            ?: throw IllegalArgumentException("Invalid X coordinate: ${parts[1]}")
+        val y = parts[2].toDoubleOrNull()
+            ?: throw IllegalArgumentException("Invalid Y coordinate: ${parts[2]}")
+        val z = parts[3].toDoubleOrNull()
+            ?: throw IllegalArgumentException("Invalid Z coordinate: ${parts[3]}")
 
         return BukkitNpcLocation(x, y, z, worldName)
     }

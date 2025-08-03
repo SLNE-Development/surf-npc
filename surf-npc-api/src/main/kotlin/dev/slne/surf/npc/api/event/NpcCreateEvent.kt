@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList
  *
  * @property npc The NPC that was created.
  */
-class NpcCreateEvent (
+class NpcCreateEvent(
     val npc: Npc
 ) : Event() {
 

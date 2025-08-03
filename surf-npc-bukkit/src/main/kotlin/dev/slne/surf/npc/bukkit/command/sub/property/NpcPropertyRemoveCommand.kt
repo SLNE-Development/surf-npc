@@ -19,7 +19,7 @@ class NpcPropertyRemoveCommand(commandName: String) : CommandAPICommand(commandN
             val npc: Npc by args
             val key: String by args
 
-            if(!npc.hasProperty(key)) {
+            if (!npc.hasProperty(key)) {
                 player.sendText {
                     appendPrefix()
                     error("Der NPC '${npc.uniqueName}' besitzt keine Property mit dem Key '${key}'.")

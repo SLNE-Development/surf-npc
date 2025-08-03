@@ -11,7 +11,7 @@ import org.bukkit.event.HandlerList
  * @property npc The NPC that despawned.
  * @property player The player associated with the despawn event, if applicable.
  */
-class NpcDespawnEvent (
+class NpcDespawnEvent(
     val npc: Npc,
     val player: Player
 ) : Event() {

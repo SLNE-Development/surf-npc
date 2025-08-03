@@ -9,13 +9,15 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 
-class NpcPropertyTypeArgument(nodeName: String) : CustomArgument<NpcPropertyType, String>(StringArgument(nodeName), { info ->
-    propertyTypeRegistry.get(info.input) ?: throw CustomArgumentException.fromAdventureComponent (
-        buildText {
-            appendPrefix()
-            error("Der Npc Property Type '${info.input}' wurde nicht gefunden.")
-        })
-}) {
+class NpcPropertyTypeArgument(nodeName: String) :
+    CustomArgument<NpcPropertyType, String>(StringArgument(nodeName), { info ->
+        propertyTypeRegistry.get(info.input)
+            ?: throw CustomArgumentException.fromAdventureComponent(
+                buildText {
+                    appendPrefix()
+                    error("Der Npc Property Type '${info.input}' wurde nicht gefunden.")
+                })
+    }) {
     init {
         replaceSuggestions(ArgumentSuggestions.stringCollection {
             propertyTypeRegistry.getIds()
@@ -23,7 +25,7 @@ class NpcPropertyTypeArgument(nodeName: String) : CustomArgument<NpcPropertyType
     }
 }
 
-inline fun CommandAPICommand.npcPropertyTypeArgument (
+inline fun CommandAPICommand.npcPropertyTypeArgument(
     nodeName: String,
     optional: Boolean = false,
     block: Argument<*>.() -> Unit = {}

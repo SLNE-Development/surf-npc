@@ -4,30 +4,21 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-
 import dev.slne.surf.npc.bukkit.command.NpcCommand
 import dev.slne.surf.npc.bukkit.listener.ConnectionListener
 import dev.slne.surf.npc.bukkit.listener.NpcListener
-import dev.slne.surf.npc.bukkit.npc.property.impl.BooleanPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.ComponentPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.DoublePropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.FloatPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.IntPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.LongPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.NamedTextColorPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.NpcLocationPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.NpcRotationPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.StringPropertyType
-import dev.slne.surf.npc.bukkit.npc.property.impl.UuidPropertyType
+import dev.slne.surf.npc.bukkit.npc.property.impl.*
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.npc.core.service.storageService
-
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitMain : SuspendingJavaPlugin() {
     override fun onEnable() {
-        PacketEvents.getAPI().eventManager.registerListener(NpcListener(), PacketListenerPriority.NORMAL)
+        PacketEvents.getAPI().eventManager.registerListener(
+            NpcListener(),
+            PacketListenerPriority.NORMAL
+        )
         Bukkit.getPluginManager().registerEvents(ConnectionListener(), this)
 
         propertyTypeRegistry.register(BooleanPropertyType(NpcPropertyType.Types.BOOLEAN))

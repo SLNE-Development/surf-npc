@@ -2,20 +2,9 @@ package dev.slne.surf.npc.bukkit.command
 
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.npc.bukkit.command.sub.NpcCreateCommand
-import dev.slne.surf.npc.bukkit.command.sub.NpcDeleteCommand
-import dev.slne.surf.npc.bukkit.command.sub.NpcInfoCommand
-import dev.slne.surf.npc.bukkit.command.sub.NpcListCommand
-import dev.slne.surf.npc.bukkit.command.sub.NpcRefreshCommand
-import dev.slne.surf.npc.bukkit.command.sub.NpcTeleportHereCommand
-import dev.slne.surf.npc.bukkit.command.sub.NpcTeleportToCommand
+import dev.slne.surf.npc.bukkit.command.sub.*
 import dev.slne.surf.npc.bukkit.command.sub.edit.NpcEditCommand
-import dev.slne.surf.npc.bukkit.command.sub.files.NpcExportAllCommand
-import dev.slne.surf.npc.bukkit.command.sub.files.NpcExportCommand
-import dev.slne.surf.npc.bukkit.command.sub.files.NpcImportAllCommand
-import dev.slne.surf.npc.bukkit.command.sub.files.NpcImportCommand
-import dev.slne.surf.npc.bukkit.command.sub.files.NpcReloadFromDiskCommand
-import dev.slne.surf.npc.bukkit.command.sub.files.NpcSaveToDiskCommand
+import dev.slne.surf.npc.bukkit.command.sub.files.*
 import dev.slne.surf.npc.bukkit.command.sub.property.NpcPropertyCommand
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 

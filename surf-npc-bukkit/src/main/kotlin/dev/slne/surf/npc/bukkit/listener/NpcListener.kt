@@ -13,17 +13,18 @@ import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.bukkit.plugin
 import dev.slne.surf.npc.bukkit.util.toLocation
 import dev.slne.surf.npc.core.controller.npcController
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 class NpcListener : PacketListener {
     override fun onPacketReceive(event: PacketReceiveEvent) {
         val player = event.getPlayer<Player>() ?: return
 
-        when(event.packetType) {
+        when (event.packetType) {
             PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION -> {
                 for (npc in npcController.getNpcs()) {
-                    val npcLoc = npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class) ?: continue
+                    val npcLoc =
+                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+                            ?: continue
                     val playerLoc = player.location
 
                     if (playerLoc.distanceSquared(npcLoc.toLocation()) > 20 * 20) {
@@ -33,9 +34,12 @@ class NpcListener : PacketListener {
                     npc.refreshRotation(player.uniqueId)
                 }
             }
+
             PacketType.Play.Client.PLAYER_POSITION -> {
                 for (npc in npcController.getNpcs()) {
-                    val npcLoc = npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class) ?: continue
+                    val npcLoc =
+                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+                            ?: continue
                     val playerLoc = player.location
 
                     if (playerLoc.distanceSquared(npcLoc.toLocation()) > 1 * 1) {
@@ -50,11 +54,12 @@ class NpcListener : PacketListener {
                     }
                 }
             }
+
             PacketType.Play.Client.INTERACT_ENTITY -> {
                 val packet = WrapperPlayClientInteractEntity(event)
                 val npc = npcController.getNpc(packet.entityId) ?: return
 
-                if(packet.action != WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
+                if (packet.action != WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
                     return
                 }
 

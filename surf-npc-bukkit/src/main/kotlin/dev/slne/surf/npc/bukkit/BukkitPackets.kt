@@ -7,24 +7,25 @@ import com.github.retrooper.packetevents.protocol.player.GameMode
 import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
-import java.util.UUID
+import java.util.*
 
-fun createPlayerInfoPacket(profile: UserProfile, displayName: Component, listed: Boolean = false) = WrapperPlayServerPlayerInfoUpdate(
-    WrapperPlayServerPlayerInfoUpdate.Action.ADD_PLAYER,
-    WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
-        profile,
-        listed,
-        0,
-        GameMode.SURVIVAL,
-        displayName,
-        null
+fun createPlayerInfoPacket(profile: UserProfile, displayName: Component, listed: Boolean = false) =
+    WrapperPlayServerPlayerInfoUpdate(
+        WrapperPlayServerPlayerInfoUpdate.Action.ADD_PLAYER,
+        WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
+            profile,
+            listed,
+            0,
+            GameMode.SURVIVAL,
+            displayName,
+            null
+        )
     )
-)
+
 fun createEntityMetadataPacket(npcEntityId: Int) = WrapperPlayServerEntityMetadata(
     npcEntityId,
     listOf(
@@ -32,6 +33,7 @@ fun createEntityMetadataPacket(npcEntityId: Int) = WrapperPlayServerEntityMetada
         EntityData(0, EntityDataTypes.BYTE, 0x02.toByte()),
     )
 )
+
 fun createPlayerSpawnPacket(
     entityId: Int,
     uuid: UUID,
@@ -42,11 +44,18 @@ fun createPlayerSpawnPacket(
     entityId,
     uuid,
     EntityTypes.PLAYER,
-    com.github.retrooper.packetevents.protocol.world.Location(Vector3d(location.x, location.y, location.z), yaw, pitch),
+    com.github.retrooper.packetevents.protocol.world.Location(
+        Vector3d(
+            location.x,
+            location.y,
+            location.z
+        ), yaw, pitch
+    ),
     yaw,
     0,
     null
 )
+
 fun createNametagSpawnPacket(
     entityId: Int,
     uuid: UUID,
@@ -55,11 +64,18 @@ fun createNametagSpawnPacket(
     entityId,
     uuid,
     EntityTypes.TEXT_DISPLAY,
-    com.github.retrooper.packetevents.protocol.world.Location(Vector3d(location.x, location.y + 2, location.z), 0f, 0f),
+    com.github.retrooper.packetevents.protocol.world.Location(
+        Vector3d(
+            location.x,
+            location.y + 2,
+            location.z
+        ), 0f, 0f
+    ),
     0f,
     0,
     null
 )
+
 fun createNametagMetadataPacket(
     entityId: Int,
     displayName: Component
@@ -71,6 +87,7 @@ fun createNametagMetadataPacket(
         EntityData(27, EntityDataTypes.BYTE, 0x02.toByte())
     )
 )
+
 fun createTeamCreatePacket(
     teamName: String,
     displayName: Component
@@ -96,14 +113,17 @@ fun createTeamAddEntityPacket(teamName: String, entityUuid: String) = WrapperPla
     nullInfo,
     entityUuid
 )
+
 fun createDestroyPacket(vararg entityIds: Int) = WrapperPlayServerDestroyEntities(*entityIds)
 fun createPlayerInfoRemovePacket(npcUuid: UUID) = WrapperPlayServerPlayerInfoRemove(npcUuid)
 fun createRotationPackets(entityId: Int, yaw: Float, pitch: Float) = Pair(
     WrapperPlayServerEntityRotation(entityId, yaw, pitch, true),
     WrapperPlayServerEntityHeadLook(entityId, yaw)
 )
-fun createTeleportPacket(entityId: Int, location: Location, onGround: Boolean = false) = WrapperPlayServerEntityTeleport(
-    entityId,
-    SpigotConversionUtil.fromBukkitLocation(location),
-    onGround
-)
+
+fun createTeleportPacket(entityId: Int, location: Location, onGround: Boolean = false) =
+    WrapperPlayServerEntityTeleport(
+        entityId,
+        SpigotConversionUtil.fromBukkitLocation(location),
+        onGround
+    )

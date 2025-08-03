@@ -10,7 +10,8 @@ class NamedTextColorPropertyType(override val id: String) : NpcPropertyType {
     }
 
     override fun decode(value: String): NamedTextColor {
-        return NamedTextColor.namedColor(value.toInt()) ?: error("Invalid NamedTextColor value: $value")
+        return NamedTextColor.namedColor(value.toInt())
+            ?: error("Invalid NamedTextColor value: $value")
     }
 }
 

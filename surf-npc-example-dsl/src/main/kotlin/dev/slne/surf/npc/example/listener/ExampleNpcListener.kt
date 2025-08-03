@@ -11,7 +11,7 @@ import org.bukkit.event.Listener
 class ExampleNpcListener : Listener {
     @EventHandler
     fun onNpcCollision(event: NpcCollisionEvent) {
-        val npc = event.npc
+        event.npc
         val player = event.player
 
         player.velocity = player.location.direction.multiply(-1.5)
@@ -22,9 +22,10 @@ class ExampleNpcListener : Listener {
         val npc = event.npc
         val player = event.player
 
-        val displayName = npc.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class) ?: return
+        val displayName =
+            npc.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class) ?: return
 
-        if(npc.hasProperty("example_npc")) {
+        if (npc.hasProperty("example_npc")) {
             player.sendText {
                 append(displayName)
                 spacer(" ")

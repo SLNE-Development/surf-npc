@@ -20,7 +20,7 @@ class NpcImportCommand(commandName: String) : CommandAPICommand(commandName) {
             player.sendText {
                 appendPrefix()
 
-                if(result) {
+                if (result) {
                     success("Der NPC aus der Datei '$fileName' wurde erfolgreich importiert.")
                 } else {
                     error("Fehler beim Importieren der NPCs aus der Datei '$fileName'.")

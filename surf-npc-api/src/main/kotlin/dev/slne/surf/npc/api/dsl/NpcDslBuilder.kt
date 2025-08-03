@@ -2,10 +2,10 @@ package dev.slne.surf.npc.api.dsl
 
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
-import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
+import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.surfNpcApi
 import net.kyori.adventure.text.Component
 

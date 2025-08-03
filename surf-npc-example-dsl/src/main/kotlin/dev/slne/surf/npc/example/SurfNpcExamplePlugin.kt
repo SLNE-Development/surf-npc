@@ -11,7 +11,7 @@ import dev.slne.surf.surfapi.core.api.util.logger
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 
-class SurfNpcExamplePlugin(): SuspendingJavaPlugin() {
+class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
     override fun onEnable() {
         Bukkit.getPluginManager().registerEvents(ExampleNpcListener(), this)
 
@@ -19,7 +19,8 @@ class SurfNpcExamplePlugin(): SuspendingJavaPlugin() {
          * Creates an example NPC using the DSL provided by the Surf-NPC API.
          */
         npc {
-            displayName = MiniMessage.miniMessage().deserialize("<rainbow>Example Npc by surf-npc-example")
+            displayName =
+                MiniMessage.miniMessage().deserialize("<rainbow>Example Npc by surf-npc-example")
             uniqueName = "example_npc"
 
             /**
@@ -59,9 +60,11 @@ class SurfNpcExamplePlugin(): SuspendingJavaPlugin() {
         surfNpcApi.addProperty(npc, npcProperty {
             key = "example_npc"
             value = true
-            type = surfNpcApi.getPropertyType(NpcPropertyType.Types.BOOLEAN) ?: return@npcProperty run {
-                logger().atWarning().log("Failed to create example NPC: Boolean property type not found.")
-            }
+            type = surfNpcApi.getPropertyType(NpcPropertyType.Types.BOOLEAN)
+                ?: return@npcProperty run {
+                    logger().atWarning()
+                        .log("Failed to create example NPC: Boolean property type not found.")
+                }
         })
     }
 }

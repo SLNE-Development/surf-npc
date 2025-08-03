@@ -19,7 +19,7 @@ class NpcDeleteCommand(commandName: String) : CommandAPICommand(commandName) {
 
             npc.delete()
 
-            if(npcController.getNpc(npc.id) == null) {
+            if (npcController.getNpc(npc.id) == null) {
                 player.sendText {
                     appendPrefix()
                     success("Der Npc ")

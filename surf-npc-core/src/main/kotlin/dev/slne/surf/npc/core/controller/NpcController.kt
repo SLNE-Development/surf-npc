@@ -3,18 +3,18 @@ package dev.slne.surf.npc.core.controller
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
+import dev.slne.surf.npc.api.npc.rotation.NpcRotation
+import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
+import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.result.NpcDeletionResult
 import dev.slne.surf.npc.api.result.NpcRespawnResult
 import dev.slne.surf.npc.api.result.NpcSpawnResult
-import dev.slne.surf.npc.api.npc.rotation.NpcRotation
-import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
-import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.surfapi.core.api.util.requiredService
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
-import java.util.UUID
+import java.util.*
 
 /**
  * Interface for managing NPCs in the game.
@@ -32,7 +32,15 @@ interface NpcController {
      * @param global Whether the NPC is globally visible.
      * @return The result of the NPC creation.
      */
-    fun createNpc(uniqueName: String, displayName: Component, skinData: NpcSkin, location: NpcLocation, rotationType: NpcRotationType, rotation: NpcRotation, global: Boolean): NpcCreationResult
+    fun createNpc(
+        uniqueName: String,
+        displayName: Component,
+        skinData: NpcSkin,
+        location: NpcLocation,
+        rotationType: NpcRotationType,
+        rotation: NpcRotation,
+        global: Boolean
+    ): NpcCreationResult
 
     /**
      * Deletes an NPC.

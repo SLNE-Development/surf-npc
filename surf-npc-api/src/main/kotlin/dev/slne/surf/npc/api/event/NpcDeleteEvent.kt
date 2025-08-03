@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList
  *
  * @property npc The NPC that was deleted.
  */
-class NpcDeleteEvent (
+class NpcDeleteEvent(
     val npc: Npc
 ) : Event() {
 

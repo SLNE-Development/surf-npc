@@ -22,12 +22,20 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
         playerExecutor { player, args ->
             val npc: Npc by args
 
-            val displayName = npc.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class) ?: error("NPC ${npc.uniqueName} has no display name set")
-            val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class) ?: error("NPC ${npc.uniqueName} has no location set")
+            val displayName =
+                npc.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class)
+                    ?: error("NPC ${npc.uniqueName} has no display name set")
+            val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+                ?: error("NPC ${npc.uniqueName} has no location set")
 
-            val rotationType = npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, Boolean::class) ?: error("NPC ${npc.uniqueName} has no rotation type set")
-            val skinOwner = npc.getPropertyValue(NpcProperty.Internal.SKIN_OWNER, String::class) ?: error("NPC ${npc.uniqueName} has no skin owner set")
-            val global = npc.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: error("NPC ${npc.uniqueName} has no global visibility set")
+            val rotationType =
+                npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, Boolean::class)
+                    ?: error("NPC ${npc.uniqueName} has no rotation type set")
+            val skinOwner = npc.getPropertyValue(NpcProperty.Internal.SKIN_OWNER, String::class)
+                ?: error("NPC ${npc.uniqueName} has no skin owner set")
+            val global =
+                npc.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class)
+                    ?: error("NPC ${npc.uniqueName} has no global visibility set")
 
             player.sendText {
                 append {

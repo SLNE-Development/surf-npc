@@ -117,7 +117,8 @@ class NpcPropertyBuilder {
     /**
      * The type of the property. Defaults to the "string" type.
      */
-    var type: NpcPropertyType = surfNpcApi.getPropertyType("string") ?: error("Default property type 'string' not found")
+    var type: NpcPropertyType =
+        surfNpcApi.getPropertyType("string") ?: error("Default property type 'string' not found")
 
     /**
      * Builds the NPC property.

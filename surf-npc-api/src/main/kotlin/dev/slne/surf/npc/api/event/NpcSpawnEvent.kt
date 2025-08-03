@@ -11,7 +11,7 @@ import org.bukkit.event.HandlerList
  * @property npc The NPC that was spawned.
  * @property player The player associated with the spawn event, if applicable.
  */
-class NpcSpawnEvent (
+class NpcSpawnEvent(
     val npc: Npc,
     val player: Player
 ) : Event() {
