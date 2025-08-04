@@ -175,6 +175,12 @@ interface NpcController {
      */
     fun removeProperty(npc: Npc, key: String): Boolean
 
+    /**
+     * Plays an animation on an NPC.
+     *
+     * @param npc The NPC on which to play the animation.
+     * @param animationType The type of animation to play.
+     */
     fun playAnimation(npc: Npc, animationType: NpcAnimationType)
 
     companion object {
