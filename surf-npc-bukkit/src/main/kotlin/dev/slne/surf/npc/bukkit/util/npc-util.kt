@@ -7,6 +7,7 @@ import dev.slne.surf.npc.bukkit.npc.skin.BukkitNpcSkin
 import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.surfapi.core.api.util.objectSetOf
+import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
