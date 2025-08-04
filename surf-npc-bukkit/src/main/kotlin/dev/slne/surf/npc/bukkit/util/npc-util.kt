@@ -60,7 +60,7 @@ suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO
         val signature =
             textureObj["signature"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
 
-        return@withContext BukkitNpcSkin(name, value, signature, objectSetOf(NpcSkinPart.entries))
+        return@withContext BukkitNpcSkin(name, value, signature, NpcSkinPart.entries.toObjectSet())
     } catch (e: Exception) {
         logger().atSevere().log("Exception while retrieving skin data: ${e.message}")
         return@withContext skinDataDefault()
