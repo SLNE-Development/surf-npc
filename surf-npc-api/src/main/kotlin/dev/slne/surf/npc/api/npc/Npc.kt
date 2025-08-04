@@ -1,5 +1,6 @@
 package dev.slne.surf.npc.api.npc
 
+import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import it.unimi.dsi.fastutil.objects.ObjectSet
@@ -158,4 +159,12 @@ interface Npc {
      * @return True if the NPC has properties, false otherwise.
      */
     fun hasProperties(): Boolean
+
+
+    /**
+     * Plays an animation on the NPC.
+     *
+     * @param animationType The type of animation to play.
+     */
+    fun playAnimation(animationType: NpcAnimationType)
 }

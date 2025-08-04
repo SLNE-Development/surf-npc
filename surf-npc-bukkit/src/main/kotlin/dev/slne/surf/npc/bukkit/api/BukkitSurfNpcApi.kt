@@ -3,6 +3,7 @@ package dev.slne.surf.npc.bukkit.api
 import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
@@ -155,5 +156,12 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
 
     override fun getPropertyType(id: String): NpcPropertyType? {
         return propertyTypeRegistry.get(id)
+    }
+
+    override fun playAnimation(
+        npc: Npc,
+        animationType: NpcAnimationType
+    ) {
+        npcController.playAnimation(npc, animationType)
     }
 }

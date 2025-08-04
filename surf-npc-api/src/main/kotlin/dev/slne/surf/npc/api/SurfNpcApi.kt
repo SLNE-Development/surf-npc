@@ -1,6 +1,7 @@
 package dev.slne.surf.npc.api
 
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
@@ -231,6 +232,13 @@ interface SurfNpcApi {
      * @return The found property type or null if not present.
      */
     fun getPropertyType(id: String): NpcPropertyType?
+
+    /**
+     * Plays an animation on the specified NPC.
+     *
+     * @param npc The NPC on which the animation will be played.
+     */
+    fun playAnimation(npc: Npc, animationType: NpcAnimationType)
 
     companion object {
         /**

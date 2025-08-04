@@ -1,6 +1,7 @@
 package dev.slne.surf.npc.core.controller
 
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
@@ -173,6 +174,8 @@ interface NpcController {
      * @return True if the property was removed successfully, false otherwise.
      */
     fun removeProperty(npc: Npc, key: String): Boolean
+
+    fun playAnimation(npc: Npc, animationType: NpcAnimationType)
 
     companion object {
         /**

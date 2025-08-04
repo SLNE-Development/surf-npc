@@ -7,6 +7,7 @@ import com.github.retrooper.packetevents.protocol.player.GameMode
 import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
+import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -127,3 +128,15 @@ fun createTeleportPacket(entityId: Int, location: Location, onGround: Boolean = 
         SpigotConversionUtil.fromBukkitLocation(location),
         onGround
     )
+
+fun createEntityAnimation(entityId: Int, animation: NpcAnimationType) = WrapperPlayServerEntityAnimation(
+    entityId,
+    when (animation) {
+        NpcAnimationType.SWING_ARM_MAIN -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_MAIN_ARM
+        NpcAnimationType.SWING_ARM_OFF -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_OFF_HAND
+        NpcAnimationType.GET_DAMAGE -> WrapperPlayServerEntityAnimation.EntityAnimationType.HURT
+        NpcAnimationType.LEAVE_BED -> WrapperPlayServerEntityAnimation.EntityAnimationType.WAKE_UP
+        NpcAnimationType.HIT_CRITICAL -> WrapperPlayServerEntityAnimation.EntityAnimationType.CRITICAL_HIT
+        NpcAnimationType.HIT_MAGIC -> WrapperPlayServerEntityAnimation.EntityAnimationType.MAGIC_CRITICAL_HIT
+    }
+)
