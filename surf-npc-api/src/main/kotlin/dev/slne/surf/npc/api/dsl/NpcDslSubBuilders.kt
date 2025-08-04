@@ -33,7 +33,7 @@ class SkinBuilder {
     /**
      * The parts of the skin, represented as a set of `NpcSkinPart`.
      */
-    var parts: ObjectSet<NpcSkinPart> = objectSetOf(NpcSkinPart.entries)
+    var parts: ObjectSet<NpcSkinPart> = NpcSkinPart.entries.toObjectSet()
 
     /**
      * Builds the NPC skin.
