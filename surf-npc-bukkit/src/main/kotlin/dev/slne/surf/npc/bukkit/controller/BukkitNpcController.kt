@@ -235,7 +235,7 @@ class BukkitNpcController : NpcController, Services.Fallback {
     ) {
         npc.addProperty(
             BukkitNpcProperty(
-                NpcProperty.Internal.SKIN_DATA, skin.ownerName, propertyTypeRegistry.get(
+                NpcProperty.Internal.SKIN_DATA, skin, propertyTypeRegistry.get(
                     NpcPropertyType.Types.SKIN_DATA
                 ) ?: error("SKIN_DATA property type not found")
             )
