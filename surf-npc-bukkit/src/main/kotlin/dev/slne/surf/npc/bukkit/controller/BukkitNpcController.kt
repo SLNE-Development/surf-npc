@@ -6,6 +6,7 @@ import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.event.NpcCreateEvent
 import dev.slne.surf.npc.api.event.NpcDeleteEvent
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
@@ -355,5 +356,12 @@ class BukkitNpcController : NpcController, Services.Fallback {
 
         npc.removeProperty(key)
         return true
+    }
+
+    override fun playAnimation(
+        npc: Npc,
+        animationType: NpcAnimationType
+    ) {
+        npc.playAnimation(animationType)
     }
 }

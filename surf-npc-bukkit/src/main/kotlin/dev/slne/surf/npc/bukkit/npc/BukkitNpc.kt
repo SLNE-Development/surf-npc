@@ -9,6 +9,7 @@ import com.github.shynixn.mccoroutine.folia.launch
 import dev.slne.surf.npc.api.event.NpcDespawnEvent
 import dev.slne.surf.npc.api.event.NpcSpawnEvent
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
@@ -289,6 +290,27 @@ class BukkitNpc(
 
     override fun hasProperties(): Boolean {
         return properties.isNotEmpty()
+    }
+
+    override fun playAnimation(animationType: NpcAnimationType) {
+        val packetEvents = PacketEvents.getAPI()
+        val playerManager = packetEvents.playerManager
+
+        val global =
+            this.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
+
+        if (global) {
+            forEachPlayer {
+                playerManager.getUser(it).sendPacket(createEntityAnimation(id, animationType))
+            }
+        } else {
+            for (viewer in viewers) {
+                val player = Bukkit.getPlayer(viewer) ?: continue
+                val user = playerManager.getUser(player)
+
+                user.sendPacket(createEntityAnimation(id, animationType))
+            }
+        }
     }
 
     override fun <T : Any> getPropertyValue(key: String, clazz: KClass<T>): T? {

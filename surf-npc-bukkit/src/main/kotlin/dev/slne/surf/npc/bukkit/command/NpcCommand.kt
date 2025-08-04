@@ -26,5 +26,6 @@ class NpcCommand(commandName: String) : CommandAPICommand(commandName) {
         subcommand(NpcReloadFromDiskCommand("loadFromDisk"))
         subcommand(NpcSaveToDiskCommand("saveToDisk"))
         subcommand(NpcRefreshCommand("refresh"))
+        subcommand(NpcAnimateCommand("animate"))
     }
 }
