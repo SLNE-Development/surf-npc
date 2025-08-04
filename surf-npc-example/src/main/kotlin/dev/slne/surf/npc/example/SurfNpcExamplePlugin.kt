@@ -2,7 +2,6 @@ package dev.slne.surf.npc.example
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
@@ -18,9 +17,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             MiniMessage.miniMessage().deserialize("<rainbow>Example Npc by surf-npc-example"),
             "example_npc",
             createSkinData(),
-            surfNpcApi.createLocation(0.0, 0.0, 0.0, "world"),
-            true,
-            NpcRotationType.PER_PLAYER
+            surfNpcApi.createLocation(0.0, 0.0, 0.0, "world")
         )
 
         val npc = surfNpcApi.getNpc("example_npc") ?: return run {

@@ -65,9 +65,9 @@ class BukkitNpc(
         val location =
             this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class) ?: return
 
-        val glowing = this.getPropertyValue("glowing", Boolean::class) ?: false
+        val glowing = this.getPropertyValue(NpcProperty.Internal.GLOWING_ENABLED, Boolean::class) ?: false
         val glowingColor =
-            this.getPropertyValue("glowing_color", NamedTextColor::class) ?: NamedTextColor.WHITE
+            this.getPropertyValue(NpcProperty.Internal.GLOWING_COLOR, NamedTextColor::class) ?: NamedTextColor.WHITE
 
         profile.textureProperties.add(
             TextureProperty(
@@ -101,7 +101,7 @@ class BukkitNpc(
         user.sendPacket(createNametagMetadataPacket(nameTagId, displayName))
 
         if (glowing) {
-            glowingApi.makeGlowing(id, "npc_$id-glow", player, glowingColor)
+            glowingApi.makeGlowing(id, "npc_$id", player, glowingColor)
         }
 
         plugin.launch(plugin.entityDispatcher(player)) {
@@ -264,6 +264,10 @@ class BukkitNpc(
     override fun addProperty(property: NpcProperty) {
         properties[property.key] = property
     }
+
+    override fun addProperties(vararg properties: Triple<String, Any, NpcPropertyType>) = properties
+            .map { BukkitNpcProperty(it.first, it.second, it.third) }
+            .forEach { this.addProperty(it) }
 
     override fun addProperties(vararg properties: NpcProperty) {
         properties.forEach {
