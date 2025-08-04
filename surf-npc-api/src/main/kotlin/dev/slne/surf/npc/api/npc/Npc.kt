@@ -102,6 +102,11 @@ interface Npc {
      */
     fun addProperty(property: NpcProperty)
 
+    /**
+     * Adds multiple properties to the NPC.
+     *
+     * @param properties A variable number of properties to add, each represented as a Triple containing the key, value, and type.
+     */
     fun addProperties(vararg properties: Triple<String, Any, NpcPropertyType>)
 
     /**
