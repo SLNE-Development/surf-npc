@@ -38,23 +38,9 @@ class NpcEditSkinCommand(commandName: String) : CommandAPICommand(commandName) {
 
                 npc.addProperty(
                     BukkitNpcProperty(
-                        NpcProperty.Internal.SKIN_OWNER,
-                        skinData.ownerName,
-                        propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
-                    )
-                )
-                npc.addProperty(
-                    BukkitNpcProperty(
-                        NpcProperty.Internal.SKIN_TEXTURE,
-                        skinData.value,
-                        propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
-                    )
-                )
-                npc.addProperty(
-                    BukkitNpcProperty(
-                        NpcProperty.Internal.SKIN_SIGNATURE,
-                        skinData.signature,
-                        propertyTypeRegistry.get(NpcPropertyType.Types.STRING) ?: return@launch
+                        NpcProperty.Internal.SKIN_DATA,
+                        skinData,
+                        propertyTypeRegistry.get(NpcPropertyType.Types.SKIN_DATA) ?: return@launch
                     )
                 )
                 npc.refresh()

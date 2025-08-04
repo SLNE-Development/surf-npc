@@ -6,6 +6,7 @@ import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
+import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.readableString
@@ -31,8 +32,8 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
             val rotationType =
                 npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, Boolean::class)
                     ?: error("NPC ${npc.uniqueName} has no rotation type set")
-            val skinOwner = npc.getPropertyValue(NpcProperty.Internal.SKIN_OWNER, String::class)
-                ?: error("NPC ${npc.uniqueName} has no skin owner set")
+            val skinData = npc.getPropertyValue(NpcProperty.Internal.SKIN_DATA, NpcSkin::class)
+                ?: error("NPC ${npc.uniqueName} has no skin data set")
             val global =
                 npc.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class)
                     ?: error("NPC ${npc.uniqueName} has no global visibility set")
@@ -108,7 +109,7 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
                     decorate(TextDecoration.BOLD)
                 }
                 variableKey("Skin: ")
-                variableValue(skinOwner)
+                variableValue(skinData.ownerName)
                 appendNewline()
 
                 append {

@@ -8,8 +8,10 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
+import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
 import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.result.NpcDeletionResult
+import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.surfapi.core.api.util.requiredService
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
@@ -197,7 +199,8 @@ interface SurfNpcApi {
     fun createSkinData(
         owner: String,
         value: String,
-        signature: String
+        signature: String,
+        parts: ObjectSet<NpcSkinPart> = objectSetOf(NpcSkinPart.entries)
     ): NpcSkin
 
     /**

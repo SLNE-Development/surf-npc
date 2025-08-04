@@ -90,19 +90,16 @@ class BukkitNpcController : NpcController, Services.Fallback {
         val namedTextColorType = propertyTypeRegistry.get(
             NpcPropertyType.Types.NAMED_TEXT_COLOR
         ) ?: error("NAMED_TEXT_COLOR property type not found")
+        val skinDataType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.SKIN_DATA
+        ) ?: error("SKIN_DATA property type not found")
 
         npc.addProperties(
             Triple(
             NpcProperty.Internal.DISPLAYNAME, displayName, componentType
             ),
             Triple(
-                NpcProperty.Internal.SKIN_OWNER, skinData.ownerName, stringType
-            ),
-            Triple(
-                NpcProperty.Internal.SKIN_TEXTURE, skinData.value, stringType
-            ),
-            Triple(
-                NpcProperty.Internal.SKIN_SIGNATURE, skinData.signature, stringType
+                NpcProperty.Internal.SKIN_DATA, skinData, skinDataType
             ),
             Triple(
                 NpcProperty.Internal.LOCATION, location, npcLocationType
@@ -238,23 +235,9 @@ class BukkitNpcController : NpcController, Services.Fallback {
     ) {
         npc.addProperty(
             BukkitNpcProperty(
-                NpcProperty.Internal.SKIN_OWNER, skin.ownerName, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.STRING
-                ) ?: error("STRING property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.SKIN_TEXTURE, skin.value, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.STRING
-                ) ?: error("STRING property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.SKIN_SIGNATURE, skin.signature, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.STRING
-                ) ?: error("STRING property type not found")
+                NpcProperty.Internal.SKIN_DATA, skin, propertyTypeRegistry.get(
+                    NpcPropertyType.Types.SKIN_DATA
+                ) ?: error("SKIN_DATA property type not found")
             )
         )
     }

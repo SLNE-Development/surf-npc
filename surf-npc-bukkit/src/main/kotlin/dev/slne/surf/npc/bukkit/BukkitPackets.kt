@@ -27,10 +27,10 @@ fun createPlayerInfoPacket(profile: UserProfile, displayName: Component, listed:
         )
     )
 
-fun createEntityMetadataPacket(npcEntityId: Int) = WrapperPlayServerEntityMetadata(
+fun createEntityMetadataPacket(npcEntityId: Int, skinParts: Byte = 0x7F.toByte()) = WrapperPlayServerEntityMetadata(
     npcEntityId,
     listOf(
-        EntityData(17, EntityDataTypes.BYTE, 0x7F.toByte()),
+        EntityData(17, EntityDataTypes.BYTE, skinParts),
         EntityData(0, EntityDataTypes.BYTE, 0x02.toByte()),
     )
 )

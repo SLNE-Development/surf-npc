@@ -15,6 +15,7 @@ import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
+import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.bukkit.*
 import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
 import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
@@ -56,10 +57,8 @@ class BukkitNpc(
             this.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class) ?: return
         val profile = UserProfile(npcUuid, uniqueName)
 
-        val skinValue =
-            this.getPropertyValue(NpcProperty.Internal.SKIN_TEXTURE, String::class) ?: return
-        val skinSignature =
-            this.getPropertyValue(NpcProperty.Internal.SKIN_SIGNATURE, String::class) ?: return
+        val skinData =
+            this.getPropertyValue(NpcProperty.Internal.SKIN_DATA, NpcSkin::class) ?: return
 
         val rotation =
             this.getPropertyValue(NpcProperty.Internal.ROTATION_FIXED, NpcRotation::class) ?: return
@@ -73,8 +72,8 @@ class BukkitNpc(
         profile.textureProperties.add(
             TextureProperty(
                 "textures",
-                skinValue,
-                skinSignature
+                skinData.value,
+                skinData.signature
             )
         )
 
@@ -93,7 +92,7 @@ class BukkitNpc(
                 rotationPair.second
             )
         )
-        user.sendPacket(createEntityMetadataPacket(id))
+        user.sendPacket(createEntityMetadataPacket(id, skinData.skinByte()))
 
         user.sendPacket(createTeamCreatePacket("npc_$id", displayName))
         user.sendPacket(createTeamAddEntityPacket("npc_$id", uniqueName))

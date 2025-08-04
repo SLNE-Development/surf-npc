@@ -2,9 +2,12 @@ package dev.slne.surf.npc.bukkit.util
 
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.bukkit.npc.skin.BukkitSNpcSkinData
+import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
+import dev.slne.surf.npc.bukkit.npc.skin.BukkitNpcSkin
 import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
 import dev.slne.surf.surfapi.core.api.util.logger
+import dev.slne.surf.surfapi.core.api.util.objectSetOf
+import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
@@ -58,7 +61,7 @@ suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO
         val signature =
             textureObj["signature"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
 
-        return@withContext BukkitSNpcSkinData(name, value, signature)
+        return@withContext BukkitNpcSkin(name, value, signature, NpcSkinPart.entries.toObjectSet())
     } catch (e: Exception) {
         logger().atSevere().log("Exception while retrieving skin data: ${e.message}")
         return@withContext skinDataDefault()
@@ -69,10 +72,11 @@ suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO
 
 
 fun skinDataDefault(): NpcSkin {
-    return BukkitSNpcSkinData(
+    return BukkitNpcSkin(
         "default",
         "ewogICJ0aW1lc3RhbXAiIDogMTc0ODc1ODY4OTg4NCwKICAicHJvZmlsZUlkIiA6ICI2NGY0MGFiNzFmM2E0NGZiYjg0N2I5ZWFhOWZjNDRlNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJvZGF2aWRjZXNhciIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mNzY5YmJiOWZiMjMxNjgwODEzMWU2YzJkMDJjZTE0ZTNhYWI2NzRkZWI0YjU1OGJiMjY1YzMxNDFkMTk5YjA4IiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=",
-        "jzdsnHycAav2MCmYQ9jkS8KXgP9Kg3wa7EmC9ALqEDMfDpEHfhyn240HyTr8KZ6P4IhRTtU9NVfdwKfPDTdtt7mx+piIL0VV8R3BFsOrbKC0erkULTZ99b68xZ8viEdlekrN8wIqIBd6Y7W38YKNNTEbtLkZQahCYAssz9DVNxMKnCwdXs+hTl5vPa4DbKiNnUsHR+g2d6S995NRtCiXMsNGfk4BqOqQ6P7bFZUBCjDB6lQREh5SF2lafbPpGhfhl/PuhBSK/5dtNPqyiI5LAqlFJTaUQ6yTKnoN43LtcbrRRKIv00OOznGLCijbv2KBtHvI1qgubRAKyNLZSgvumjl+iAcxhI+rAvQkVAguBgQhLOhEIMcoa4IMo+yW6RY4fIWDb5Rwb3WjVVlA5MWPgZ0apTuc0KSaJx8SkEOqbTPOdzrYo6UdLih4wTXxm0lq+cN7ibmc0ZUkZ8mrLSjF91IVueH15oKooNYZx7NLyExCLVL3R1ZS1eLO2LxqyahpqhhfRpE2GpD3Wx/rNev++03EZ9LBUCmdJ5KYa8RNGHfKrTrl0Fqt4YsDMVXpZjXSR1S/c5KREaHZnkQAsL4dd+I+BD3lTu0RYCgsT/mbDUSWPcLzSnh+jTqdIpsueQ88p5m0MecrtA0J3mEcblyj6PIE2QSAJ6wFv+uDHcVLD8A="
+        "jzdsnHycAav2MCmYQ9jkS8KXgP9Kg3wa7EmC9ALqEDMfDpEHfhyn240HyTr8KZ6P4IhRTtU9NVfdwKfPDTdtt7mx+piIL0VV8R3BFsOrbKC0erkULTZ99b68xZ8viEdlekrN8wIqIBd6Y7W38YKNNTEbtLkZQahCYAssz9DVNxMKnCwdXs+hTl5vPa4DbKiNnUsHR+g2d6S995NRtCiXMsNGfk4BqOqQ6P7bFZUBCjDB6lQREh5SF2lafbPpGhfhl/PuhBSK/5dtNPqyiI5LAqlFJTaUQ6yTKnoN43LtcbrRRKIv00OOznGLCijbv2KBtHvI1qgubRAKyNLZSgvumjl+iAcxhI+rAvQkVAguBgQhLOhEIMcoa4IMo+yW6RY4fIWDb5Rwb3WjVVlA5MWPgZ0apTuc0KSaJx8SkEOqbTPOdzrYo6UdLih4wTXxm0lq+cN7ibmc0ZUkZ8mrLSjF91IVueH15oKooNYZx7NLyExCLVL3R1ZS1eLO2LxqyahpqhhfRpE2GpD3Wx/rNev++03EZ9LBUCmdJ5KYa8RNGHfKrTrl0Fqt4YsDMVXpZjXSR1S/c5KREaHZnkQAsL4dd+I+BD3lTu0RYCgsT/mbDUSWPcLzSnh+jTqdIpsueQ88p5m0MecrtA0J3mEcblyj6PIE2QSAJ6wFv+uDHcVLD8A=",
+        NpcSkinPart.entries.toObjectSet()
     )
 }
 
