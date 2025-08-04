@@ -158,6 +158,8 @@ fun npc(block: NpcDslBuilder.() -> Unit): NpcCreationResult {
         global = builder.global,
         rotationType = builder.rotationType,
         fixedRotation = builder.fixedRotation,
-        persistent = builder.persistent
+        persistent = builder.persistent,
+        glowing = builder.glowing,
+        glowingColor = builder.glowingColor
     )
 }
