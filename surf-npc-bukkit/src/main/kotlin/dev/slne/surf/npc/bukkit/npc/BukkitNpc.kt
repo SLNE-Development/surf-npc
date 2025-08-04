@@ -299,7 +299,7 @@ class BukkitNpc(
         val global =
             this.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
 
-        if(global) {
+        if (global) {
             forEachPlayer {
                 playerManager.getUser(it).sendPacket(createEntityAnimation(id, animationType))
             }
