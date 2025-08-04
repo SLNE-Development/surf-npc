@@ -5,7 +5,11 @@ import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
+import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
 import dev.slne.surf.npc.api.surfNpcApi
+import dev.slne.surf.surfapi.core.api.util.objectSetOf
+import dev.slne.surf.surfapi.core.api.util.toObjectSet
+import it.unimi.dsi.fastutil.objects.ObjectSet
 
 /**
  * Builder class for creating NPC skins.
@@ -27,6 +31,11 @@ class SkinBuilder {
     lateinit var signature: String
 
     /**
+     * The parts of the skin, represented as a set of `NpcSkinPart`.
+     */
+    var parts: ObjectSet<NpcSkinPart> = objectSetOf(NpcSkinPart.entries)
+
+    /**
      * Builds the NPC skin.
      *
      * @return The constructed NPC skin.
@@ -35,6 +44,7 @@ class SkinBuilder {
         override val ownerName = this@SkinBuilder.ownerName
         override val value = this@SkinBuilder.value
         override val signature = this@SkinBuilder.signature
+        override val parts = this@SkinBuilder.parts
     }
 }
 

@@ -5,9 +5,11 @@ import dev.slne.surf.npc.api.dsl.npc
 import dev.slne.surf.npc.api.dsl.npcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
+import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
 import dev.slne.surf.surfapi.core.api.util.logger
+import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -33,9 +35,10 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
              * Skin data can be created using the DSL or by using the SurfNpcApi#getSkin function.
              */
             skin {
-                ownerName = "CastCrafter"
-                value = "SkinValue"
-                signature = "SkinSignature"
+                ownerName = "YourSkinOwner"
+                value = "YourSkinValue"
+                signature = "YourSkinSignature"
+                parts = objectSetOf(NpcSkinPart.CAPE, NpcSkinPart.HAT)
             }
 
             /**

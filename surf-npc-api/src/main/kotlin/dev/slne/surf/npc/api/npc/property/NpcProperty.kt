@@ -19,19 +19,9 @@ interface NpcProperty {
         const val DISPLAYNAME = "displayname"
 
         /**
-         * The owner of the NPC's skin.
+         * The skin data of the NPC.
          */
-        const val SKIN_OWNER = "skin_owner"
-
-        /**
-         * The texture of the NPC's skin.
-         */
-        const val SKIN_TEXTURE = "skin_texture"
-
-        /**
-         * The signature of the NPC's skin.
-         */
-        const val SKIN_SIGNATURE = "skin_signature"
+        const val SKIN_DATA = "skin_data"
 
         /**
          * The location of the NPC.

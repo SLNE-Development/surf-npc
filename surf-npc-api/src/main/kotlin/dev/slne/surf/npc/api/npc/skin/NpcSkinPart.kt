@@ -7,5 +7,5 @@ enum class NpcSkinPart {
     RIGHT_SLEEVES,
     LEFT_PANTS_LEG,
     RIGHT_PANTS_LEG,
-    CAPE
+    CAPE;
 }
