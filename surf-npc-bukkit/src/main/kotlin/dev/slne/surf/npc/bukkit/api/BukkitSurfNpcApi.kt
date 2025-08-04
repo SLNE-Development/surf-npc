@@ -22,6 +22,7 @@ import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.util.Services
 import java.util.*
 
@@ -35,7 +36,9 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         global: Boolean,
         rotationType: NpcRotationType,
         fixedRotation: NpcRotation?,
-        persistent: Boolean
+        persistent: Boolean,
+        glowing: Boolean,
+        glowingColor: NamedTextColor
     ): NpcCreationResult {
         return npcController.createNpc(
             uniqueName,
@@ -45,7 +48,9 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
             rotationType,
             fixedRotation ?: BukkitNpcRotation(0f, 0f),
             global,
-            persistent
+            persistent,
+            glowing,
+            glowingColor
         )
     }
 

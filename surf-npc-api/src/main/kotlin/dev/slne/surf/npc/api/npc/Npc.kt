@@ -2,6 +2,7 @@ package dev.slne.surf.npc.api.npc
 
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.property.NpcProperty
+import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.bukkit.entity.Player
@@ -101,6 +102,13 @@ interface Npc {
      * @param property The property to add.
      */
     fun addProperty(property: NpcProperty)
+
+    /**
+     * Adds multiple properties to the NPC.
+     *
+     * @param properties A variable number of properties to add, each represented as a Triple containing the key, value, and type.
+     */
+    fun addProperties(vararg properties: Triple<String, Any, NpcPropertyType>)
 
     /**
      * Checks if the NPC is static, meaning it has a persistence property set to true.

@@ -8,6 +8,7 @@ import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
+import net.kyori.adventure.text.format.NamedTextColor
 
 /**
  * Builder class for creating NPCs using a DSL.
@@ -52,6 +53,16 @@ class NpcDslBuilder {
      * Whether the NPC should be persistent. Defaults to false.
      */
     var persistent: Boolean = false
+
+    /**
+     * Whether the NPC should glow. Defaults to false.
+     */
+    var glowing: Boolean = false
+
+    /**
+     * The color of the glow effect. Defaults to white.
+     */
+    var glowingColor: NamedTextColor = NamedTextColor.WHITE
 
     /**
      * Configures the skin of the NPC using a DSL block.
@@ -147,6 +158,8 @@ fun npc(block: NpcDslBuilder.() -> Unit): NpcCreationResult {
         global = builder.global,
         rotationType = builder.rotationType,
         fixedRotation = builder.fixedRotation,
-        persistent = builder.persistent
+        persistent = builder.persistent,
+        glowing = builder.glowing,
+        glowingColor = builder.glowingColor
     )
 }

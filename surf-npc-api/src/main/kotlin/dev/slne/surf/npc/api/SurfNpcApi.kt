@@ -14,6 +14,7 @@ import dev.slne.surf.surfapi.core.api.util.requiredService
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import java.util.*
 
 /**
@@ -32,6 +33,8 @@ interface SurfNpcApi {
      * @param rotationType The rotation type of the NPC (default: FIXED).
      * @param fixedRotation The fixed rotation of the NPC, if applicable (default: null).
      * @param persistent Whether the NPC should be persistent (default: false).
+     * @param glowing Whether the NPC should glow (default: false).
+     * @param glowingColor The color of the glow effect (default: NamedTextColor.WHITE).
      * @return The result of the NPC creation.
      */
     fun createNpc(
@@ -42,7 +45,9 @@ interface SurfNpcApi {
         global: Boolean = true,
         rotationType: NpcRotationType = NpcRotationType.PER_PLAYER,
         fixedRotation: NpcRotation? = null,
-        persistent: Boolean = false
+        persistent: Boolean = false,
+        glowing: Boolean = false,
+        glowingColor: NamedTextColor = NamedTextColor.WHITE
     ): NpcCreationResult
 
     /**

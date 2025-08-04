@@ -15,6 +15,7 @@ import dev.slne.surf.surfapi.core.api.util.requiredService
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import java.util.*
 
 /**
@@ -42,7 +43,9 @@ interface NpcController {
         rotationType: NpcRotationType,
         rotation: NpcRotation,
         global: Boolean,
-        persistent: Boolean = false
+        persistent: Boolean = false,
+        glowing: Boolean = false,
+        glowingColor: NamedTextColor = NamedTextColor.WHITE
     ): NpcCreationResult
 
     /**

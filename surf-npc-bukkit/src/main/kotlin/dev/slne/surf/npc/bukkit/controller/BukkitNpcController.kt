@@ -27,6 +27,7 @@ import dev.slne.surf.surfapi.core.api.util.*
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.util.Services
 import java.util.*
 
@@ -42,7 +43,9 @@ class BukkitNpcController : NpcController, Services.Fallback {
         rotationType: NpcRotationType,
         rotation: NpcRotation,
         global: Boolean,
-        persistent: Boolean
+        persistent: Boolean,
+        glowing: Boolean,
+        glowingColor: NamedTextColor
     ): NpcCreationResult {
         val id = random.nextInt()
         val nameTagId = random.nextInt()
@@ -67,70 +70,62 @@ class BukkitNpcController : NpcController, Services.Fallback {
             uniqueName
         )
 
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.DISPLAYNAME, displayName, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.COMPONENT
-                ) ?: error("Component property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.SKIN_OWNER, skinData.ownerName, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.STRING
-                ) ?: error("STRING property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.SKIN_TEXTURE, skinData.value, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.STRING
-                ) ?: error("STRING property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.SKIN_SIGNATURE, skinData.signature, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.STRING
-                ) ?: error("STRING property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.LOCATION, location, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.NPC_LOCATION
-                ) ?: error("LOCATION property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
+        val componentType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.COMPONENT
+        ) ?: error("Component property type not found")
+
+        val booleanType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.BOOLEAN
+        ) ?: error("BOOLEAN property type not found")
+
+        val stringType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.STRING
+        ) ?: error("STRING property type not found")
+        val npcLocationType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.NPC_LOCATION
+        ) ?: error("NPC_LOCATION property type not found")
+        val npcRotationPropertyType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.NPC_ROTATION
+        ) ?: error("NPC_ROTATION property type not found")
+        val namedTextColorType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.NAMED_TEXT_COLOR
+        ) ?: error("NAMED_TEXT_COLOR property type not found")
+
+        npc.addProperties(
+            Triple(
+            NpcProperty.Internal.DISPLAYNAME, displayName, componentType
+            ),
+            Triple(
+                NpcProperty.Internal.SKIN_OWNER, skinData.ownerName, stringType
+            ),
+            Triple(
+                NpcProperty.Internal.SKIN_TEXTURE, skinData.value, stringType
+            ),
+            Triple(
+                NpcProperty.Internal.SKIN_SIGNATURE, skinData.signature, stringType
+            ),
+            Triple(
+                NpcProperty.Internal.LOCATION, location, npcLocationType
+            ),
+            Triple(
                 NpcProperty.Internal.ROTATION_TYPE,
                 rotationType == NpcRotationType.PER_PLAYER,
-                propertyTypeRegistry.get(
-                    NpcPropertyType.Types.BOOLEAN
-                ) ?: error("BOOLEAN property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.ROTATION_FIXED, rotation, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.NPC_ROTATION
-                ) ?: error("ROTATION property type not found")
-            )
-        )
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.VISIBILITY_GLOBAL, global, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.BOOLEAN
-                ) ?: error("BOOLEAN property type not found")
-            )
-        )
-
-        npc.addProperty(
-            BukkitNpcProperty(
-                NpcProperty.Internal.PERSISTENCE, persistent, propertyTypeRegistry.get(
-                    NpcPropertyType.Types.BOOLEAN
-                ) ?: error("BOOLEAN property type not found")
+                booleanType
+            ),
+            Triple(
+                NpcProperty.Internal.ROTATION_FIXED, rotation, npcRotationPropertyType
+            ),
+            Triple(
+                NpcProperty.Internal.VISIBILITY_GLOBAL, global, booleanType
+            ),
+            Triple(
+                NpcProperty.Internal.PERSISTENCE, persistent, booleanType
+            ),
+            Triple(
+                NpcProperty.Internal.GLOWING_ENABLED, glowing, booleanType
+            ),
+            Triple(
+                NpcProperty.Internal.GLOWING_COLOR, glowingColor, namedTextColorType
             )
         )
 

@@ -57,5 +57,15 @@ interface NpcProperty {
          * The persistence of the NPC.
          */
         const val PERSISTENCE = "persistence"
+
+        /**
+         * The glowing effect status of the NPC.
+         */
+        const val GLOWING_ENABLED = "glowing_enabled"
+
+        /**
+         * The color of the glowing effect for the NPC.
+         */
+        const val GLOWING_COLOR = "glowing_color"
     }
 }

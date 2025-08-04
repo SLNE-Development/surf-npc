@@ -8,6 +8,7 @@ import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
 import dev.slne.surf.surfapi.core.api.util.logger
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 
@@ -49,6 +50,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             global = true
             rotationType = NpcRotationType.PER_PLAYER
             persistent = false // This is already the default value, but can be set explicitly if needed.
+            glowing = true
+            glowingColor = NamedTextColor.RED
         }
 
         /**
