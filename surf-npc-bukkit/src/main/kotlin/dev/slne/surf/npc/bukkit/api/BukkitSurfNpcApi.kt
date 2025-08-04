@@ -15,7 +15,7 @@ import dev.slne.surf.npc.api.result.NpcDeletionResult
 import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
 import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
-import dev.slne.surf.npc.bukkit.npc.skin.BukkitSNpcSkinData
+import dev.slne.surf.npc.bukkit.npc.skin.BukkitNpcSkin
 import dev.slne.surf.npc.bukkit.util.skinDataFromName
 import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
@@ -139,7 +139,7 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         value: String,
         signature: String
     ): NpcSkin {
-        return BukkitSNpcSkinData(owner, value, signature)
+        return BukkitNpcSkin(owner, value, signature)
     }
 
     override fun createLocation(

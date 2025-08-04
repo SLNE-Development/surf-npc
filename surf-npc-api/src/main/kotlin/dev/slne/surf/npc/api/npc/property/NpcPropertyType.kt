@@ -83,5 +83,10 @@ interface NpcPropertyType {
          * Represents a rotation property type for an NPC.
          */
         const val NPC_ROTATION = "npc_rotation"
+
+        /**
+         * Represents a skin data property type for an NPC.
+         */
+        const val SKIN_DATA = "skin_data"
     }
 }
