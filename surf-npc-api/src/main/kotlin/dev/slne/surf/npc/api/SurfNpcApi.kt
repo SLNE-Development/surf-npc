@@ -32,6 +32,8 @@ interface SurfNpcApi {
      * @param rotationType The rotation type of the NPC (default: FIXED).
      * @param fixedRotation The fixed rotation of the NPC, if applicable (default: null).
      * @param persistent Whether the NPC should be persistent (default: false).
+     * @param glowing Whether the NPC should glow (default: false).
+     * @param glowingColor The color of the glow effect (default: NamedTextColor.WHITE).
      * @return The result of the NPC creation.
      */
     fun createNpc(
