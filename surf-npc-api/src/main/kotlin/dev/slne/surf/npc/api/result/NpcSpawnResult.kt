@@ -6,8 +6,37 @@ import dev.slne.surf.npc.api.npc.Npc
  * Enum representing the result of an NPC spawn attempt.
  */
 sealed class NpcSpawnResult {
+    /**
+     * Represents a successful NPC spawn result.
+     *
+     * @property npc The NPC instance that was successfully spawned.
+     */
     data class Success(val npc: Npc) : NpcSpawnResult()
+
+    /**
+     * Represents a failed NPC spawn result.
+     *
+     * @property reason The reason for the spawn failure.
+     */
     data class Failure(val reason: NpcSpawnFailureReason) : NpcSpawnResult()
+
+    /**
+     * Checks if the result represents a successful NPC spawn.
+     *
+     * @return `true` if the result is a success, otherwise `false`.
+     */
+    fun isSuccess(): Boolean {
+        return this is Success
+    }
+
+    /**
+     * Checks if the result represents a failed NPC spawn.
+     *
+     * @return `true` if the result is a failure, otherwise `false`.
+     */
+    fun isFailure(): Boolean {
+        return this is Failure
+    }
 }
 
 enum class NpcSpawnFailureReason {

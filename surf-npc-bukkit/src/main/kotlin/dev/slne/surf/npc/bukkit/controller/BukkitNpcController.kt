@@ -13,10 +13,7 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.api.result.NpcCreationResult
-import dev.slne.surf.npc.api.result.NpcDeletionResult
-import dev.slne.surf.npc.api.result.NpcRespawnResult
-import dev.slne.surf.npc.api.result.NpcSpawnResult
+import dev.slne.surf.npc.api.result.*
 import dev.slne.surf.npc.bukkit.npc.BukkitNpc
 import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.plugin
@@ -53,11 +50,11 @@ class BukkitNpcController : NpcController, Services.Fallback {
         val nameTagUuid = UUID.randomUUID()
 
         if (this.getNpc(id) != null) {
-            return NpcCreationResult.FAILED_ALREADY_EXISTS
+            return NpcCreationResult.Failure(NpcCreationFailureReason.ALREADY_EXISTS)
         }
 
         if (this.getNpc(uniqueName) != null) {
-            return NpcCreationResult.FAILED_ALREADY_EXISTS
+            return NpcCreationResult.Failure(NpcCreationFailureReason.ALREADY_EXISTS)
         }
 
         val npc = BukkitNpc(
@@ -78,9 +75,6 @@ class BukkitNpcController : NpcController, Services.Fallback {
             NpcPropertyType.Types.BOOLEAN
         ) ?: error("BOOLEAN property type not found")
 
-        val stringType = propertyTypeRegistry.get(
-            NpcPropertyType.Types.STRING
-        ) ?: error("STRING property type not found")
         val npcLocationType = propertyTypeRegistry.get(
             NpcPropertyType.Types.NPC_LOCATION
         ) ?: error("NPC_LOCATION property type not found")
@@ -96,7 +90,7 @@ class BukkitNpcController : NpcController, Services.Fallback {
 
         npc.addProperties(
             Triple(
-            NpcProperty.Internal.DISPLAYNAME, displayName, componentType
+                NpcProperty.Internal.DISPLAYNAME, displayName, componentType
             ),
             Triple(
                 NpcProperty.Internal.SKIN_DATA, skinData, skinDataType
@@ -138,7 +132,7 @@ class BukkitNpcController : NpcController, Services.Fallback {
             NpcCreateEvent(npc).callEvent()
         }
 
-        return NpcCreationResult.SUCCESS
+        return NpcCreationResult.Success(npc)
     }
 
     override fun deleteNpc(npc: Npc): NpcDeletionResult {
@@ -182,16 +176,16 @@ class BukkitNpcController : NpcController, Services.Fallback {
         uuid: UUID
     ): NpcSpawnResult {
         if (!npcs.contains(npc)) {
-            return NpcSpawnResult.FAILED_NOT_EXIST
+            return NpcSpawnResult.Failure(NpcSpawnFailureReason.NOT_EXIST)
         }
 
         if (npc.viewers.contains(uuid)) {
-            return NpcSpawnResult.FAILED_ALREADY_SPAWNED
+            return NpcSpawnResult.Failure(NpcSpawnFailureReason.ALREADY_SPAWNED)
         }
 
         npc.spawn(uuid)
 
-        return NpcSpawnResult.SUCCESS
+        return NpcSpawnResult.Success(npc)
     }
 
     override fun hideNpc(
@@ -216,17 +210,17 @@ class BukkitNpcController : NpcController, Services.Fallback {
         uuid: UUID
     ): NpcRespawnResult {
         if (!npcs.contains(npc)) {
-            return NpcRespawnResult.FAILED_NOT_EXIST
+            return NpcRespawnResult.Failure(NpcRespawnFailureReason.NOT_EXIST)
         }
 
         if (npc.viewers.contains(uuid)) {
-            return NpcRespawnResult.FAILED_ALREADY_SPAWNED
+            return NpcRespawnResult.Failure(NpcRespawnFailureReason.ALREADY_SPAWNED)
         }
 
         npc.despawn(uuid)
         npc.spawn(uuid)
 
-        return NpcRespawnResult.SUCCESS
+        return NpcRespawnResult.Success(npc)
     }
 
     override fun setSkin(
