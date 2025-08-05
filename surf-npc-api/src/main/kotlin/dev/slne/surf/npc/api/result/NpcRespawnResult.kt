@@ -1,21 +1,25 @@
 package dev.slne.surf.npc.api.result
 
+import dev.slne.surf.npc.api.npc.Npc
+
 /**
- * Enum representing the result of an NPC respawn attempt.
+ * Represents the result of an NPC respawn attempt.
  */
-enum class NpcRespawnResult {
-    /** Indicates that the NPC was successfully respawned. */
-    SUCCESS,
+sealed class NpcRespawnResult {
+    data class Success(val npc: Npc) : NpcRespawnResult()
+    data class Failure(val reason: NpcRespawnFailureReason) : NpcRespawnResult()
+}
 
-    /** Indicates that the NPC respawn failed because the NPC does not exist. */
-    FAILED_NOT_EXIST,
+enum class NpcRespawnFailureReason {
+    /** The NPC does not exist. */
+    NOT_EXIST,
 
-    /** Indicates that the NPC respawn failed because the NPC is already spawned. */
-    FAILED_ALREADY_SPAWNED,
+    /** The NPC is already spawned. */
+    ALREADY_SPAWNED,
 
-    /** Indicates that the NPC respawn failed due to no valid location being available. */
-    FAILED_NO_LOCATION,
+    /** No valid location is available for respawning the NPC. */
+    NO_LOCATION,
 
-    /** Indicates that the NPC respawn failed due to an unspecified reason. */
-    FAILED_OTHER
+    /** The failure reason is unknown. */
+    UNKNOWN
 }
