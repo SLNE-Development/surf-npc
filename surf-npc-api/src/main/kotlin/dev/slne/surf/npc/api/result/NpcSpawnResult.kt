@@ -3,7 +3,7 @@ package dev.slne.surf.npc.api.result
 import dev.slne.surf.npc.api.npc.Npc
 
 /**
- * Enum representing the result of an NPC spawn attempt.
+ * Sealed class representing the result of an NPC spawn attempt.
  */
 sealed class NpcSpawnResult {
     /**
