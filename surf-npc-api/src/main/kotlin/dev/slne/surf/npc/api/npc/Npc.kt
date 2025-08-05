@@ -114,7 +114,8 @@ interface Npc {
      * Checks if the NPC is static, meaning it has a persistence property set to true.
      * If the NPC is static, it will be persistent across server restarts.
      */
-    fun isStatic() = properties.any { it.key == NpcProperty.Internal.PERSISTENCE && it.value.value as? Boolean ?: false }
+    fun isStatic() =
+        properties.any { it.key == NpcProperty.Internal.PERSISTENCE && it.value.value as? Boolean ?: false }
 
 
     /**

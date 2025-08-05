@@ -1,21 +1,54 @@
 package dev.slne.surf.npc.api.result
 
+import dev.slne.surf.npc.api.npc.Npc
+
 /**
- * Enum representing the result of an NPC respawn attempt.
+ * Represents the result of an NPC despawn attempt.
  */
-enum class NpcDespawnResult {
-    /** Indicates that the NPC was successfully respawned. */
-    SUCCESS,
+sealed class NpcDespawnResult {
+    /**
+     * Indicates that the NPC was successfully despawned.
+     *
+     * @property npc The NPC instance that was successfully despawned.
+     */
+    data class Success(val npc: Npc) : NpcDespawnResult()
 
-    /** Indicates that the NPC respawn failed because the NPC does not exist. */
-    FAILED_NOT_EXIST,
+    /**
+     * Indicates that the NPC despawn attempt failed.
+     *
+     * @property reason The reason for the despawn failure.
+     */
+    data class Failure(val reason: NpcDespawnFailureReason) : NpcDespawnResult()
 
-    /** Indicates that the NPC respawn failed because the NPC is already spawned. */
-    FAILED_ALREADY_SPAWNED,
+    /**
+     * Checks if the result represents a successful NPC despawn.
+     *
+     * @return `true` if the result is a success, otherwise `false`.
+     */
+    fun isSuccess(): Boolean {
+        return this is Success
+    }
 
-    /** Indicates that the NPC respawn failed due to no valid location being available. */
-    FAILED_NO_LOCATION,
+    /**
+     * Checks if the result represents a failed NPC despawn.
+     *
+     * @return `true` if the result is a failure, otherwise `false`.
+     */
+    fun isFailure(): Boolean {
+        return this is Failure
+    }
+}
 
-    /** Indicates that the NPC respawn failed due to an unspecified reason. */
-    FAILED_OTHER
+enum class NpcDespawnFailureReason {
+    /** The NPC does not exist. */
+    NOT_EXIST,
+
+    /** The NPC is not spawned. */
+    NOT_SPAWNED,
+
+    /** The NPC is already despawned. */
+    ALREADY_DESPAWNED,
+
+    /** The failure reason is unknown. */
+    UNKNOWN
 }

@@ -60,26 +60,17 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
                     persistent = true
                 )
 
-                val npc = npcController.getNpc(uniqueName)
-
-                if (npc == null) {
+                if (npcResult.isFailure()) {
                     player.sendText {
                         appendPrefix()
-                        error("Der Npc konnte nicht erstellt werden: ${npcResult.name}")
+                        error("Der Npc konnte nicht erstellt werden: ${(npcResult as? NpcCreationResult.Failure)?.reason}")
                     }
                     return@launch
                 }
 
-                if (npcResult == NpcCreationResult.SUCCESS) {
-                    player.sendText {
-                        appendPrefix()
-                        success("Der Npc wurde erfolgreich erstellt.")
-                    }
-                } else {
-                    player.sendText {
-                        appendPrefix()
-                        error("Der Npc konnte nicht erstellt werden: ${npcResult.name}")
-                    }
+                player.sendText {
+                    appendPrefix()
+                    success("Der Npc wurde erfolgreich erstellt.")
                 }
             }
         }
