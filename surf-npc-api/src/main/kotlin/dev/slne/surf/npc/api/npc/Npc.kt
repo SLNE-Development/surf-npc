@@ -176,6 +176,4 @@ interface Npc {
      * @param animationType The type of animation to play.
      */
     fun playAnimation(animationType: NpcAnimationType)
-
-    override fun equals(other: Any?): Boolean
 }
