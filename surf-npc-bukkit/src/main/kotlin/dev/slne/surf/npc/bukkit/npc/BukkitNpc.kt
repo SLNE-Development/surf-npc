@@ -65,9 +65,11 @@ class BukkitNpc(
         val location =
             this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class) ?: return
 
-        val glowing = this.getPropertyValue(NpcProperty.Internal.GLOWING_ENABLED, Boolean::class) ?: false
+        val glowing =
+            this.getPropertyValue(NpcProperty.Internal.GLOWING_ENABLED, Boolean::class) ?: false
         val glowingColor =
-            this.getPropertyValue(NpcProperty.Internal.GLOWING_COLOR, NamedTextColor::class) ?: NamedTextColor.WHITE
+            this.getPropertyValue(NpcProperty.Internal.GLOWING_COLOR, NamedTextColor::class)
+                ?: NamedTextColor.WHITE
 
         profile.textureProperties.add(
             TextureProperty(
@@ -266,8 +268,8 @@ class BukkitNpc(
     }
 
     override fun addProperties(vararg properties: Triple<String, Any, NpcPropertyType>) = properties
-            .map { BukkitNpcProperty(it.first, it.second, it.third) }
-            .forEach { this.addProperty(it) }
+        .map { BukkitNpcProperty(it.first, it.second, it.third) }
+        .forEach { this.addProperty(it) }
 
     override fun addProperties(vararg properties: NpcProperty) {
         properties.forEach {
@@ -314,6 +316,22 @@ class BukkitNpc(
                 user.sendPacket(createEntityAnimation(id, animationType))
             }
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        }
+
+        if (other !is Npc) {
+            return false
+        }
+
+        if (this.npcUuid == other.npcUuid) {
+            return true
+        }
+
+        return false
     }
 
     override fun <T : Any> getPropertyValue(key: String, clazz: KClass<T>): T? {
