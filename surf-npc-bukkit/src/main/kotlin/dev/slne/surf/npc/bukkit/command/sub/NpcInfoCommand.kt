@@ -42,7 +42,6 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
 
             val npcCreator =
                 npc.getPropertyValue(NpcProperty.Internal.CREATOR_TYPE, NpcCreatorType::class)
-                    ?: error("NPC ${npc.uniqueName} has no creator type set")
 
             player.sendText {
                 info("Npc Informationen".toSmallCaps(), TextDecoration.BOLD)
@@ -90,7 +89,7 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
                 append(CommonComponents.EM_DASH)
                 appendSpace()
                 variableKey("Ersteller: ")
-                variableValue(npcCreator.name())
+                variableValue(npcCreator?.name() ?: "Unbekannt")
 
                 append(CommonComponents.EM_DASH)
                 appendSpace()
