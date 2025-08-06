@@ -90,6 +90,7 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
                 appendSpace()
                 variableKey("Ersteller: ")
                 variableValue(npcCreator?.name() ?: "Unbekannt")
+                appendNewline()
 
                 append(CommonComponents.EM_DASH)
                 appendSpace()
