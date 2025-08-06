@@ -3,6 +3,7 @@ package dev.slne.surf.npc.bukkit.api
 import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -25,6 +26,7 @@ import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.util.Services
+import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
 @AutoService(SurfNpcApi::class)
@@ -39,7 +41,9 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         fixedRotation: NpcRotation?,
         persistent: Boolean,
         glowing: Boolean,
-        glowingColor: NamedTextColor
+        glowingColor: NamedTextColor,
+        plugin: JavaPlugin,
+        npcCreatorType: NpcCreatorType
     ): NpcCreationResult {
         return npcController.createNpc(
             uniqueName,
@@ -51,7 +55,8 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
             global,
             persistent,
             glowing,
-            glowingColor
+            glowingColor,
+            NpcCreatorType.Plugin(plugin.name)
         )
     }
 

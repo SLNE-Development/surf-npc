@@ -88,5 +88,10 @@ interface NpcPropertyType {
          * Represents a skin data property type for an NPC.
          */
         const val SKIN_DATA = "skin_data"
+
+        /**
+         * The type of NPC creator.
+         */
+        const val NPC_CREATOR_TYPE = "npc_creator_type"
     }
 }

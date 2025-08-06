@@ -1,6 +1,7 @@
 package dev.slne.surf.npc.api
 
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -17,6 +18,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
 /**
@@ -49,7 +51,9 @@ interface SurfNpcApi {
         fixedRotation: NpcRotation? = null,
         persistent: Boolean = false,
         glowing: Boolean = false,
-        glowingColor: NamedTextColor = NamedTextColor.WHITE
+        glowingColor: NamedTextColor = NamedTextColor.WHITE,
+        plugin: JavaPlugin,
+        npcCreatorType: NpcCreatorType = NpcCreatorType.Plugin(plugin.name)
     ): NpcCreationResult
 
     /**

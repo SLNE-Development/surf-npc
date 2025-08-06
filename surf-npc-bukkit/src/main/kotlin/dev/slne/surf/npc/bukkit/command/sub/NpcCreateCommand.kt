@@ -6,6 +6,7 @@ import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.stringArgument
 import dev.jorel.commandapi.kotlindsl.textArgument
+import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.bukkit.command.argument.rotationTypeArgument
@@ -31,6 +32,7 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
             val skin: String by args
             val rotationType: NpcRotationType by args
             val location = player.location
+            val createdBy = player.name
 
             if (!this.isValidName(name)) {
                 player.sendText {
@@ -57,7 +59,8 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
                     rotationType,
                     BukkitNpcRotation(location.yaw, location.pitch),
                     true,
-                    persistent = true
+                    persistent = true,
+                    npcCreatorType = NpcCreatorType.Player(createdBy)
                 )
 
                 if (npcResult.isFailure()) {
