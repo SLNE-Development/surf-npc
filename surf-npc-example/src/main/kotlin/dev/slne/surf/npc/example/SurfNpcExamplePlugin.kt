@@ -17,7 +17,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             MiniMessage.miniMessage().deserialize("<rainbow>Example Npc by surf-npc-example"),
             "example_npc",
             createSkinData(),
-            surfNpcApi.createLocation(0.0, 0.0, 0.0, "world")
+            surfNpcApi.createLocation(0.0, 0.0, 0.0, "world"),
+            plugin = this
         )
 
         val npc = surfNpcApi.getNpc("example_npc") ?: return run {
