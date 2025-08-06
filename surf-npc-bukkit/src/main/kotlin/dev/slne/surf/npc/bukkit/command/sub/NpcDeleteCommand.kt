@@ -17,6 +17,14 @@ class NpcDeleteCommand(commandName: String) : CommandAPICommand(commandName) {
         playerExecutor { player, args ->
             val npc: Npc by args
 
+            if (npc.isFromPlugin()) {
+                player.sendText {
+                    appendPrefix()
+                    error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
+                }
+                return@playerExecutor
+            }
+
             npc.delete()
 
             if (npcController.getNpc(npc.id) == null) {

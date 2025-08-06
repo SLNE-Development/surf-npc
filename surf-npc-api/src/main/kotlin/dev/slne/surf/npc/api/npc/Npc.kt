@@ -117,6 +117,14 @@ interface Npc {
     fun isStatic() =
         properties.any { it.key == NpcProperty.Internal.PERSISTENCE && it.value.value as? Boolean ?: false }
 
+    /**
+     * Checks if the NPC is created by a plugin.
+     *
+     * @return True if the NPC is created by a plugin, false otherwise.
+     */
+    fun isFromPlugin() =
+        properties.any { it.key == NpcProperty.Internal.CREATOR_TYPE && it.value.value is NpcCreatorType.Plugin }
+
 
     /**
      * Adds properties to the NPC.

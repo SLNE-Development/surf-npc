@@ -25,6 +25,14 @@ class NpcEditSkinCommand(commandName: String) : CommandAPICommand(commandName) {
             val npc: Npc by args
             val skinPlayer: String by args
 
+            if (npc.isFromPlugin()) {
+                player.sendText {
+                    appendPrefix()
+                    error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
+                }
+                return@playerExecutor
+            }
+
             player.sendText {
                 appendPrefix()
                 info("Die Skin-Daten für den Spieler ")

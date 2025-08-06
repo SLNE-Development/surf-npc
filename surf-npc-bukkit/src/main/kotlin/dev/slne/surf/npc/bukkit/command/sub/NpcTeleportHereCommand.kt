@@ -19,6 +19,15 @@ class NpcTeleportHereCommand(commandName: String) : CommandAPICommand(commandNam
         playerExecutor { player, args ->
             val npc: Npc by args
             val target: Player? by args
+
+            if (npc.isFromPlugin()) {
+                player.sendText {
+                    appendPrefix()
+                    error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
+                }
+                return@playerExecutor
+            }
+
             if (target != null) {
                 val targetPlayer = target ?: return@playerExecutor run {
                     player.sendText {
