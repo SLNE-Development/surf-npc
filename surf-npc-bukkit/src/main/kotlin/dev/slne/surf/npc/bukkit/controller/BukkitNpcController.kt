@@ -221,10 +221,6 @@ class BukkitNpcController : NpcController, Services.Fallback {
             return NpcRespawnResult.Failure(NpcRespawnFailureReason.NOT_EXIST)
         }
 
-        if (npc.viewers.contains(uuid)) {
-            return NpcRespawnResult.Failure(NpcRespawnFailureReason.ALREADY_SPAWNED)
-        }
-
         npc.despawn(uuid)
         npc.spawn(uuid)
 
