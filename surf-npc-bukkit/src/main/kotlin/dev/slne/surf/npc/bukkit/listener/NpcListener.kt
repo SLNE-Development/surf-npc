@@ -28,6 +28,10 @@ class NpcListener : PacketListener {
                             ?: continue
                     val playerLoc = player.location
 
+                    if (playerLoc.world.name != npcLoc.world) {
+                        continue
+                    }
+
                     if (playerLoc.distanceSquared(npcLoc.toLocation()) > 20 * 20) {
                         continue
                     }
@@ -42,6 +46,10 @@ class NpcListener : PacketListener {
                         npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
                             ?: continue
                     val playerLoc = player.location
+
+                    if (playerLoc.world.name != npcLoc.world) {
+                        continue
+                    }
 
                     if (playerLoc.distanceSquared(npcLoc.toLocation()) > 1 * 1) {
                         continue
@@ -82,6 +90,7 @@ class NpcListener : PacketListener {
                             ).callEvent()
                         }
                     }
+
                     WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT -> {
                         // This is already handled by INTERACT action, so we can ignore it.
                     }
