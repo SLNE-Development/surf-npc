@@ -7,10 +7,11 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.NpcCommand
 import dev.slne.surf.npc.bukkit.listener.ConnectionListener
 import dev.slne.surf.npc.bukkit.listener.NpcListener
+import dev.slne.surf.npc.bukkit.listener.WorldChangeListener
 import dev.slne.surf.npc.bukkit.npc.property.impl.*
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.npc.core.service.storageService
-import org.bukkit.Bukkit
+import dev.slne.surf.surfapi.bukkit.api.event.register
 import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitMain : SuspendingJavaPlugin() {
@@ -19,7 +20,8 @@ class BukkitMain : SuspendingJavaPlugin() {
             NpcListener(),
             PacketListenerPriority.NORMAL
         )
-        Bukkit.getPluginManager().registerEvents(ConnectionListener(), this)
+        ConnectionListener().register()
+        WorldChangeListener().register()
 
         propertyTypeRegistry.register(BooleanPropertyType(NpcPropertyType.Types.BOOLEAN))
         propertyTypeRegistry.register(ComponentPropertyType(NpcPropertyType.Types.COMPONENT))
