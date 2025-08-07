@@ -33,6 +33,7 @@ class BukkitMain : SuspendingJavaPlugin() {
         propertyTypeRegistry.register(NamedTextColorPropertyType(NpcPropertyType.Types.NAMED_TEXT_COLOR))
         propertyTypeRegistry.register(NpcRotationPropertyType(NpcPropertyType.Types.NPC_ROTATION))
         propertyTypeRegistry.register(SkinDataPropertyType(NpcPropertyType.Types.SKIN_DATA))
+        propertyTypeRegistry.register(NpcCreatorTypePropertyType(NpcPropertyType.Types.NPC_CREATOR_TYPE))
 
         storageService.initialize()
         storageService.loadNpcs()

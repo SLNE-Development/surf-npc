@@ -21,7 +21,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
         /**
          * Creates an example NPC using the DSL provided by the Surf-NPC API.
          */
-        npc {
+        npc(this) {
             displayName = {
                 append(
                     MiniMessage.miniMessage()
@@ -52,7 +52,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             }
             global = true
             rotationType = NpcRotationType.PER_PLAYER
-            persistent = false // This is already the default value, but can be set explicitly if needed.
+            persistent =
+                false // This is already the default value, but can be set explicitly if needed.
             glowing = true
             glowingColor = NamedTextColor.RED
         }

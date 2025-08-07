@@ -6,6 +6,7 @@ import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.event.NpcCreateEvent
 import dev.slne.surf.npc.api.event.NpcDeleteEvent
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -42,7 +43,8 @@ class BukkitNpcController : NpcController, Services.Fallback {
         global: Boolean,
         persistent: Boolean,
         glowing: Boolean,
-        glowingColor: NamedTextColor
+        glowingColor: NamedTextColor,
+        npcCreatorType: NpcCreatorType
     ): NpcCreationResult {
         val id = random.nextInt()
         val nameTagId = random.nextInt()
@@ -87,6 +89,9 @@ class BukkitNpcController : NpcController, Services.Fallback {
         val skinDataType = propertyTypeRegistry.get(
             NpcPropertyType.Types.SKIN_DATA
         ) ?: error("SKIN_DATA property type not found")
+        val npcCreatorPropertyType = propertyTypeRegistry.get(
+            NpcPropertyType.Types.NPC_CREATOR_TYPE
+        ) ?: error("NPC_CREATOR_TYPE property type not found")
 
         npc.addProperties(
             Triple(
@@ -117,6 +122,9 @@ class BukkitNpcController : NpcController, Services.Fallback {
             ),
             Triple(
                 NpcProperty.Internal.GLOWING_COLOR, glowingColor, namedTextColorType
+            ),
+            Triple(
+                NpcProperty.Internal.CREATOR_TYPE, npcCreatorType, npcCreatorPropertyType
             )
         )
 

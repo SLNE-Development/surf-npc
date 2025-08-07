@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
@@ -11,6 +12,7 @@ import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.readableString
 import dev.slne.surf.surfapi.core.api.font.toSmallCaps
+import dev.slne.surf.surfapi.core.api.messages.CommonComponents
 import dev.slne.surf.surfapi.core.api.messages.adventure.clickRunsCommand
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import net.kyori.adventure.text.Component
@@ -38,57 +40,45 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
                 npc.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class)
                     ?: error("NPC ${npc.uniqueName} has no global visibility set")
 
+            val npcCreator =
+                npc.getPropertyValue(NpcProperty.Internal.CREATOR_TYPE, NpcCreatorType::class)
+
             player.sendText {
-                append {
-                    info("Npc Informationen".toSmallCaps())
-                    decorate(TextDecoration.BOLD)
-                }
+                info("Npc Informationen".toSmallCaps(), TextDecoration.BOLD)
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("Name: ")
                 variableValue(npc.uniqueName)
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("Anzeigename: ")
                 append(displayName)
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("ID: ")
                 variableValue(npc.id)
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("Nametag-ID: ")
                 variableValue(npc.nameTagId)
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("Uuid: ")
                 variableValue(npc.npcUuid.toString())
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 append {
                     variableKey("Ort: ")
                     variableValue(location.readableString())
@@ -96,26 +86,26 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
                 }
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
+                variableKey("Ersteller: ")
+                variableValue(npcCreator?.name() ?: "Unbekannt")
+                appendNewline()
+
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("Rotation: ")
                 variableValue(if (rotationType) "Per-Player" else "Fixed")
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("Skin: ")
                 variableValue(skinData.ownerName)
                 appendNewline()
 
-                append {
-                    info("| ")
-                    decorate(TextDecoration.BOLD)
-                }
+                append(CommonComponents.EM_DASH)
+                appendSpace()
                 variableKey("Global: ")
                 variableValue(if (global) "Ja" else "Nein")
             }

@@ -9,6 +9,7 @@ import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Builder class for creating NPCs using a DSL.
@@ -145,10 +146,11 @@ suspend fun skin(name: String): NpcSkin {
 /**
  * Creates an NPC using a DSL block.
  *
+ * @param plugin The JavaPlugin instance for the NPC creation.
  * @param block The DSL block for configuring the NPC.
  * @return The result of the NPC creation.
  */
-fun npc(block: NpcDslBuilder.() -> Unit): NpcCreationResult {
+fun npc(plugin: JavaPlugin, block: NpcDslBuilder.() -> Unit): NpcCreationResult {
     val builder = NpcDslBuilder().apply(block)
     return surfNpcApi.createNpc(
         displayName = SurfComponentBuilder.builder().apply(builder.displayName).build(),
@@ -160,6 +162,7 @@ fun npc(block: NpcDslBuilder.() -> Unit): NpcCreationResult {
         fixedRotation = builder.fixedRotation,
         persistent = builder.persistent,
         glowing = builder.glowing,
-        glowingColor = builder.glowingColor
+        glowingColor = builder.glowingColor,
+        plugin = plugin
     )
 }

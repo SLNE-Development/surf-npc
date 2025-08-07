@@ -57,5 +57,10 @@ interface NpcProperty {
          * The color of the glowing effect for the NPC.
          */
         const val GLOWING_COLOR = "glowing_color"
+
+        /**
+         * The type of the creator of the NPC.
+         */
+        const val CREATOR_TYPE = "creator_type"
     }
 }

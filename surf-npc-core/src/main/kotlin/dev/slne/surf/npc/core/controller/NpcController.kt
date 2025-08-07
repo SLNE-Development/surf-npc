@@ -1,6 +1,7 @@
 package dev.slne.surf.npc.core.controller
 
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -45,7 +46,8 @@ interface NpcController {
         global: Boolean,
         persistent: Boolean = false,
         glowing: Boolean = false,
-        glowingColor: NamedTextColor = NamedTextColor.WHITE
+        glowingColor: NamedTextColor = NamedTextColor.WHITE,
+        npcCreatorType: NpcCreatorType
     ): NpcCreationResult
 
     /**

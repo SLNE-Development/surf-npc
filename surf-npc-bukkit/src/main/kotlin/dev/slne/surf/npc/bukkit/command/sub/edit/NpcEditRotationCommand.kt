@@ -24,6 +24,14 @@ class NpcEditRotationCommand(commandName: String) : CommandAPICommand(commandNam
             val npc: Npc by args
             val rotationType: NpcRotationType by args
 
+            if (npc.isFromPlugin()) {
+                player.sendText {
+                    appendPrefix()
+                    error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
+                }
+                return@playerExecutor
+            }
+
             npc.addProperty(
                 BukkitNpcProperty(
                     NpcProperty.Internal.ROTATION_TYPE,

@@ -25,6 +25,14 @@ class NpcEditDisplayNameCommand(commandName: String) : CommandAPICommand(command
 
             val name = miniMessage.deserialize(displayName)
 
+            if (npc.isFromPlugin()) {
+                player.sendText {
+                    appendPrefix()
+                    error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
+                }
+                return@playerExecutor
+            }
+
             npc.addProperty(
                 BukkitNpcProperty(
                     NpcProperty.Internal.DISPLAYNAME,
