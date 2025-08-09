@@ -6,7 +6,7 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 class NpcCreatorTypePropertyType(override val id: String) : NpcPropertyType {
     override fun encode(value: Any): String {
         require(value is NpcCreatorType) { "Expected NpcCreatorType, got ${value::class}" }
-        return "${if (value.isPlayer()) "player" else "plugin"}:${value.name()}"
+        return "${if (value.isClient()) "player" else "plugin"}:${value.name()}"
     }
 
     override fun decode(value: String): NpcCreatorType {
@@ -14,7 +14,7 @@ class NpcCreatorTypePropertyType(override val id: String) : NpcPropertyType {
         require(parts.size == 2) { "Invalid creator type format: $value" }
 
         return when (parts[0]) {
-            "player" -> NpcCreatorType.Player(parts[1])
+            "player" -> NpcCreatorType.Client(parts[1])
             "plugin" -> NpcCreatorType.Plugin(parts[1])
             else -> throw IllegalArgumentException("Unknown creator type: ${parts[0]}")
         }
