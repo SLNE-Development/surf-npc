@@ -10,7 +10,7 @@ sealed class NpcCreatorType() {
      *
      * @property name The name of the player who created the NPC.
      */
-    data class Player(val name: String) : NpcCreatorType()
+    data class Client(val name: String) : NpcCreatorType()
 
     /**
      * Represents a plugin as the creator of the NPC.
@@ -24,8 +24,8 @@ sealed class NpcCreatorType() {
      *
      * @return `true` if the creator is a player, otherwise `false`.
      */
-    fun isPlayer(): Boolean {
-        return this is Player
+    fun isClient(): Boolean {
+        return this is Client
     }
 
     /**
@@ -45,7 +45,7 @@ sealed class NpcCreatorType() {
 
     fun name(): String {
         return when (this) {
-            is Player -> name
+            is Client -> name
             is Plugin -> name
         }
     }

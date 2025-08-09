@@ -60,7 +60,7 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
                     BukkitNpcRotation(location.yaw, location.pitch),
                     true,
                     persistent = true,
-                    npcCreatorType = NpcCreatorType.Player(createdBy)
+                    npcCreatorType = NpcCreatorType.Client(createdBy)
                 )
 
                 if (npcResult.isFailure()) {
