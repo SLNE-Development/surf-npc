@@ -16,7 +16,7 @@ import dev.slne.surf.surfapi.bukkit.api.metrics.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitMain : SuspendingJavaPlugin() {
-    lateinit var metrics: Metrics
+    private lateinit var metrics: Metrics
 
     override fun onEnable() {
         PacketEvents.getAPI().eventManager.registerListener(
