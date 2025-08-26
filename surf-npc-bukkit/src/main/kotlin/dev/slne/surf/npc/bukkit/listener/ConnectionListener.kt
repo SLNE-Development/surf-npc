@@ -1,5 +1,6 @@
 package dev.slne.surf.npc.bukkit.listener
 
+import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.core.controller.npcController
 import org.bukkit.event.EventHandler
@@ -14,6 +15,11 @@ class ConnectionListener : Listener {
         npcController.getNpcs()
             .filter {
                 it.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
+            }
+            .filter {
+                val npcLocation =
+                    it.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+                npcLocation?.world == player.world.name
             }
             .forEach {
                 it.spawn(player.uniqueId)
