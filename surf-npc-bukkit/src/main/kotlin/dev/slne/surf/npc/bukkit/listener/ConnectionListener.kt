@@ -19,7 +19,7 @@ class ConnectionListener : Listener {
             .filter {
                 val npcLocation =
                     it.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
-                npcLocation?.world == player.world.name
+                npcLocation == null || npcLocation.world == player.world.name
             }
             .forEach {
                 it.spawn(player.uniqueId)
