@@ -61,7 +61,7 @@ class BukkitNpcController : NpcController, Services.Fallback {
         val npc = BukkitNpc(
             id,
             mutableObject2ObjectMapOf<String, NpcProperty>(),
-            mutableObjectSetOf<UUID>(),
+            viewers,
             uuid,
             nameTagId,
             nameTagUuid,
@@ -128,7 +128,6 @@ class BukkitNpcController : NpcController, Services.Fallback {
 
         npc.forEachViewer {
             npc.spawn(it)
-
         }
 
         plugin.launch(plugin.globalRegionDispatcher) {
