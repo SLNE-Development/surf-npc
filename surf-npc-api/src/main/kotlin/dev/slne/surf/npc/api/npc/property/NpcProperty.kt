@@ -29,11 +29,6 @@ interface NpcProperty {
         const val LOCATION = "location"
 
         /**
-         * The global visibility of the NPC.
-         */
-        const val VISIBILITY_GLOBAL = "visibility_global"
-
-        /**
          * The type of rotation for the NPC.
          */
         const val ROTATION_TYPE = "rotation_type"

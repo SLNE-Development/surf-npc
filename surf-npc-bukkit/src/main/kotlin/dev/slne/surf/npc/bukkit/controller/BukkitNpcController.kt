@@ -20,7 +20,6 @@ import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.plugin
 import dev.slne.surf.npc.core.controller.NpcController
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
-import dev.slne.surf.surfapi.bukkit.api.util.forEachPlayer
 import dev.slne.surf.surfapi.core.api.util.*
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
@@ -40,7 +39,7 @@ class BukkitNpcController : NpcController, Services.Fallback {
         location: NpcLocation,
         rotationType: NpcRotationType,
         rotation: NpcRotation,
-        global: Boolean,
+        viewers: ObjectSet<UUID>?,
         persistent: Boolean,
         glowing: Boolean,
         glowingColor: NamedTextColor,
@@ -112,9 +111,6 @@ class BukkitNpcController : NpcController, Services.Fallback {
                 NpcProperty.Internal.ROTATION_FIXED, rotation, npcRotationPropertyType
             ),
             Triple(
-                NpcProperty.Internal.VISIBILITY_GLOBAL, global, booleanType
-            ),
-            Triple(
                 NpcProperty.Internal.PERSISTENCE, persistent, booleanType
             ),
             Triple(
@@ -130,10 +126,9 @@ class BukkitNpcController : NpcController, Services.Fallback {
 
         this.registerNpc(npc)
 
-        if (global) {
-            forEachPlayer {
-                npc.spawn(it.uniqueId)
-            }
+        npc.forEachViewer {
+            npc.spawn(it)
+
         }
 
         plugin.launch(plugin.globalRegionDispatcher) {
@@ -148,21 +143,11 @@ class BukkitNpcController : NpcController, Services.Fallback {
             return NpcDeletionResult.FAILED_NOT_FOUND
         }
 
-        val global =
-            npc.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
-
-        if (global) {
-            forEachPlayer { player ->
-                npc.despawn(player.uniqueId)
-            }
-        } else {
-            npc.viewers.forEach { viewer ->
-                npc.despawn(viewer)
-            }
+        npc.forEachViewer {
+            npc.despawn(it)
         }
 
         npc.clearProperties()
-        npc.viewers.clear()
 
         plugin.launch(plugin.globalRegionDispatcher) {
             NpcDeleteEvent(npc).callEvent()
@@ -187,8 +172,10 @@ class BukkitNpcController : NpcController, Services.Fallback {
             return NpcSpawnResult.Failure(NpcSpawnFailureReason.NOT_EXIST)
         }
 
-        if (npc.viewers.contains(uuid)) {
-            return NpcSpawnResult.Failure(NpcSpawnFailureReason.ALREADY_SPAWNED)
+        npc.viewers?.let {
+            if (it.contains(uuid)) {
+                return NpcSpawnResult.Failure(NpcSpawnFailureReason.ALREADY_SPAWNED)
+            }
         }
 
         npc.spawn(uuid)
@@ -204,8 +191,10 @@ class BukkitNpcController : NpcController, Services.Fallback {
             return NpcDeletionResult.FAILED_NOT_FOUND
         }
 
-        if (!npc.viewers.contains(uuid)) {
-            return NpcDeletionResult.FAILED_NOT_SPAWNED
+        npc.viewers?.let {
+            if (!it.contains(uuid)) {
+                return NpcDeletionResult.FAILED_NOT_SPAWNED
+            }
         }
 
         npc.despawn(uuid)
@@ -284,20 +273,11 @@ class BukkitNpcController : NpcController, Services.Fallback {
         val count = npcs.size
 
         npcs.forEach {
-            val global =
-                it.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
-            if (global) {
-                forEachPlayer { player ->
-                    it.despawn(player.uniqueId)
-                }
-            } else {
-                it.viewers.forEach { viewer ->
-                    it.despawn(viewer)
-                }
+            it.forEachViewer { viewer ->
+                it.despawn(viewer)
             }
 
             it.clearProperties()
-            it.viewers.clear()
             it.delete()
         }
 

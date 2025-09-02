@@ -8,8 +8,10 @@ import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
+import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
 
 /**
  * Builder class for creating NPCs using a DSL.
@@ -38,7 +40,7 @@ class NpcDslBuilder {
     /**
      * Whether the NPC is global. Defaults to true.
      */
-    var global: Boolean = true
+    var viewers: ObjectSet<UUID>? = null
 
     /**
      * The rotation type of the NPC. Defaults to PER_PLAYER.
@@ -157,7 +159,7 @@ fun npc(plugin: JavaPlugin, block: NpcDslBuilder.() -> Unit): NpcCreationResult 
         uniqueName = builder.uniqueName,
         skin = builder.skin,
         location = builder.location,
-        global = builder.global,
+        viewers = builder.viewers,
         rotationType = builder.rotationType,
         fixedRotation = builder.fixedRotation,
         persistent = builder.persistent,
