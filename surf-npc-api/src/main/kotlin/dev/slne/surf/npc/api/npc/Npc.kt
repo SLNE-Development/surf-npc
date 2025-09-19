@@ -231,4 +231,11 @@ interface Npc {
      * @param animationType The type of animation to play.
      */
     fun playAnimation(animationType: NpcAnimationType)
+
+    /**
+     * Updates the pose of the NPC to the specified pose.
+     *
+     * @param pose The new pose to set for the NPC. Acceptable values are defined in the [NpcPose] enum.
+     */
+    fun setPose(pose: NpcPose)
 }
