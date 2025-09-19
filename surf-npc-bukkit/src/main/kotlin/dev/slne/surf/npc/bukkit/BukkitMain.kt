@@ -6,6 +6,7 @@ import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.NpcCommand
 import dev.slne.surf.npc.bukkit.listener.ConnectionListener
+import dev.slne.surf.npc.bukkit.listener.InternalNpcEventListener
 import dev.slne.surf.npc.bukkit.listener.NpcListener
 import dev.slne.surf.npc.bukkit.listener.WorldChangeListener
 import dev.slne.surf.npc.bukkit.npc.property.impl.*
@@ -23,8 +24,10 @@ class BukkitMain : SuspendingJavaPlugin() {
             NpcListener(),
             PacketListenerPriority.NORMAL
         )
+
         ConnectionListener().register()
         WorldChangeListener().register()
+        InternalNpcEventListener().register()
 
         metrics = Metrics(this, 27049)
 

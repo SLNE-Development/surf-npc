@@ -13,7 +13,3 @@ surfPaperPluginApi {
 
     generateLibraryLoader(false)
 }
-
-tasks.shadowJar {
-    archiveFileName = "surf-npc-bukkit-${project.version}.jar"
-}

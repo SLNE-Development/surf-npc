@@ -57,8 +57,8 @@ class NpcListener : PacketListener {
 
                     plugin.launch(plugin.entityDispatcher(player)) {
                         NpcCollisionEvent(
-                            npc,
-                            player
+                            player,
+                            npc
                         ).callEvent()
                     }
                 }
@@ -72,8 +72,8 @@ class NpcListener : PacketListener {
                     WrapperPlayClientInteractEntity.InteractAction.ATTACK -> {
                         plugin.launch(plugin.entityDispatcher(player)) {
                             NpcInteractEvent(
-                                npc,
-                                player
+                                player,
+                                npc
                             ).callEvent()
                         }
                     }
@@ -85,8 +85,8 @@ class NpcListener : PacketListener {
 
                         plugin.launch(plugin.entityDispatcher(player)) {
                             NpcInteractEvent(
-                                npc,
-                                player
+                                player,
+                                npc
                             ).callEvent()
                         }
                     }

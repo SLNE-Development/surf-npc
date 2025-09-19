@@ -6,9 +6,11 @@ import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.slne.surf.npc.api.event.NpcDespawnEvent
-import dev.slne.surf.npc.api.event.NpcSpawnEvent
+import dev.slne.surf.npc.api.event.NpcEvent
+import dev.slne.surf.npc.api.event.NpcHideEvent
+import dev.slne.surf.npc.api.event.NpcShowEvent
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcEventHandler
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -24,8 +26,11 @@ import dev.slne.surf.npc.bukkit.util.toLocation
 import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.bukkit.api.glow.glowingApi
+import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
+import dev.slne.surf.surfapi.core.api.util.mutableObjectListOf
 import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
+import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -46,6 +51,9 @@ class BukkitNpc(
     override val nameTagUuid: UUID,
     override val uniqueName: String
 ) : Npc {
+    private val eventHandlers =
+        mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
+
     override fun spawn(uuid: UUID) {
         val packetEvents = PacketEvents.getAPI()
         val playerManager = packetEvents.playerManager
@@ -107,7 +115,7 @@ class BukkitNpc(
         }
 
         plugin.launch(plugin.entityDispatcher(player)) {
-            NpcSpawnEvent(this@BukkitNpc, player).callEvent()
+            NpcShowEvent(player, this@BukkitNpc).callEvent()
         }
     }
 
@@ -122,9 +130,9 @@ class BukkitNpc(
         user.sendPacket(createPlayerInfoRemovePacket(npcUuid))
 
         plugin.launch(plugin.entityDispatcher(player)) {
-            NpcDespawnEvent(
-                this@BukkitNpc,
-                player
+            NpcHideEvent(
+                player,
+                this@BukkitNpc
             ).callEvent()
         }
     }
@@ -260,6 +268,28 @@ class BukkitNpc(
 
     override fun hasProperties(): Boolean {
         return properties.isNotEmpty()
+    }
+
+    override fun <T : NpcEvent> addEventHandler(
+        eventClass: KClass<T>,
+        handler: NpcEventHandler<T>
+    ) {
+        eventHandlers.computeIfAbsent(eventClass) { mutableObjectListOf() }
+            .add(handler)
+    }
+
+    override fun <T : NpcEvent> removeEventHandler(
+        eventClass: KClass<T>,
+        handler: NpcEventHandler<T>
+    ) {
+        eventHandlers[eventClass]?.remove(handler)
+    }
+
+    override fun <T : NpcEvent> callHandlers(event: T) {
+        val handlers = eventHandlers[event::class] ?: return
+        for (handler in handlers) {
+            (handler as NpcEventHandler<T>)(event)
+        }
     }
 
     override fun playAnimation(animationType: NpcAnimationType) {
