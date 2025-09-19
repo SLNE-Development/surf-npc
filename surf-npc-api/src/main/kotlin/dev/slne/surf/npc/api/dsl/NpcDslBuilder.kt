@@ -1,5 +1,8 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package dev.slne.surf.npc.api.dsl
 
+import dev.slne.surf.npc.api.event.NpcEvent
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
@@ -8,10 +11,14 @@ import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
+import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
+import dev.slne.surf.surfapi.core.api.util.mutableObjectListOf
+import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
+import kotlin.reflect.KClass
 
 /**
  * Builder class for creating NPCs using a DSL.
@@ -66,6 +73,32 @@ class NpcDslBuilder {
      * The color of the glow effect. Defaults to white.
      */
     var glowingColor: NamedTextColor = NamedTextColor.WHITE
+
+    internal val eventHandlers =
+        mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<(NpcEvent) -> Unit>>()
+
+    /**
+     * Registers an event handler for a specific type of `NpcEvent`.
+     *
+     * @param T The type of the `NpcEvent` this handler will process.
+     * @param eventClass The class of the event type to handle.
+     * @param handler The function that defines the logic for handling the specified type of `NpcEvent`.
+     */
+    fun <T : NpcEvent> withEventHandler(eventClass: KClass<T>, handler: (T) -> Unit) {
+        eventHandlers.computeIfAbsent(eventClass) { mutableObjectListOf() }
+            .add { ev -> handler(ev as T) }
+    }
+
+    /**
+     * Registers an event handler for a specific type of `NpcEvent`.
+     *
+     * @param T The type of `NpcEvent` for which the handler is being registered.
+     * @param handler A lambda function that defines the behavior when the event of type `T` is triggered.
+     */
+    inline fun <reified T : NpcEvent> withEventHandler(noinline handler: (T) -> Unit) {
+        withEventHandler(T::class, handler)
+    }
+
 
     /**
      * Configures the skin of the NPC using a DSL block.
@@ -145,16 +178,9 @@ suspend fun skin(name: String): NpcSkin {
     return surfNpcApi.getSkin(name)
 }
 
-/**
- * Creates an NPC using a DSL block.
- *
- * @param plugin The JavaPlugin instance for the NPC creation.
- * @param block The DSL block for configuring the NPC.
- * @return The result of the NPC creation.
- */
 fun npc(plugin: JavaPlugin, block: NpcDslBuilder.() -> Unit): NpcCreationResult {
     val builder = NpcDslBuilder().apply(block)
-    return surfNpcApi.createNpc(
+    val result = surfNpcApi.createNpc(
         displayName = SurfComponentBuilder.builder().apply(builder.displayName).build(),
         uniqueName = builder.uniqueName,
         skin = builder.skin,
@@ -167,4 +193,16 @@ fun npc(plugin: JavaPlugin, block: NpcDslBuilder.() -> Unit): NpcCreationResult 
         glowingColor = builder.glowingColor,
         plugin = plugin
     )
+
+    (result as? NpcCreationResult.Success)?.let { success ->
+        builder.eventHandlers.forEach { (eventClass, handlersList) ->
+            handlersList.forEach { handler ->
+                success.npc.addEventHandler(eventClass as KClass<NpcEvent>) { ev ->
+                    handler(ev)
+                }
+            }
+        }
+    }
+
+    return result
 }

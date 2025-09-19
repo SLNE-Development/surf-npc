@@ -115,7 +115,7 @@ class BukkitNpc(
         }
 
         plugin.launch(plugin.entityDispatcher(player)) {
-            NpcShowEvent(this@BukkitNpc, player).callEvent()
+            NpcShowEvent(player, this@BukkitNpc).callEvent()
         }
     }
 
@@ -131,8 +131,8 @@ class BukkitNpc(
 
         plugin.launch(plugin.entityDispatcher(player)) {
             NpcHideEvent(
-                this@BukkitNpc,
-                player
+                player,
+                this@BukkitNpc
             ).callEvent()
         }
     }
