@@ -45,11 +45,18 @@ fun createSpawnSittingArmorStandPacket(npc: Npc, npcLocation: BukkitLocation) =
         npc.npcSittingId,
         npc.npcSittingUuid,
         EntityTypes.ARMOR_STAND,
-        SpigotConversionUtil.fromBukkitLocation(npcLocation.clone().subtract(0.0, 1.0, 0.0)),
+        SpigotConversionUtil.fromBukkitLocation(npcLocation.clone().subtract(0.0, 2.0, 0.0)),
         0f,
         0,
         null
     )
+
+fun createSittingArmorStandMetadataPacket(npc: Npc) = WrapperPlayServerEntityMetadata(
+    npc.npcSittingId,
+    listOf(
+        EntityData(0, EntityDataTypes.BYTE, 0x20.toByte()),
+    )
+)
 
 fun createMountSittingArmorStandPacket(npc: Npc) = WrapperPlayServerSetPassengers(
     npc.npcSittingId,
