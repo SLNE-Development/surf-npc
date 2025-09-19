@@ -13,7 +13,7 @@ class NpcPoseArgument(nodeName: String) :
     }) {
     init {
         replaceSuggestions(ArgumentSuggestions.stringCollection {
-            NpcPose.entries.map { it.name.lowercase() }
+            NpcPose.entries.filter { it.usable }.map { it.name.lowercase() }
         })
     }
 }

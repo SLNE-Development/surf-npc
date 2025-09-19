@@ -58,6 +58,9 @@ interface Npc {
      */
     val viewers: ObjectSet<UUID>?
 
+    val npcSittingId: Int
+    val npcSittingUuid: UUID
+
     /**
      * Spawns the NPC for a specific player.
      *

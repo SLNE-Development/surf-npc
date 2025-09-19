@@ -45,12 +45,14 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 class BukkitNpc(
     override val id: Int,
-    override val properties: Object2ObjectMap<String, NpcProperty>,
-    override val viewers: ObjectSet<UUID>?,
     override val npcUuid: UUID,
     override val nameTagId: Int,
     override val nameTagUuid: UUID,
-    override val uniqueName: String
+    override val properties: Object2ObjectMap<String, NpcProperty>,
+    override val viewers: ObjectSet<UUID>?,
+    override val uniqueName: String,
+    override var npcSittingId: Int,
+    override var npcSittingUuid: UUID
 ) : Npc {
     private val eventHandlers =
         mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
@@ -309,9 +311,19 @@ class BukkitNpc(
         val packetEvents = PacketEvents.getAPI()
         val playerManager = packetEvents.playerManager
 
+        val location = this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+            ?: error("Location is not set for NPC: $uniqueName")
+
         forEachViewer {
             val player = Bukkit.getPlayer(it) ?: return@forEachViewer
             val user = playerManager.getUser(player)
+
+            if (pose == NpcPose.SITTING) {
+                user.sendPacket(createSpawnSittingArmorStandPacket(this, location.toLocation()))
+                user.sendPacket(createMountSittingArmorStandPacket(this))
+            } else {
+                user.sendPacket(createDestroySittingArmorStandPacket(this))
+            }
 
             user.sendPacket(createPoseChangePacket(id, pose))
         }
