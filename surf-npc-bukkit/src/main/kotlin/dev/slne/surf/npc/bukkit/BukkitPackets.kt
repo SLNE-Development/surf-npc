@@ -51,17 +51,16 @@ fun createSpawnSittingArmorStandPacket(npc: Npc, npcLocation: BukkitLocation) =
         null
     )
 
-fun createMoveNametagDownPacket(npc: Npc, npcLocation: BukkitLocation) =
-    WrapperPlayServerEntityTeleport(
-        npc.nameTagId,
-        SpigotConversionUtil.fromBukkitLocation(npcLocation.clone().subtract(0.0, 1.0, 0.0)),
-        false
-    )
-
-fun createCorrectNameTagPacket(nameTagId: Int, npcLocation: BukkitLocation) =
+fun createCorrectNameTagPacket(nameTagId: Int, npcLocation: BukkitLocation, npcPose: NpcPose) =
     WrapperPlayServerEntityTeleport(
         nameTagId,
-        SpigotConversionUtil.fromBukkitLocation(npcLocation),
+        SpigotConversionUtil.fromBukkitLocation(
+            calculateNametagLocation(npcPose, npcLocation).add(
+                0.0,
+                2.0,
+                0.0
+            )
+        ),
         false
     )
 
@@ -197,3 +196,24 @@ fun createEntityAnimation(entityId: Int, animation: NpcAnimationType) =
             NpcAnimationType.HIT_MAGIC -> WrapperPlayServerEntityAnimation.EntityAnimationType.MAGIC_CRITICAL_HIT
         }
     )
+
+
+private fun calculateNametagLocation(
+    npcPose: NpcPose,
+    npcLocation: BukkitLocation
+): BukkitLocation =
+    when (npcPose) {
+        NpcPose.SNEAKING -> {
+            npcLocation.clone().subtract(0.0, 0.2, 0.0)
+        }
+
+        NpcPose.SITTING -> {
+            npcLocation.clone().subtract(0.0, 0.62, 0.0)
+        }
+
+        NpcPose.SWIMMING, NpcPose.FALL_FLYING, NpcPose.SLEEPING -> {
+            npcLocation.clone().subtract(0.0, 1.62, 0.0)
+        }
+
+        else -> npcLocation.clone()
+    }
