@@ -16,7 +16,7 @@ import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
 fun CommandAPICommand.npcEditDisplayNameCommand() = subcommand("displayname") {
-    withPermission(PermissionRegistry.COMMAND_NPC_DISPLAYNAME)
+    withPermission(PermissionRegistry.COMMAND_NPC_EDIT_DISPLAYNAME)
     npcArgument("npc")
     textArgument("displayName")
     playerExecutor { player, args ->

@@ -17,7 +17,8 @@ object PermissionRegistry : PermissionRegistry() {
     val COMMAND_NPC_EDIT = create("$PREFIX.command.edit")
     val COMMAND_NPC_EDIT_ROTATION = create("$PREFIX.command.edit.rotation")
     val COMMAND_NPC_EDIT_SKIN = create("$PREFIX.command.edit.skin")
-    val COMMAND_NPC_DISPLAYNAME = create("$PREFIX.command.edit.displayname")
+    val COMMAND_NPC_EDIT_DISPLAYNAME = create("$PREFIX.command.edit.displayname")
+    val COMMAND_NPC_EDIT_POSE = create("$PREFIX.command.edit.pose")
 
     val COMMAND_NPC_TELEPORT_TO = create("$PREFIX.command.teleport")
     val COMMAND_NPC_TELEPORT_HERE = create("$PREFIX.command.teleporthere")
