@@ -51,8 +51,8 @@ class BukkitNpc(
     override val properties: Object2ObjectMap<String, NpcProperty>,
     override val viewers: ObjectSet<UUID>?,
     override val uniqueName: String,
-    override var npcSittingId: Int,
-    override var npcSittingUuid: UUID
+    override val npcSittingId: Int,
+    override val npcSittingUuid: UUID
 ) : Npc {
     private val eventHandlers =
         mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
