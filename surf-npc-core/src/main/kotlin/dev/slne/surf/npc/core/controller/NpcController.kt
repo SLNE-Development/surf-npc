@@ -32,7 +32,7 @@ interface NpcController {
      * @param location The location where the NPC will be spawned.
      * @param rotationType The type of rotation for the NPC.
      * @param rotation The rotation values for the NPC.
-     * @param global Whether the NPC is globally visible.
+     * @param viewers The viewers of the npc, if null, the npc can be seen by everyone.
      * @param persistent Whether the NPC should persist across server restarts.
      * @return The result of the NPC creation.
      */
@@ -43,7 +43,7 @@ interface NpcController {
         location: NpcLocation,
         rotationType: NpcRotationType,
         rotation: NpcRotation,
-        global: Boolean,
+        viewers: ObjectSet<UUID>? = null,
         persistent: Boolean = false,
         glowing: Boolean = false,
         glowingColor: NamedTextColor = NamedTextColor.WHITE,

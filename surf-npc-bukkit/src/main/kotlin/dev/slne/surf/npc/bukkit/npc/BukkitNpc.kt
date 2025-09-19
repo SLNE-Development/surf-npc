@@ -6,9 +6,11 @@ import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.slne.surf.npc.api.event.NpcDespawnEvent
-import dev.slne.surf.npc.api.event.NpcSpawnEvent
+import dev.slne.surf.npc.api.event.NpcEvent
+import dev.slne.surf.npc.api.event.NpcHideEvent
+import dev.slne.surf.npc.api.event.NpcShowEvent
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcEventHandler
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -24,8 +26,11 @@ import dev.slne.surf.npc.bukkit.util.toLocation
 import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.bukkit.api.glow.glowingApi
-import dev.slne.surf.surfapi.bukkit.api.util.forEachPlayer
+import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
+import dev.slne.surf.surfapi.core.api.util.mutableObjectListOf
+import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
+import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -40,12 +45,15 @@ import kotlin.reflect.KClass
 class BukkitNpc(
     override val id: Int,
     override val properties: Object2ObjectMap<String, NpcProperty>,
-    override val viewers: ObjectSet<UUID>,
+    override val viewers: ObjectSet<UUID>?,
     override val npcUuid: UUID,
     override val nameTagId: Int,
     override val nameTagUuid: UUID,
     override val uniqueName: String
 ) : Npc {
+    private val eventHandlers =
+        mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
+
     override fun spawn(uuid: UUID) {
         val packetEvents = PacketEvents.getAPI()
         val playerManager = packetEvents.playerManager
@@ -107,7 +115,7 @@ class BukkitNpc(
         }
 
         plugin.launch(plugin.entityDispatcher(player)) {
-            NpcSpawnEvent(this@BukkitNpc, player).callEvent()
+            NpcShowEvent(player, this@BukkitNpc).callEvent()
         }
     }
 
@@ -122,28 +130,19 @@ class BukkitNpc(
         user.sendPacket(createPlayerInfoRemovePacket(npcUuid))
 
         plugin.launch(plugin.entityDispatcher(player)) {
-            NpcDespawnEvent(
-                this@BukkitNpc,
-                player
+            NpcHideEvent(
+                player,
+                this@BukkitNpc
             ).callEvent()
         }
     }
 
     override fun refresh() {
-        val global =
-            this.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
+        forEachViewer {
+            despawn(it)
+            spawn(it)
 
-        if (global) {
-            forEachPlayer { player ->
-                this.despawn(player.uniqueId)
-                this.spawn(player.uniqueId)
-            }
-            return
-        }
-
-        for (user in viewers) {
-            this.despawn(user)
-            this.spawn(user)
+            playAnimation(NpcAnimationType.SWING_ARM_MAIN)
         }
     }
 
@@ -195,8 +194,6 @@ class BukkitNpc(
 
     override fun teleport(player: Player) {
         val location = player.location
-        val global =
-            this.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
 
         this.addProperty(
             BukkitNpcProperty(
@@ -208,58 +205,34 @@ class BukkitNpc(
             )
         )
 
-        if (global) {
-            forEachPlayer {
-                val user = PacketEvents.getAPI().playerManager.getUser(it)
-                user.sendPacket(createTeleportPacket(id, location))
-                user.sendPacket(
-                    createTeleportPacket(
-                        nameTagId,
-                        location.clone().add(0.0, 2.0, 0.0)
-                    )
-                )
-            }
-            return
-        }
-
-        viewers.forEach {
-            val target = Bukkit.getPlayer(it) ?: return@forEach
-            val user = PacketEvents.getAPI().playerManager.getUser(target)
+        forEachViewer {
+            val player = Bukkit.getPlayer(it) ?: return@forEachViewer
+            val user = PacketEvents.getAPI().playerManager.getUser(player)
 
             user.sendPacket(createTeleportPacket(id, location))
-            user.sendPacket(createTeleportPacket(nameTagId, location.clone().add(0.0, 2.0, 0.0)))
+            user.sendPacket(
+                createTeleportPacket(
+                    nameTagId,
+                    location.clone().add(0.0, 2.0, 0.0)
+                )
+            )
         }
     }
 
+    override fun retrieveViewers(): ObjectSet<UUID> =
+        viewers ?: Bukkit.getOnlinePlayers().map { it.uniqueId }.toObjectSet()
+
+    override fun forEachViewer(action: (UUID) -> Unit) = retrieveViewers().forEach { action(it) }
+
     override fun show() {
-        val global =
-            this.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
-
-        if (global) {
-            forEachPlayer { player ->
-                this.spawn(player.uniqueId)
-            }
-            return
-        }
-
-        viewers.forEach { user ->
-            this.spawn(user)
+        forEachViewer {
+            this.spawn(it)
         }
     }
 
     override fun hide() {
-        val global =
-            this.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
-
-        if (global) {
-            forEachPlayer { player ->
-                this.despawn(player.uniqueId)
-            }
-            return
-        }
-
-        viewers.forEach { user ->
-            this.despawn(user)
+        forEachViewer {
+            this.despawn(it)
         }
     }
 
@@ -297,24 +270,37 @@ class BukkitNpc(
         return properties.isNotEmpty()
     }
 
+    override fun <T : NpcEvent> addEventHandler(
+        eventClass: KClass<T>,
+        handler: NpcEventHandler<T>
+    ) {
+        eventHandlers.computeIfAbsent(eventClass) { mutableObjectListOf() }
+            .add(handler)
+    }
+
+    override fun <T : NpcEvent> removeEventHandler(
+        eventClass: KClass<T>,
+        handler: NpcEventHandler<T>
+    ) {
+        eventHandlers[eventClass]?.remove(handler)
+    }
+
+    override fun <T : NpcEvent> callHandlers(event: T) {
+        val handlers = eventHandlers[event::class] ?: return
+        for (handler in handlers) {
+            (handler as NpcEventHandler<T>)(event)
+        }
+    }
+
     override fun playAnimation(animationType: NpcAnimationType) {
         val packetEvents = PacketEvents.getAPI()
         val playerManager = packetEvents.playerManager
 
-        val global =
-            this.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
+        forEachViewer {
+            val player = Bukkit.getPlayer(it) ?: return@forEachViewer
+            val user = playerManager.getUser(player)
 
-        if (global) {
-            forEachPlayer {
-                playerManager.getUser(it).sendPacket(createEntityAnimation(id, animationType))
-            }
-        } else {
-            for (viewer in viewers) {
-                val player = Bukkit.getPlayer(viewer) ?: continue
-                val user = playerManager.getUser(player)
-
-                user.sendPacket(createEntityAnimation(id, animationType))
-            }
+            user.sendPacket(createEntityAnimation(id, animationType))
         }
     }
 

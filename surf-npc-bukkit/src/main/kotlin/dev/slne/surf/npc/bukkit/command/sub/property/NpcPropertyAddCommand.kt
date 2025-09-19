@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.stringArgument
+import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
@@ -12,43 +13,41 @@ import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
-class NpcPropertyAddCommand(commandName: String) : CommandAPICommand(commandName) {
-    init {
-        withPermission(PermissionRegistry.COMMAND_NPC_PROPERTY_ADD)
-        npcArgument("npc")
-        stringArgument("key")
-        stringArgument("value")
-        npcPropertyTypeArgument("propertyType")
-        playerExecutor { player, args ->
-            val npc: Npc by args
-            val key: String by args
-            val value: String by args
-            val propertyType: NpcPropertyType by args
+fun CommandAPICommand.npcPropertyAddCommand() = subcommand("add") {
+    withPermission(PermissionRegistry.COMMAND_NPC_PROPERTY_ADD)
+    npcArgument("npc")
+    stringArgument("key")
+    stringArgument("value")
+    npcPropertyTypeArgument("propertyType")
+    playerExecutor { player, args ->
+        val npc: Npc by args
+        val key: String by args
+        val value: String by args
+        val propertyType: NpcPropertyType by args
 
-            if (npc.isFromPlugin()) {
-                player.sendText {
-                    appendPrefix()
-                    error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-                }
-                return@playerExecutor
-            }
-
-            val exists = npc.hasProperty(key)
-
-            npc.addProperty(
-                BukkitNpcProperty(
-                    key, propertyType.decode(value), propertyType
-                )
-            )
-
+        if (npc.isFromPlugin()) {
             player.sendText {
                 appendPrefix()
+                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
+            }
+            return@playerExecutor
+        }
 
-                if (exists) {
-                    success("Die Property '${key}' wurde erfolgreich dem NPC '${npc.uniqueName}' neu gesetzt.")
-                } else {
-                    success("Die Property '${key}' wurde erfolgreich zum NPC '${npc.uniqueName}' hinzugefügt.")
-                }
+        val exists = npc.hasProperty(key)
+
+        npc.addProperty(
+            BukkitNpcProperty(
+                key, propertyType.decode(value), propertyType
+            )
+        )
+
+        player.sendText {
+            appendPrefix()
+
+            if (exists) {
+                success("Die Property '${key}' wurde erfolgreich dem NPC '${npc.uniqueName}' neu gesetzt.")
+            } else {
+                success("Die Property '${key}' wurde erfolgreich zum NPC '${npc.uniqueName}' hinzugefügt.")
             }
         }
     }

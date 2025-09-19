@@ -3,11 +3,13 @@ package dev.slne.surf.npc.example
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import dev.slne.surf.npc.api.dsl.npc
 import dev.slne.surf.npc.api.dsl.npcProperty
+import dev.slne.surf.npc.api.event.NpcInteractEvent
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
+import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import net.kyori.adventure.text.format.NamedTextColor
@@ -41,6 +43,17 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
                 parts = objectSetOf(NpcSkinPart.CAPE, NpcSkinPart.HAT)
             }
 
+            withEventHandler<NpcInteractEvent> {
+                it.player.sendText {
+                    appendPrefix()
+                    spacer("[")
+                    variableKey(uniqueName)
+                    spacer("]")
+                    appendSpace()
+                    spacer("Ich bin ein Beispiel Npc. Diese Reaktion wurde mithilfe des DSL-Event Handlers erstellt.")
+                }
+            }
+
             /**
              * Location can be created using the DSL.
              */
@@ -50,7 +63,6 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
                 y = 0.0
                 z = 0.0
             }
-            global = true
             rotationType = NpcRotationType.PER_PLAYER
             persistent =
                 false // This is already the default value, but can be set explicitly if needed.

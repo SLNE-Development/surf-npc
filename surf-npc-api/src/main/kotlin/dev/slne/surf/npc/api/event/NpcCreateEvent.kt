@@ -10,8 +10,8 @@ import org.bukkit.event.HandlerList
  * @property npc The NPC that was created.
  */
 class NpcCreateEvent(
-    val npc: Npc
-) : Event() {
+    override val npc: Npc
+) : Event(), NpcEvent {
 
     /**
      * Returns the handler list for this event.

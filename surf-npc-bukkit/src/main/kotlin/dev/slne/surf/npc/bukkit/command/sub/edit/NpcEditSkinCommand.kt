@@ -5,6 +5,7 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.stringArgument
+import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
@@ -16,49 +17,47 @@ import dev.slne.surf.npc.bukkit.util.skinDataFromName
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
-class NpcEditSkinCommand(commandName: String) : CommandAPICommand(commandName) {
-    init {
-        withPermission(PermissionRegistry.COMMAND_NPC_EDIT_SKIN)
-        npcArgument("npc")
-        stringArgument("skinPlayer")
-        playerExecutor { player, args ->
-            val npc: Npc by args
-            val skinPlayer: String by args
+fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
+    withPermission(PermissionRegistry.COMMAND_NPC_EDIT_SKIN)
+    npcArgument("npc")
+    stringArgument("skinPlayer")
+    playerExecutor { player, args ->
+        val npc: Npc by args
+        val skinPlayer: String by args
 
-            if (npc.isFromPlugin()) {
-                player.sendText {
-                    appendPrefix()
-                    error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-                }
-                return@playerExecutor
+        if (npc.isFromPlugin()) {
+            player.sendText {
+                appendPrefix()
+                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
+            return@playerExecutor
+        }
+
+        player.sendText {
+            appendPrefix()
+            info("Die Skin-Daten für den Spieler ")
+            variableValue(skinPlayer)
+            info(" werden geladen...")
+        }
+
+        plugin.launch {
+            val skinData = skinDataFromName(skinPlayer)
+
+
+            npc.addProperty(
+                BukkitNpcProperty(
+                    NpcProperty.Internal.SKIN_DATA,
+                    skinData,
+                    propertyTypeRegistry.get(NpcPropertyType.Types.SKIN_DATA) ?: return@launch
+                )
+            )
+            npc.refresh()
 
             player.sendText {
                 appendPrefix()
-                info("Die Skin-Daten für den Spieler ")
-                variableValue(skinPlayer)
-                info(" werden geladen...")
-            }
-
-            plugin.launch {
-                val skinData = skinDataFromName(skinPlayer)
-
-
-                npc.addProperty(
-                    BukkitNpcProperty(
-                        NpcProperty.Internal.SKIN_DATA,
-                        skinData,
-                        propertyTypeRegistry.get(NpcPropertyType.Types.SKIN_DATA) ?: return@launch
-                    )
-                )
-                npc.refresh()
-
-                player.sendText {
-                    appendPrefix()
-                    success("Die Skin-Daten für den Npc ")
-                    variableValue(npc.uniqueName)
-                    success(" wurden aktualisiert.")
-                }
+                success("Die Skin-Daten für den Npc ")
+                variableValue(npc.uniqueName)
+                success(" wurden aktualisiert.")
             }
         }
     }

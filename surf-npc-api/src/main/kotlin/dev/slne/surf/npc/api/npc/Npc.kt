@@ -1,5 +1,6 @@
 package dev.slne.surf.npc.api.npc
 
+import dev.slne.surf.npc.api.event.NpcEvent
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
@@ -8,6 +9,14 @@ import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
+
+
+/**
+ * A type alias representing an event handler for NPC-related events.
+ *
+ * @param T The type of the event that will be handled.
+ */
+typealias NpcEventHandler<T> = (T) -> Unit
 
 /**
  * Represents a non-player character (NPC) in the game.
@@ -44,9 +53,10 @@ interface Npc {
     val properties: Object2ObjectMap<String, NpcProperty>
 
     /**
-     * A set of UUIDs representing players who can view the NPC.
+     * A set of UUIDs representing players who can view the NPC,
+     * if the list is null, everyone can see it.
      */
-    val viewers: ObjectSet<UUID>
+    val viewers: ObjectSet<UUID>?
 
     /**
      * Spawns the NPC for a specific player.
@@ -85,6 +95,18 @@ interface Npc {
      * @param player The player to teleport the NPC to.
      */
     fun teleport(player: Player)
+
+
+    /**
+     * Retrieves the set of UUIDs representing players who can view the NPC.
+     * Returns the viewer list, or if null all online players
+     *
+     *
+     * @return A set of UUIDs of players who can view the NPC, or null if the NPC is visible to all players.
+     */
+    fun retrieveViewers(): ObjectSet<UUID>
+
+    fun forEachViewer(action: (UUID) -> Unit)
 
     /**
      * Makes the NPC visible to all players.
@@ -176,6 +198,31 @@ interface Npc {
      * @return True if the NPC has properties, false otherwise.
      */
     fun hasProperties(): Boolean
+
+
+    /**
+     * Registers an event handler for a specific type of NPC event.
+     *
+     * @param T The type of the event that the handler will process.
+     * @param eventClass The class of the event to handle.
+     * @param handler The handler to be invoked when the event occurs.
+     */
+    fun <T : NpcEvent> addEventHandler(eventClass: KClass<T>, handler: NpcEventHandler<T>)
+
+    /**
+     * Removes a previously registered event handler for a specific NPC event type.
+     *
+     * @param eventClass The class of the event type for which the handler is to be removed.
+     * @param handler The handler instance to be removed from the event type.
+     */
+    fun <T : NpcEvent> removeEventHandler(eventClass: KClass<T>, handler: NpcEventHandler<T>)
+
+    /**
+     * Invokes all registered event handlers for the given event.
+     *
+     * @param event The event to be handled. The event must be a subclass of [NpcEvent].
+     */
+    fun <T : NpcEvent> callHandlers(event: T)
 
 
     /**

@@ -1,10 +1,13 @@
 package dev.slne.surf.npc.example
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
+import dev.slne.surf.npc.api.event.NpcInteractEvent
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.surfNpcApi
+import dev.slne.surf.npc.api.util.addEventHandler
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
+import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.logger
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -34,6 +37,17 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
                         .log("Failed to create example NPC: Boolean property type not found.")
                 }
             ))
+
+        npc.addEventHandler<NpcInteractEvent> {
+            it.player.sendText {
+                appendPrefix()
+                spacer("[")
+                variableKey(npc.uniqueName)
+                spacer("]")
+                appendSpace()
+                spacer("Ich bin ein Beispiel Npc. Diese Reaktion wurde mithilfe des DSL-Event Handlers erstellt.")
+            }
+        }
     }
 
     fun createSkinData(): NpcSkin {
