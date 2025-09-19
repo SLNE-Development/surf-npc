@@ -11,6 +11,7 @@ import dev.slne.surf.npc.api.event.NpcHideEvent
 import dev.slne.surf.npc.api.event.NpcShowEvent
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcEventHandler
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -44,12 +45,14 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 class BukkitNpc(
     override val id: Int,
-    override val properties: Object2ObjectMap<String, NpcProperty>,
-    override val viewers: ObjectSet<UUID>?,
     override val npcUuid: UUID,
     override val nameTagId: Int,
     override val nameTagUuid: UUID,
-    override val uniqueName: String
+    override val properties: Object2ObjectMap<String, NpcProperty>,
+    override val viewers: ObjectSet<UUID>?,
+    override val uniqueName: String,
+    override val npcSittingId: Int,
+    override val npcSittingUuid: UUID
 ) : Npc {
     private val eventHandlers =
         mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
@@ -304,6 +307,31 @@ class BukkitNpc(
         }
     }
 
+    override fun setPose(pose: NpcPose) {
+        val packetEvents = PacketEvents.getAPI()
+        val playerManager = packetEvents.playerManager
+
+        val location = this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+            ?: error("Location is not set for NPC: $uniqueName")
+
+        forEachViewer {
+            val player = Bukkit.getPlayer(it) ?: return@forEachViewer
+            val user = playerManager.getUser(player)
+
+            if (pose == NpcPose.SITTING) {
+                user.sendPacket(createSpawnSittingArmorStandPacket(this, location.toLocation()))
+                user.sendPacket(createSittingArmorStandMetadataPacket(this))
+                user.sendPacket(createMountSittingArmorStandPacket(this))
+            } else {
+                user.sendPacket(createDestroySittingArmorStandPacket(this))
+                refresh()
+            }
+
+            user.sendPacket(createPoseChangePacket(id, pose))
+            user.sendPacket(createCorrectNameTagPacket(nameTagId, location.toLocation(), pose))
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other == null) {
             return false
@@ -328,5 +356,19 @@ class BukkitNpc(
         }
 
         return propertyValue as T
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + nameTagId
+        result = 31 * result + npcSittingId
+        result = 31 * result + npcUuid.hashCode()
+        result = 31 * result + nameTagUuid.hashCode()
+        result = 31 * result + properties.hashCode()
+        result = 31 * result + (viewers?.hashCode() ?: 0)
+        result = 31 * result + uniqueName.hashCode()
+        result = 31 * result + npcSittingUuid.hashCode()
+        result = 31 * result + eventHandlers.hashCode()
+        return result
     }
 }

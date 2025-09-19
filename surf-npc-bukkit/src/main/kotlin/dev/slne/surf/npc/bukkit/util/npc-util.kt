@@ -1,12 +1,14 @@
 package dev.slne.surf.npc.bukkit.util
 
+import com.github.retrooper.packetevents.protocol.entity.pose.EntityPose
+import com.github.retrooper.packetevents.protocol.player.ClientVersion
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
 import dev.slne.surf.npc.bukkit.npc.skin.BukkitNpcSkin
 import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
 import dev.slne.surf.surfapi.core.api.util.logger
-import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
@@ -92,3 +94,6 @@ fun NpcLocation.toLocation(): Location {
 fun NpcLocation.readableString(): String {
     return "${x.toInt()}, ${y.toInt()}, ${z.toInt()} in '$world'"
 }
+
+fun NpcPose.toEntityPose(): EntityPose = EntityPose.getById(ClientVersion.getLatest(), this.id)
+fun EntityPose.toNpcPose() = NpcPose[this.getId(ClientVersion.getLatest())]
