@@ -357,4 +357,18 @@ class BukkitNpc(
 
         return propertyValue as T
     }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + nameTagId
+        result = 31 * result + npcSittingId
+        result = 31 * result + npcUuid.hashCode()
+        result = 31 * result + nameTagUuid.hashCode()
+        result = 31 * result + properties.hashCode()
+        result = 31 * result + (viewers?.hashCode() ?: 0)
+        result = 31 * result + uniqueName.hashCode()
+        result = 31 * result + npcSittingUuid.hashCode()
+        result = 31 * result + eventHandlers.hashCode()
+        return result
+    }
 }
