@@ -15,6 +15,7 @@ fun CommandAPICommand.npcVersionCommand() = subcommand("version") {
     anyExecutor { executor, _ ->
         plugin.launch {
             executor.sendText {
+                appendNewline()
                 appendPrefix()
                 if (versionService.isUpToDate()) info("Das Plugin ist up-to-date.") else variableKey(
                     "Es gibt eine neuere Version."
@@ -38,8 +39,8 @@ fun CommandAPICommand.npcVersionCommand() = subcommand("version") {
 
                 appendNewline {
                     appendPrefix()
-                    info("Neuste Version herunterladen: ")
-                    variableKey("[DOWNLOAD]")
+                    success("Neuste Version herunterladen: ")
+                    variableValue("[DOWNLOAD]")
                     clickOpensUrl(
                         versionService.link
                             ?: "http://github.com/SLNE-Development/surf-npc/releases/latest"
