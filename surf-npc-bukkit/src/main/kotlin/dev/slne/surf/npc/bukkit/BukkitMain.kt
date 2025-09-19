@@ -3,6 +3,7 @@ package dev.slne.surf.npc.bukkit
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.folia.launch
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.NpcCommand
 import dev.slne.surf.npc.bukkit.listener.ConnectionListener
@@ -50,10 +51,10 @@ class BukkitMain : SuspendingJavaPlugin() {
         storageService.loadNpcs()
 
         NpcCommand("npc").register()
-    }
 
-    override suspend fun onEnableAsync() {
-        versionService.fetchGithubVersion()
+        launch {
+            versionService.fetchGithubVersion()
+        }
     }
 
     override fun onDisable() {

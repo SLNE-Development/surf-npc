@@ -1,6 +1,7 @@
 package dev.slne.surf.npc.bukkit.service
 
 import dev.slne.surf.npc.bukkit.util.SurfPluginVersion
+import dev.slne.surf.surfapi.core.api.util.logger
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -37,7 +38,7 @@ class VersionService {
                     BufferedReader(InputStreamReader(connection.inputStream)).use { it.readText() }
                 val json = Json.parseToJsonElement(body).jsonObject
                 val latestTag = json["tag_name"]?.jsonPrimitive?.content
-                val link = json["url"]?.jsonPrimitive?.content
+                val link = json["html_url"]?.jsonPrimitive?.content
 
                 link?.let {
                     this@VersionService.link = it
@@ -47,9 +48,13 @@ class VersionService {
                     this@VersionService.latestVersion =
                         SurfPluginVersion.fromString(latestTag.removePrefix("v"))
                 }
+            } else {
+                logger().atWarning().log("Version Request failed with ${connection.responseCode}")
             }
 
             connection.disconnect()
+        }.onFailure {
+            logger().atWarning().log("Version Request failed: ${it.message}")
         }
     }
 

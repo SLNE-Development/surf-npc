@@ -5,6 +5,7 @@ import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.bukkit.service.versionService
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.core.controller.npcController
+import dev.slne.surf.surfapi.core.api.font.toSmallCaps
 import dev.slne.surf.surfapi.core.api.messages.adventure.clickOpensUrl
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import org.bukkit.event.EventHandler
@@ -47,7 +48,11 @@ class ConnectionListener : Listener {
                     variableValue("surf-npc")
                     appendSpace()
                     info("verfügbar!")
-                    spacer("Klicke, um den neusten Release herunterzuladen.")
+                    appendNewline()
+                    appendPrefix()
+                    spacer(
+                        "Klicke hier, um den neusten Release herunterzuladen.".toSmallCaps()
+                    )
                     clickOpensUrl(
                         versionService.link
                             ?: "http://github.com/SLNE-Development/surf-npc/releases/latest"
