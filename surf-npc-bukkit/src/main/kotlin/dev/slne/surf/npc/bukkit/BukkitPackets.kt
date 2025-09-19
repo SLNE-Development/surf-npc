@@ -27,13 +27,19 @@ fun createPlayerInfoPacket(profile: UserProfile, displayName: Component, listed:
         )
     )
 
-fun createEntityMetadataPacket(npcEntityId: Int, skinParts: Byte = 0x7F.toByte()) = WrapperPlayServerEntityMetadata(
-    npcEntityId,
-    listOf(
-        EntityData(17, EntityDataTypes.BYTE, skinParts),
-        EntityData(0, EntityDataTypes.BYTE, 0x02.toByte()),
+fun createEntityMetadataPacket(npcEntityId: Int, skinParts: Byte = 0x7F.toByte()) =
+    WrapperPlayServerEntityMetadata(
+        npcEntityId,
+        listOf(
+            EntityData(17, EntityDataTypes.BYTE, skinParts),
+            EntityData(0, EntityDataTypes.BYTE, 0x02.toByte()),
+        )
     )
-)
+
+fun createPoseChangePacket(npcEntityId: Int) = WrapperPlayServerEntityMetadata(
+    npcEntityId,
+
+    )
 
 fun createPlayerSpawnPacket(
     entityId: Int,
@@ -129,14 +135,15 @@ fun createTeleportPacket(entityId: Int, location: Location, onGround: Boolean = 
         onGround
     )
 
-fun createEntityAnimation(entityId: Int, animation: NpcAnimationType) = WrapperPlayServerEntityAnimation(
-    entityId,
-    when (animation) {
-        NpcAnimationType.SWING_ARM_MAIN -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_MAIN_ARM
-        NpcAnimationType.SWING_ARM_OFF -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_OFF_HAND
-        NpcAnimationType.GET_DAMAGE -> WrapperPlayServerEntityAnimation.EntityAnimationType.HURT
-        NpcAnimationType.LEAVE_BED -> WrapperPlayServerEntityAnimation.EntityAnimationType.WAKE_UP
-        NpcAnimationType.HIT_CRITICAL -> WrapperPlayServerEntityAnimation.EntityAnimationType.CRITICAL_HIT
-        NpcAnimationType.HIT_MAGIC -> WrapperPlayServerEntityAnimation.EntityAnimationType.MAGIC_CRITICAL_HIT
-    }
-)
+fun createEntityAnimation(entityId: Int, animation: NpcAnimationType) =
+    WrapperPlayServerEntityAnimation(
+        entityId,
+        when (animation) {
+            NpcAnimationType.SWING_ARM_MAIN -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_MAIN_ARM
+            NpcAnimationType.SWING_ARM_OFF -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_OFF_HAND
+            NpcAnimationType.GET_DAMAGE -> WrapperPlayServerEntityAnimation.EntityAnimationType.HURT
+            NpcAnimationType.LEAVE_BED -> WrapperPlayServerEntityAnimation.EntityAnimationType.WAKE_UP
+            NpcAnimationType.HIT_CRITICAL -> WrapperPlayServerEntityAnimation.EntityAnimationType.CRITICAL_HIT
+            NpcAnimationType.HIT_MAGIC -> WrapperPlayServerEntityAnimation.EntityAnimationType.MAGIC_CRITICAL_HIT
+        }
+    )
