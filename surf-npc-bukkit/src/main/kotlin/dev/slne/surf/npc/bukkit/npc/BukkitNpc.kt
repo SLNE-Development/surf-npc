@@ -322,8 +322,10 @@ class BukkitNpc(
                 user.sendPacket(createSpawnSittingArmorStandPacket(this, location.toLocation()))
                 user.sendPacket(createSittingArmorStandMetadataPacket(this))
                 user.sendPacket(createMountSittingArmorStandPacket(this))
+//                user.sendPacket(createMoveNametagDownPacket(this, location.toLocation()))
             } else {
                 user.sendPacket(createDestroySittingArmorStandPacket(this))
+                user.sendPacket(createCorrectNameTagPacket(nameTagId, location.toLocation()))
                 refresh()
             }
 

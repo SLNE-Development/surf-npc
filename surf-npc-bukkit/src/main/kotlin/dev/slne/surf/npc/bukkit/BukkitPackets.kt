@@ -51,6 +51,20 @@ fun createSpawnSittingArmorStandPacket(npc: Npc, npcLocation: BukkitLocation) =
         null
     )
 
+fun createMoveNametagDownPacket(npc: Npc, npcLocation: BukkitLocation) =
+    WrapperPlayServerEntityTeleport(
+        npc.nameTagId,
+        SpigotConversionUtil.fromBukkitLocation(npcLocation.clone().subtract(0.0, 0.25, 0.0)),
+        false
+    )
+
+fun createCorrectNameTagPacket(nameTagId: Int, npcLocation: BukkitLocation) =
+    WrapperPlayServerEntityTeleport(
+        nameTagId,
+        SpigotConversionUtil.fromBukkitLocation(npcLocation),
+        false
+    )
+
 fun createSittingArmorStandMetadataPacket(npc: Npc) = WrapperPlayServerEntityMetadata(
     npc.npcSittingId,
     listOf(
