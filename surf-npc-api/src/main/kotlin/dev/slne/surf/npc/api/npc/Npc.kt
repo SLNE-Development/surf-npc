@@ -58,7 +58,19 @@ interface Npc {
      */
     val viewers: ObjectSet<UUID>?
 
+    /**
+     * Represents the unique identifier for the NPC's sitting state.
+     *
+     * This identifier corresponds to the NPC's sitting entity, such as an invisible armor stand.
+     * It is used to manage and reference the sitting state of the NPC.
+     */
     val npcSittingId: Int
+
+    /**
+     * Represents the unique identifier (UUID) associated with an NPC's sitting entity.
+     * This UUID is primarily used to manage and interact with the sitting entity of the NPC,
+     * such as spawning or assigning specific behaviors or properties.
+     */
     val npcSittingUuid: UUID
 
     /**
