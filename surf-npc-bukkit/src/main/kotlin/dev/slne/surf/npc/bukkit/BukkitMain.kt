@@ -10,6 +10,7 @@ import dev.slne.surf.npc.bukkit.listener.InternalNpcEventListener
 import dev.slne.surf.npc.bukkit.listener.NpcListener
 import dev.slne.surf.npc.bukkit.listener.WorldChangeListener
 import dev.slne.surf.npc.bukkit.npc.property.impl.*
+import dev.slne.surf.npc.bukkit.service.versionService
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.npc.core.service.storageService
 import dev.slne.surf.surfapi.bukkit.api.event.register
@@ -49,6 +50,10 @@ class BukkitMain : SuspendingJavaPlugin() {
         storageService.loadNpcs()
 
         NpcCommand("npc").register()
+    }
+
+    override suspend fun onEnableAsync() {
+        versionService.fetchGithubVersion()
     }
 
     override fun onDisable() {

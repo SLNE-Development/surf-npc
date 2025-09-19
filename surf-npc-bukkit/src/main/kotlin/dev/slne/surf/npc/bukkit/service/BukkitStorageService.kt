@@ -1,4 +1,4 @@
-package dev.slne.surf.npc.bukkit.storage
+package dev.slne.surf.npc.bukkit.service
 
 import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.npc.Npc
