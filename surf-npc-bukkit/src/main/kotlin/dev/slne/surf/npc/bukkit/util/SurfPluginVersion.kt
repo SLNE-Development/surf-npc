@@ -11,7 +11,7 @@ data class SurfPluginVersion(
         return "$mcVersion-$pluginVersion${if (isSnapshot) "-SNAPSHOT" else ""}"
     }
 
-    fun isNewerThen(other: SurfPluginVersion?): Boolean {
+    fun isNewerThan(other: SurfPluginVersion?): Boolean {
         if (other == null) return true
 
         val mcPartsThis = this.mcVersion.split(".").mapNotNull { it.toIntOrNull() }
