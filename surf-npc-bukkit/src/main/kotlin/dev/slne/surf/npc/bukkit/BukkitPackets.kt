@@ -7,12 +7,15 @@ import com.github.retrooper.packetevents.protocol.player.GameMode
 import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
+import dev.slne.surf.npc.bukkit.util.toEntityPose
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Location
 import java.util.*
+import com.github.retrooper.packetevents.protocol.world.Location as PacketLocation
+import org.bukkit.Location as BukkitLocation
 
 fun createPlayerInfoPacket(profile: UserProfile, displayName: Component, listed: Boolean = false) =
     WrapperPlayServerPlayerInfoUpdate(
@@ -36,22 +39,28 @@ fun createEntityMetadataPacket(npcEntityId: Int, skinParts: Byte = 0x7F.toByte()
         )
     )
 
-fun createPoseChangePacket(npcEntityId: Int) = WrapperPlayServerEntityMetadata(
+fun createPoseChangePacket(npcEntityId: Int, pose: NpcPose) = WrapperPlayServerEntityMetadata(
     npcEntityId,
-
+    listOf(
+        EntityData(
+            6,
+            EntityDataTypes.ENTITY_POSE,
+            pose.toEntityPose()
+        )
     )
+)
 
 fun createPlayerSpawnPacket(
     entityId: Int,
     uuid: UUID,
-    location: Location,
+    location: BukkitLocation,
     yaw: Float,
     pitch: Float
 ) = WrapperPlayServerSpawnEntity(
     entityId,
     uuid,
     EntityTypes.PLAYER,
-    com.github.retrooper.packetevents.protocol.world.Location(
+    PacketLocation(
         Vector3d(
             location.x,
             location.y,
@@ -66,12 +75,12 @@ fun createPlayerSpawnPacket(
 fun createNametagSpawnPacket(
     entityId: Int,
     uuid: UUID,
-    location: Location
+    location: BukkitLocation
 ) = WrapperPlayServerSpawnEntity(
     entityId,
     uuid,
     EntityTypes.TEXT_DISPLAY,
-    com.github.retrooper.packetevents.protocol.world.Location(
+    PacketLocation(
         Vector3d(
             location.x,
             location.y + 2,
@@ -128,7 +137,7 @@ fun createRotationPackets(entityId: Int, yaw: Float, pitch: Float) = Pair(
     WrapperPlayServerEntityHeadLook(entityId, yaw)
 )
 
-fun createTeleportPacket(entityId: Int, location: Location, onGround: Boolean = false) =
+fun createTeleportPacket(entityId: Int, location: BukkitLocation, onGround: Boolean = false) =
     WrapperPlayServerEntityTeleport(
         entityId,
         SpigotConversionUtil.fromBukkitLocation(location),
