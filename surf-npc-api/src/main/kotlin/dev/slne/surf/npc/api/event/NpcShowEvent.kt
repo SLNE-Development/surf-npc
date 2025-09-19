@@ -11,10 +11,10 @@ import org.bukkit.event.HandlerList
  * @property npc The NPC that was spawned.
  * @property player The player associated with the spawn event, if applicable.
  */
-class NpcSpawnEvent(
-    val npc: Npc,
-    val player: Player
-) : Event() {
+class NpcShowEvent(
+    override val player: Player,
+    override val npc: Npc
+) : Event(), NpcPlayerEvent {
 
     /**
      * Returns the handler list for this event.

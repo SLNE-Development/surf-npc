@@ -12,9 +12,9 @@ import org.bukkit.event.HandlerList
  * @property player The player who collided with the NPC.
  */
 class NpcCollisionEvent(
-    val npc: Npc,
-    val player: Player
-) : Event() {
+    override val player: Player,
+    override val npc: Npc
+) : Event(), NpcPlayerEvent {
 
     /**
      * Returns the handler list for this event.

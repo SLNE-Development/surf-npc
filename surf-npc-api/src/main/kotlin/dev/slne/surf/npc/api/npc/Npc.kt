@@ -9,6 +9,9 @@ import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
 
+
+typealias NpcEventHandler<T> = (T) -> Unit
+
 /**
  * Represents a non-player character (NPC) in the game.
  */

@@ -6,8 +6,8 @@ import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.slne.surf.npc.api.event.NpcDespawnEvent
-import dev.slne.surf.npc.api.event.NpcSpawnEvent
+import dev.slne.surf.npc.api.event.NpcHideEvent
+import dev.slne.surf.npc.api.event.NpcShowEvent
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
@@ -107,7 +107,7 @@ class BukkitNpc(
         }
 
         plugin.launch(plugin.entityDispatcher(player)) {
-            NpcSpawnEvent(this@BukkitNpc, player).callEvent()
+            NpcShowEvent(this@BukkitNpc, player).callEvent()
         }
     }
 
@@ -122,7 +122,7 @@ class BukkitNpc(
         user.sendPacket(createPlayerInfoRemovePacket(npcUuid))
 
         plugin.launch(plugin.entityDispatcher(player)) {
-            NpcDespawnEvent(
+            NpcHideEvent(
                 this@BukkitNpc,
                 player
             ).callEvent()
