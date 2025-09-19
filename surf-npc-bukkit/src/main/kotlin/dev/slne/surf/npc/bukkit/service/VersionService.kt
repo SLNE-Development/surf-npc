@@ -21,7 +21,7 @@ class VersionService {
 
     private val fetchUrl = "https://api.github.com/repos/SLNE-DEVELOPMENT/surf-npc/releases/latest"
 
-    fun isUpToDate() = !(latestVersion?.isNewerThen(currentVersion) ?: false)
+    fun isUpToDate() = !(latestVersion?.isNewerThan(currentVersion) ?: false)
 
     suspend fun fetchGithubVersion() = withContext(Dispatchers.IO) {
         runCatching {
