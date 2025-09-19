@@ -45,6 +45,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
                 val uniqueName = config.getString("npc.data.uniqueName")
                     ?: error("Unique Name is missing in NPC config file: ${path.fileName}")
 
+                val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
                 val viewers = config.getStringList("npc.data.viewers").map(UUID::fromString)
                     .toMutableObjectSet()
 
@@ -53,7 +54,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
                     npcUuid = uuid,
                     nameTagId = nameTagId,
                     nameTagUuid = nameTagUuid,
-                    viewers = viewers,
+                    viewers = if (viewerAmount == -1) null else viewers,
                     properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
                     uniqueName = uniqueName
                 )
@@ -109,7 +110,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
             config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
             config["npc.data.uniqueName"] = npc.uniqueName
 
-            config["npc.data.viewers"] = npc.viewers.map(UUID::toString)
+            config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
+            config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
 
             npc.properties.values.forEach {
                 val path = "npc.data.properties.${it.key}"
@@ -150,7 +152,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
                 config.getString("npc.data.nameTagUuid")
                     ?: error("NameTag UUID is missing in NPC config file: $fileName.yml")
             )
-
+            val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
             val viewers =
                 config.getStringList("npc.data.viewers").map(UUID::fromString).toMutableObjectSet()
 
@@ -159,7 +161,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
                 npcUuid = uuid,
                 nameTagId = nameTagId,
                 nameTagUuid = nameTagUuid,
-                viewers = viewers,
+                viewers = if (viewerAmount == -1) null else viewers,
                 properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
                 uniqueName = uniqueName
             )
@@ -203,7 +205,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
         config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
         config["npc.data.uniqueName"] = npc.uniqueName
 
-        config["npc.data.viewers"] = npc.viewers.map(UUID::toString)
+        config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
+        config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
 
         npc.properties.values.forEach {
             val path = "npc.data.properties.${it.key}"
@@ -238,6 +241,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
                         ?: error("NameTag UUID is missing in NPC config file: ${path.fileName}")
                 )
 
+                val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
                 val viewers = config.getStringList("npc.data.viewers").map(UUID::fromString)
                     .toMutableObjectSet()
 
@@ -246,7 +250,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
                     npcUuid = uuid,
                     nameTagId = nameTagId,
                     nameTagUuid = nameTagUuid,
-                    viewers = viewers,
+                    viewers = if (viewerAmount == -1) null else viewers,
                     properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
                     uniqueName = uniqueName
                 )
@@ -299,7 +303,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
             config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
             config["npc.data.uniqueName"] = npc.uniqueName
 
-            config["npc.data.viewers"] = npc.viewers.map(UUID::toString)
+            config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
+            config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
 
             npc.properties.values.forEach {
                 val path = "npc.data.properties.${it.key}"

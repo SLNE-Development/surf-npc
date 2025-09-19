@@ -58,7 +58,6 @@ class NpcCreateCommand(commandName: String) : CommandAPICommand(commandName) {
                     BukkitNpcLocation(location.x, location.y, location.z, location.world.name),
                     rotationType,
                     BukkitNpcRotation(location.yaw, location.pitch),
-                    true,
                     persistent = true,
                     npcCreatorType = NpcCreatorType.Client(createdBy)
                 )

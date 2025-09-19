@@ -14,7 +14,8 @@ class ConnectionListener : Listener {
 
         npcController.getNpcs()
             .filter {
-                it.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class) ?: false
+                val viewers = it.viewers
+                viewers == null || viewers.contains(player.uniqueId)
             }
             .filter {
                 val npcLocation =

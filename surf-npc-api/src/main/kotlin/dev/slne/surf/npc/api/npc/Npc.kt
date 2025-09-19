@@ -44,9 +44,10 @@ interface Npc {
     val properties: Object2ObjectMap<String, NpcProperty>
 
     /**
-     * A set of UUIDs representing players who can view the NPC.
+     * A set of UUIDs representing players who can view the NPC,
+     * if the list is null, everyone can see it.
      */
-    val viewers: ObjectSet<UUID>
+    val viewers: ObjectSet<UUID>?
 
     /**
      * Spawns the NPC for a specific player.
@@ -85,6 +86,18 @@ interface Npc {
      * @param player The player to teleport the NPC to.
      */
     fun teleport(player: Player)
+
+
+    /**
+     * Retrieves the set of UUIDs representing players who can view the NPC.
+     * Returns the viewer list, or if null all online players
+     *
+     *
+     * @return A set of UUIDs of players who can view the NPC, or null if the NPC is visible to all players.
+     */
+    fun retrieveViewers(): ObjectSet<UUID>
+
+    fun forEachViewer(action: (UUID) -> Unit)
 
     /**
      * Makes the NPC visible to all players.

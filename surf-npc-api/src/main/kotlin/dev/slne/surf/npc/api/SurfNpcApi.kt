@@ -33,7 +33,7 @@ interface SurfNpcApi {
      * @param uniqueName The unique name of the NPC.
      * @param skin The skin data of the NPC.
      * @param location The location of the NPC.
-     * @param global Whether the NPC is global (default: true).
+     * @param viewers The set of UUIDs of players who can see the NPC (default: null, meaning all players).
      * @param rotationType The rotation type of the NPC (default: FIXED).
      * @param fixedRotation The fixed rotation of the NPC, if applicable (default: null).
      * @param persistent Whether the NPC should be persistent (default: false).
@@ -46,7 +46,7 @@ interface SurfNpcApi {
         uniqueName: String,
         skin: NpcSkin,
         location: NpcLocation,
-        global: Boolean = true,
+        viewers: ObjectSet<UUID>? = null,
         rotationType: NpcRotationType = NpcRotationType.PER_PLAYER,
         fixedRotation: NpcRotation? = null,
         persistent: Boolean = false,

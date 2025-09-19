@@ -36,10 +36,6 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
                     ?: error("NPC ${npc.uniqueName} has no rotation type set")
             val skinData = npc.getPropertyValue(NpcProperty.Internal.SKIN_DATA, NpcSkin::class)
                 ?: error("NPC ${npc.uniqueName} has no skin data set")
-            val global =
-                npc.getPropertyValue(NpcProperty.Internal.VISIBILITY_GLOBAL, Boolean::class)
-                    ?: error("NPC ${npc.uniqueName} has no global visibility set")
-
             val npcCreator =
                 npc.getPropertyValue(NpcProperty.Internal.CREATOR_TYPE, NpcCreatorType::class)
 
@@ -103,11 +99,6 @@ class NpcInfoCommand(commandName: String) : CommandAPICommand(commandName) {
                 variableKey("Skin: ")
                 variableValue(skinData.ownerName)
                 appendNewline()
-
-                append(CommonComponents.EM_DASH)
-                appendSpace()
-                variableKey("Global: ")
-                variableValue(if (global) "Ja" else "Nein")
             }
         }
     }
