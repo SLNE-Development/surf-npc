@@ -50,6 +50,8 @@ class BukkitNpcController : NpcController, Services.Fallback {
         val nameTagId = random.nextInt()
         val uuid = UUID.randomUUID()
         val nameTagUuid = UUID.randomUUID()
+        val sittingId = random.nextInt()
+        val sittingUuid = UUID.randomUUID()
 
         if (this.getNpc(id) != null) {
             return NpcCreationResult.Failure(NpcCreationFailureReason.ALREADY_EXISTS)
@@ -61,12 +63,14 @@ class BukkitNpcController : NpcController, Services.Fallback {
 
         val npc = BukkitNpc(
             id,
-            mutableObject2ObjectMapOf<String, NpcProperty>(),
-            viewers,
             uuid,
             nameTagId,
             nameTagUuid,
-            uniqueName
+            mutableObject2ObjectMapOf<String, NpcProperty>(),
+            viewers,
+            uniqueName,
+            sittingId,
+            sittingUuid,
         )
 
         val componentType = propertyTypeRegistry.get(

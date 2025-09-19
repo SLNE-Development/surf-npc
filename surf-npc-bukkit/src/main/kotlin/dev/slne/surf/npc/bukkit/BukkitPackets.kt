@@ -7,6 +7,7 @@ import com.github.retrooper.packetevents.protocol.player.GameMode
 import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.play.server.*
+import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.bukkit.util.toEntityPose
@@ -38,6 +39,25 @@ fun createEntityMetadataPacket(npcEntityId: Int, skinParts: Byte = 0x7F.toByte()
             EntityData(0, EntityDataTypes.BYTE, 0x02.toByte()),
         )
     )
+
+fun createSpawnSittingArmorStandPacket(npc: Npc, npcLocation: BukkitLocation) =
+    WrapperPlayServerSpawnEntity(
+        npc.npcSittingId,
+        npc.npcSittingUuid,
+        EntityTypes.ARMOR_STAND,
+        SpigotConversionUtil.fromBukkitLocation(npcLocation.clone().subtract(0.0, 1.0, 0.0)),
+        0f,
+        0,
+        null
+    )
+
+fun createMountSittingArmorStandPacket(npc: Npc) = WrapperPlayServerSetPassengers(
+    npc.npcSittingId,
+    intArrayOf(npc.id)
+)
+
+fun createDestroySittingArmorStandPacket(npc: Npc) =
+    WrapperPlayServerDestroyEntities(npc.npcSittingId)
 
 fun createPoseChangePacket(npcEntityId: Int, pose: NpcPose) = WrapperPlayServerEntityMetadata(
     npcEntityId,
