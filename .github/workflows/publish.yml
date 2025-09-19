@@ -46,7 +46,9 @@ jobs:
       - name: Build all modules with Gradle
         run: ./gradlew build shadowJar --parallel --no-scan
 
+      # 👉 Nur ausführen, wenn NICHT pre/development
       - name: Publish all modules to Maven
+        if: github.ref != 'refs/heads/pre/development'
         run: ./gradlew publish --parallel --no-scan
 
       - name: Extract Project Version and Snapshot Flag from Gradle
@@ -72,13 +74,11 @@ jobs:
             echo "PRERELEASE=true" >> $GITHUB_ENV
             echo "MAKE_LATEST=false" >> $GITHUB_ENV
           else
-            # prerelease only for snapshots
             if [ "${SNAPSHOT_FLAG}" = "true" ]; then
               echo "PRERELEASE=true" >> $GITHUB_ENV
             else
               echo "PRERELEASE=false" >> $GITHUB_ENV
             fi
-            # make_latest false for snapshots or non-default branches
             if [ "${SNAPSHOT_FLAG}" = "true" ] || [ "${CURRENT_BRANCH}" != "${DEFAULT_BRANCH}" ]; then
               echo "MAKE_LATEST=false" >> $GITHUB_ENV
             else
