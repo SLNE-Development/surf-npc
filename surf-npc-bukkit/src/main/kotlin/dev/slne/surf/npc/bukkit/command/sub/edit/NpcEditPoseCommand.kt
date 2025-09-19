@@ -34,9 +34,9 @@ fun CommandAPICommand.npcEditPoseCommand() = subcommand("pose") {
             appendPrefix()
             success("Die Pose des Npcs ")
             variableValue(npc.uniqueName)
-            success(" wurden auf  ")
+            success(" wurde auf ")
             variableValue(pose.name)
-            success(" gesetzt.")
+            success("gesetzt.")
         }
     }
 }
