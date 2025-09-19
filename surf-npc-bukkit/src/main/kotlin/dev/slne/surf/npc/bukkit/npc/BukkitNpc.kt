@@ -320,16 +320,15 @@ class BukkitNpc(
 
             if (pose == NpcPose.SITTING) {
                 user.sendPacket(createSpawnSittingArmorStandPacket(this, location.toLocation()))
-                user.sendPacket(createMoveNametagDownPacket(this, location.toLocation()))
                 user.sendPacket(createSittingArmorStandMetadataPacket(this))
                 user.sendPacket(createMountSittingArmorStandPacket(this))
             } else {
                 user.sendPacket(createDestroySittingArmorStandPacket(this))
-                user.sendPacket(createCorrectNameTagPacket(nameTagId, location.toLocation()))
                 refresh()
             }
 
             user.sendPacket(createPoseChangePacket(id, pose))
+            user.sendPacket(createCorrectNameTagPacket(nameTagId, location.toLocation(), pose))
         }
     }
 
