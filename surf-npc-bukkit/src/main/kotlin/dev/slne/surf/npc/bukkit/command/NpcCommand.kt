@@ -27,5 +27,7 @@ class NpcCommand(commandName: String) : CommandAPICommand(commandName) {
         subcommand(NpcSaveToDiskCommand("saveToDisk"))
         subcommand(NpcRefreshCommand("refresh"))
         subcommand(NpcAnimateCommand("animate"))
+
+        npcVersionCommand()
     }
 }

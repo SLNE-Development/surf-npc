@@ -34,5 +34,6 @@ object PermissionRegistry : PermissionRegistry() {
     val COMMAND_NPC_RELOAD_FROM_DISK = create("$PREFIX.command.loadFromDisk")
     val COMMAND_NPC_SAVE_TO_DISK = create("$PREFIX.command.saveToDisk")
 
+    val COMMAND_NPC_VERSION = create("$PREFIX.command.version")
     val UPDATE_NOTIFY = create("$PREFIX.updates")
 }
