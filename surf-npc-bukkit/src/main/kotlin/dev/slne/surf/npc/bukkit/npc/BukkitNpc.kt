@@ -19,10 +19,12 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.bukkit.*
+import dev.slne.surf.npc.bukkit.BukkitPackets
 import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
 import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
+import dev.slne.surf.npc.bukkit.plugin
+import dev.slne.surf.npc.bukkit.util.sendPacket
 import dev.slne.surf.npc.bukkit.util.toLocation
 import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
@@ -58,11 +60,7 @@ class BukkitNpc(
         mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
 
     override fun spawn(uuid: UUID) {
-        val packetEvents = PacketEvents.getAPI()
-        val playerManager = packetEvents.playerManager
-
         val player = Bukkit.getPlayer(uuid) ?: return
-        val user = playerManager.getUser(player)
 
         val displayName =
             this.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class) ?: return
@@ -95,27 +93,34 @@ class BukkitNpc(
             rotation.pitch
         )
 
-        user.sendPacket(createPlayerInfoPacket(profile, displayName))
-        user.sendPacket(
-            createPlayerSpawnPacket(
-                id,
-                npcUuid,
-                location.toLocation(),
-                rotationPair.first,
-                rotationPair.second
-            )
-        )
-        user.sendPacket(createEntityMetadataPacket(id, skinData.skinByte()))
+        BukkitPackets.NpcPackets.NpcInfoAddPacket(profile, displayName).build().sendPacket(uuid)
+        BukkitPackets.NpcPackets.NpcSpawnPacket(
+            id,
+            npcUuid,
+            location.toLocation(),
+            rotationPair.first,
+            rotationPair.second
+        ).build().sendPacket(uuid)
+        BukkitPackets.NpcPackets.NpcMetaDataPacket(id, skinData.skinByte()).build().sendPacket(uuid)
 
-        user.sendPacket(createTeamCreatePacket("npc_$id", displayName))
-        user.sendPacket(createTeamAddEntityPacket("npc_$id", uniqueName))
+        BukkitPackets.NpcTeamPackets.TeamCreatePacket("npc_$id", displayName).build()
+            .sendPacket(uuid)
+        BukkitPackets.NpcTeamPackets.TeamAddEntityPacket("npc_$id", uniqueName).build()
+            .sendPacket(uuid)
 
-        user.sendPacket(createNametagSpawnPacket(nameTagId, nameTagUuid, location.toLocation()))
-        user.sendPacket(createNametagMetadataPacket(nameTagId, displayName))
+        BukkitPackets.NpcNameTagPackets.NameTagSpawnPacket(
+            nameTagId,
+            nameTagUuid,
+            location.toLocation()
+        ).build().sendPacket(uuid)
+        BukkitPackets.NpcNameTagPackets.NameTagMetaDataPacket(nameTagId, displayName).build()
+            .sendPacket(uuid)
 
         if (glowing) {
             glowingApi.makeGlowing(id, "npc_$id", player, glowingColor)
         }
+
+        refreshRotation(uuid)
 
         plugin.launch(plugin.entityDispatcher(player)) {
             NpcShowEvent(player, this@BukkitNpc).callEvent()
@@ -123,14 +128,10 @@ class BukkitNpc(
     }
 
     override fun despawn(uuid: UUID) {
-        val packetEvents = PacketEvents.getAPI()
-        val playerManager = packetEvents.playerManager
-
         val player = Bukkit.getPlayer(uuid) ?: return
-        val user = playerManager.getUser(player)
 
-        user.sendPacket(createDestroyPacket(this.id, nameTagId))
-        user.sendPacket(createPlayerInfoRemovePacket(npcUuid))
+        BukkitPackets.NpcPackets.NpcDestroyPacket(id, nameTagId).build().sendPacket(uuid)
+        BukkitPackets.NpcPackets.NpcInfoRemovePacket(npcUuid)
 
         plugin.launch(plugin.entityDispatcher(player)) {
             NpcHideEvent(
@@ -151,8 +152,6 @@ class BukkitNpc(
 
     override fun refreshRotation(uuid: UUID) {
         val player = Bukkit.getPlayer(uuid) ?: return
-        val user = PacketEvents.getAPI().playerManager.getUser(player)
-
         val rotationType =
             if (this.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, Boolean::class)
                     ?: error("Rotation type is not set for NPC: $uniqueName")
@@ -184,10 +183,9 @@ class BukkitNpc(
             }
         }
 
-        val rotationPackets = createRotationPackets(id, yawPitch.first, yawPitch.second)
-
-        user.sendPacket(rotationPackets.first)
-        user.sendPacket(rotationPackets.second)
+        BukkitPackets.NpcPackets.NpcRotationPacket(id, yawPitch.first, yawPitch.second).build()
+            .sendPacket(uuid)
+        BukkitPackets.NpcPackets.NpcHeadRotationPacket(id, yawPitch.first).build().sendPacket(uuid)
     }
 
 
@@ -209,16 +207,11 @@ class BukkitNpc(
         )
 
         forEachViewer {
-            val player = Bukkit.getPlayer(it) ?: return@forEachViewer
-            val user = PacketEvents.getAPI().playerManager.getUser(player)
-
-            user.sendPacket(createTeleportPacket(id, location))
-            user.sendPacket(
-                createTeleportPacket(
-                    nameTagId,
-                    location.clone().add(0.0, 2.0, 0.0)
-                )
-            )
+            BukkitPackets.NpcPackets.NpcTeleportPacket(id, location).build().sendPacket(it)
+            BukkitPackets.NpcPackets.NpcTeleportPacket(
+                nameTagId,
+                location.clone().add(0.0, 2.0, 0.0)
+            ).build().sendPacket(it)
         }
     }
 
@@ -297,38 +290,33 @@ class BukkitNpc(
 
     override fun playAnimation(animationType: NpcAnimationType) {
         val packetEvents = PacketEvents.getAPI()
-        val playerManager = packetEvents.playerManager
 
         forEachViewer {
-            val player = Bukkit.getPlayer(it) ?: return@forEachViewer
-            val user = playerManager.getUser(player)
-
-            user.sendPacket(createEntityAnimation(id, animationType))
+            BukkitPackets.NpcPackets.NpcAnimationPacket(id, animationType).build().sendPacket(it)
         }
     }
 
     override fun setPose(pose: NpcPose) {
-        val packetEvents = PacketEvents.getAPI()
-        val playerManager = packetEvents.playerManager
-
         val location = this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
             ?: error("Location is not set for NPC: $uniqueName")
 
         forEachViewer {
-            val player = Bukkit.getPlayer(it) ?: return@forEachViewer
-            val user = playerManager.getUser(player)
-
             if (pose == NpcPose.SITTING) {
-                user.sendPacket(createSpawnSittingArmorStandPacket(this, location.toLocation()))
-                user.sendPacket(createSittingArmorStandMetadataPacket(this))
-                user.sendPacket(createMountSittingArmorStandPacket(this))
+                BukkitPackets.NpcExtraPackets.ExtraSpawnPacket(this, location.toLocation()).build()
+                    .sendPacket(it)
+                BukkitPackets.NpcExtraPackets.ExtraMetaDataPacket(this).build().sendPacket(it)
+                BukkitPackets.NpcExtraPackets.ExtraMountPacket(this).build().sendPacket(it)
             } else {
-                user.sendPacket(createDestroySittingArmorStandPacket(this))
+                BukkitPackets.NpcExtraPackets.ExtraDestroyPacket(this).build().sendPacket(it)
                 refresh()
             }
 
-            user.sendPacket(createPoseChangePacket(id, pose))
-            user.sendPacket(createCorrectNameTagPacket(nameTagId, location.toLocation(), pose))
+            BukkitPackets.NpcPackets.NpcPoseChangePacket(id, pose).build().sendPacket(it)
+            BukkitPackets.NpcNameTagPackets.NameTagCorrectionPacket(
+                nameTagId,
+                location.toLocation(),
+                pose
+            ).build().sendPacket(it)
         }
     }
 
