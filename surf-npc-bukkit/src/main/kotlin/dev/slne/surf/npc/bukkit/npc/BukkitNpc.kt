@@ -60,11 +60,7 @@ class BukkitNpc(
         mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
 
     override fun spawn(uuid: UUID) {
-        val packetEvents = PacketEvents.getAPI()
-        val playerManager = packetEvents.playerManager
-
         val player = Bukkit.getPlayer(uuid) ?: return
-        val user = playerManager.getUser(player)
 
         val displayName =
             this.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class) ?: return
@@ -123,6 +119,8 @@ class BukkitNpc(
         if (glowing) {
             glowingApi.makeGlowing(id, "npc_$id", player, glowingColor)
         }
+
+        refreshRotation(uuid)
 
         plugin.launch(plugin.entityDispatcher(player)) {
             NpcShowEvent(player, this@BukkitNpc).callEvent()
@@ -299,9 +297,6 @@ class BukkitNpc(
     }
 
     override fun setPose(pose: NpcPose) {
-        val packetEvents = PacketEvents.getAPI()
-        val playerManager = packetEvents.playerManager
-
         val location = this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
             ?: error("Location is not set for NPC: $uniqueName")
 
