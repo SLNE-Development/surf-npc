@@ -49,8 +49,8 @@ sealed class BukkitPackets {
             override fun build() = WrapperPlayServerEntityMetadata(
                 entityId,
                 listOf(
-                    buildMetaData(16, EntityDataTypes.BYTE, skinParts),
-                    buildMetaData(0, EntityDataTypes.BYTE, 0x02.toByte()),
+                    buildMetaData(16, EntityDataTypes.BYTE, skinParts), // Skin Parts
+                    buildMetaData(0, EntityDataTypes.BYTE, 0x02.toByte()), // Hide Nametag
                 )
             )
         }
@@ -58,7 +58,7 @@ sealed class BukkitPackets {
         data class NpcPoseChangePacket(val entityId: Int, val pose: NpcPose) : NpcPackets() {
             override fun build() = WrapperPlayServerEntityMetadata(
                 entityId,
-                listOf(EntityData(6, EntityDataTypes.ENTITY_POSE, pose.toEntityPose()))
+                listOf(EntityData(6, EntityDataTypes.ENTITY_POSE, pose.toEntityPose())) // Pose
             )
         }
 
@@ -144,9 +144,9 @@ sealed class BukkitPackets {
             override fun build() = WrapperPlayServerEntityMetadata(
                 entityId,
                 listOf(
-                    buildMetaData(23, EntityDataTypes.ADV_COMPONENT, displayName),
-                    buildMetaData(15, EntityDataTypes.BYTE, 3.toByte()),
-                    buildMetaData(27, EntityDataTypes.BYTE, 0x02.toByte())
+                    buildMetaData(23, EntityDataTypes.ADV_COMPONENT, displayName), // Content
+                    buildMetaData(15, EntityDataTypes.BYTE, 3.toByte()), // Billboard
+                    buildMetaData(27, EntityDataTypes.BYTE, 0x02.toByte()) // No Background
                 )
             )
         }
@@ -183,7 +183,7 @@ sealed class BukkitPackets {
         data class ExtraMetaDataPacket(val npc: Npc) : NpcExtraPackets() {
             override fun build() = WrapperPlayServerEntityMetadata(
                 npc.npcSittingId,
-                listOf(buildMetaData(0, EntityDataTypes.BYTE, 0x20.toByte()))
+                listOf(buildMetaData(0, EntityDataTypes.BYTE, 0x20.toByte())) // Invisible
             )
         }
 
