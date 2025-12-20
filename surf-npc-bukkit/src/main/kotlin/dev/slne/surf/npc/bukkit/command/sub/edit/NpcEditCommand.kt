@@ -10,4 +10,5 @@ fun CommandAPICommand.npcEditCommand() = subcommand("edit") {
     npcEditRotationCommand()
     npcEditSkinCommand()
     npcEditDisplayNameCommand()
+    npcEditPoseCommand()
 }

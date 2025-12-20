@@ -2,6 +2,7 @@ package dev.slne.surf.npc.core.controller
 
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcCreatorType
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -187,6 +188,14 @@ interface NpcController {
      * @param animationType The type of animation to play.
      */
     fun playAnimation(npc: Npc, animationType: NpcAnimationType)
+
+    /**
+     * Sets the pose of the specified NPC.
+     *
+     * @param npc The NPC whose pose is to be updated.
+     * @param pose The new pose to apply to the NPC.
+     */
+    fun setPose(npc: Npc, pose: NpcPose)
 
     companion object {
         /**

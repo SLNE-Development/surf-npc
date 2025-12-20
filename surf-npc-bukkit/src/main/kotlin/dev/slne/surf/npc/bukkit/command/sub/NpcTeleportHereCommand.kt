@@ -1,8 +1,8 @@
 package dev.slne.surf.npc.bukkit.command.sub
 
 import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.kotlindsl.entitySelectorArgumentOnePlayer
 import dev.jorel.commandapi.kotlindsl.getValue
-import dev.jorel.commandapi.kotlindsl.playerArgument
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
 
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player
 fun CommandAPICommand.npcTeleportHereCommand() = subcommand("teleporthere") {
     withPermission(PermissionRegistry.COMMAND_NPC_TELEPORT_HERE)
     npcArgument("npc")
-    playerArgument("target", true)
+    entitySelectorArgumentOnePlayer("target", true)
     playerExecutor { player, args ->
         val npc: Npc by args
         val target: Player? by args

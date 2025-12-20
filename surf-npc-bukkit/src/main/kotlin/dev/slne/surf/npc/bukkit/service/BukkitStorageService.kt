@@ -11,6 +11,7 @@ import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.npc.core.service.StorageService
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
+import dev.slne.surf.surfapi.core.api.util.random
 import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
 import net.kyori.adventure.util.Services
 import org.bukkit.configuration.file.YamlConfiguration
@@ -42,6 +43,11 @@ class BukkitStorageService : StorageService, Services.Fallback {
                     config.getString("npc.data.nameTagUuid")
                         ?: error("NameTag UUID is missing in NPC config file: ${path.fileName}")
                 )
+                val sittingId = config.getInt("npc.data.sittingId", random.nextInt())
+                val sittingUuid =
+                    config.getString("npc.data.sittingUuid")?.let { UUID.fromString(it) }
+                        ?: UUID.randomUUID()
+
                 val uniqueName = config.getString("npc.data.uniqueName")
                     ?: error("Unique Name is missing in NPC config file: ${path.fileName}")
 
@@ -56,7 +62,9 @@ class BukkitStorageService : StorageService, Services.Fallback {
                     nameTagUuid = nameTagUuid,
                     viewers = if (viewerAmount == -1) null else viewers,
                     properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
-                    uniqueName = uniqueName
+                    uniqueName = uniqueName,
+                    npcSittingId = sittingId,
+                    npcSittingUuid = sittingUuid,
                 )
 
                 val propsSection =
@@ -112,6 +120,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
 
             config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
             config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
+            config["npc.data.sittingId"] = npc.npcSittingId
+            config["npc.data.sittingUuid"] = npc.npcSittingUuid.toString()
 
             npc.properties.values.forEach {
                 val path = "npc.data.properties.${it.key}"
@@ -152,6 +162,9 @@ class BukkitStorageService : StorageService, Services.Fallback {
                 config.getString("npc.data.nameTagUuid")
                     ?: error("NameTag UUID is missing in NPC config file: $fileName.yml")
             )
+            val sittingId = config.getInt("npc.data.sittingId", random.nextInt())
+            val sittingUuid = config.getString("npc.data.sittingUuid")?.let { UUID.fromString(it) }
+                ?: UUID.randomUUID()
             val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
             val viewers =
                 config.getStringList("npc.data.viewers").map(UUID::fromString).toMutableObjectSet()
@@ -163,7 +176,9 @@ class BukkitStorageService : StorageService, Services.Fallback {
                 nameTagUuid = nameTagUuid,
                 viewers = if (viewerAmount == -1) null else viewers,
                 properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
-                uniqueName = uniqueName
+                uniqueName = uniqueName,
+                npcSittingId = sittingId,
+                npcSittingUuid = sittingUuid,
             )
 
             val propsSection = config.getConfigurationSection("npc.data.properties") ?: return false
@@ -204,6 +219,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
         config["npc.data.nameTagId"] = npc.nameTagId
         config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
         config["npc.data.uniqueName"] = npc.uniqueName
+        config["npc.data.sittingId"] = npc.npcSittingId
+        config["npc.data.sittingUuid"] = npc.npcSittingUuid.toString()
 
         config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
         config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
@@ -240,6 +257,10 @@ class BukkitStorageService : StorageService, Services.Fallback {
                     config.getString("npc.data.nameTagUuid")
                         ?: error("NameTag UUID is missing in NPC config file: ${path.fileName}")
                 )
+                val sittingId = config.getInt("npc.data.sittingId", random.nextInt())
+                val sittingUuid =
+                    config.getString("npc.data.sittingUuid")?.let { UUID.fromString(it) }
+                        ?: UUID.randomUUID()
 
                 val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
                 val viewers = config.getStringList("npc.data.viewers").map(UUID::fromString)
@@ -252,7 +273,9 @@ class BukkitStorageService : StorageService, Services.Fallback {
                     nameTagUuid = nameTagUuid,
                     viewers = if (viewerAmount == -1) null else viewers,
                     properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
-                    uniqueName = uniqueName
+                    uniqueName = uniqueName,
+                    npcSittingId = sittingId,
+                    npcSittingUuid = sittingUuid,
                 )
 
                 val propsSection =
@@ -302,6 +325,8 @@ class BukkitStorageService : StorageService, Services.Fallback {
             config["npc.data.nameTagId"] = npc.nameTagId
             config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
             config["npc.data.uniqueName"] = npc.uniqueName
+            config["npc.data.sittingId"] = npc.npcSittingId
+            config["npc.data.sittingUuid"] = npc.npcSittingUuid.toString()
 
             config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
             config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)

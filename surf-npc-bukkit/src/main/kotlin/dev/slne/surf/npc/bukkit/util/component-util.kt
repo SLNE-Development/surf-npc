@@ -9,3 +9,5 @@ val miniMessage get() = MiniMessage.miniMessage()
 fun Component.toPlain(): String {
     return PlainTextComponentSerializer.plainText().serialize(this)
 }
+
+fun emptyComponent() = Component.empty()

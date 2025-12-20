@@ -7,6 +7,7 @@ import dev.slne.surf.npc.api.event.NpcCreateEvent
 import dev.slne.surf.npc.api.event.NpcDeleteEvent
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcCreatorType
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
@@ -49,6 +50,8 @@ class BukkitNpcController : NpcController, Services.Fallback {
         val nameTagId = random.nextInt()
         val uuid = UUID.randomUUID()
         val nameTagUuid = UUID.randomUUID()
+        val sittingId = random.nextInt()
+        val sittingUuid = UUID.randomUUID()
 
         if (this.getNpc(id) != null) {
             return NpcCreationResult.Failure(NpcCreationFailureReason.ALREADY_EXISTS)
@@ -60,12 +63,14 @@ class BukkitNpcController : NpcController, Services.Fallback {
 
         val npc = BukkitNpc(
             id,
-            mutableObject2ObjectMapOf<String, NpcProperty>(),
-            viewers,
             uuid,
             nameTagId,
             nameTagUuid,
-            uniqueName
+            mutableObject2ObjectMapOf<String, NpcProperty>(),
+            viewers,
+            uniqueName,
+            sittingId,
+            sittingUuid,
         )
 
         val componentType = propertyTypeRegistry.get(
@@ -318,5 +323,9 @@ class BukkitNpcController : NpcController, Services.Fallback {
         animationType: NpcAnimationType
     ) {
         npc.playAnimation(animationType)
+    }
+
+    override fun setPose(npc: Npc, pose: NpcPose) {
+        npc.setPose(pose)
     }
 }
