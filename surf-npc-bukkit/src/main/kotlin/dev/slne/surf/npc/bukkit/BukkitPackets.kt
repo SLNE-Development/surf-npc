@@ -49,7 +49,7 @@ sealed class BukkitPackets {
             override fun build() = WrapperPlayServerEntityMetadata(
                 entityId,
                 listOf(
-                    buildMetaData(17, EntityDataTypes.BYTE, skinParts),
+                    buildMetaData(16, EntityDataTypes.BYTE, skinParts),
                     buildMetaData(0, EntityDataTypes.BYTE, 0x02.toByte()),
                 )
             )
