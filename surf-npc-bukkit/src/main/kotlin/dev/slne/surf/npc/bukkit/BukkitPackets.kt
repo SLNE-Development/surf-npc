@@ -1,16 +1,14 @@
 package dev.slne.surf.npc.bukkit
 
+import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemProfile
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
-import com.github.retrooper.packetevents.protocol.player.GameMode
-import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.*
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcPose
-import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.bukkit.util.buildMetaData
 import dev.slne.surf.npc.bukkit.util.buildNullInfo
 import dev.slne.surf.npc.bukkit.util.emptyComponent
@@ -36,7 +34,7 @@ sealed class BukkitPackets {
             override fun build() = WrapperPlayServerSpawnEntity(
                 entityId,
                 uuid,
-                EntityTypes.PLAYER,
+                EntityTypes.MANNEQUIN,
                 PacketLocation(Vector3d(location.x, location.y, location.z), yaw, pitch),
                 yaw,
                 0,
@@ -44,12 +42,35 @@ sealed class BukkitPackets {
             )
         }
 
-        data class NpcMetaDataPacket(val entityId: Int, val skinParts: Byte = 0x7F.toByte()) :
+        data class NpcMetaDataPacket(
+            val entityId: Int,
+            val skinParts: Byte = 0x7F.toByte(),
+            val npc: Npc
+        ) :
             NpcPackets() {
             override fun build() = WrapperPlayServerEntityMetadata(
                 entityId,
                 listOf(
                     buildMetaData(16, EntityDataTypes.BYTE, skinParts),
+                    buildMetaData(
+                        17, EntityDataTypes.RESOLVABLE_PROFILE, ItemProfile(
+                            npc.uniqueName,
+                            npc.npcUuid,
+                            listOf(
+                                ItemProfile.Property(
+                                    "textures",
+                                    npc.getSkinData().value,
+                                    npc.getSkinData().signature
+                                )
+                            )
+                        )
+                    ),
+                    buildMetaData(18, EntityDataTypes.BOOLEAN, true),
+                    buildMetaData(
+                        19,
+                        EntityDataTypes.OPTIONAL_ADV_COMPONENT,
+                        Optional.of(npc.getDisplayName())
+                    ),
                     buildMetaData(0, EntityDataTypes.BYTE, 0x02.toByte()),
                 )
             )
@@ -59,21 +80,6 @@ sealed class BukkitPackets {
             override fun build() = WrapperPlayServerEntityMetadata(
                 entityId,
                 listOf(EntityData(6, EntityDataTypes.ENTITY_POSE, pose.toEntityPose()))
-            )
-        }
-
-        data class NpcAnimationPacket(val entityId: Int, val animation: NpcAnimationType) :
-            NpcPackets() {
-            override fun build() = WrapperPlayServerEntityAnimation(
-                entityId,
-                when (animation) {
-                    NpcAnimationType.SWING_ARM_MAIN -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_MAIN_ARM
-                    NpcAnimationType.SWING_ARM_OFF -> WrapperPlayServerEntityAnimation.EntityAnimationType.SWING_OFF_HAND
-                    NpcAnimationType.GET_DAMAGE -> WrapperPlayServerEntityAnimation.EntityAnimationType.HURT
-                    NpcAnimationType.LEAVE_BED -> WrapperPlayServerEntityAnimation.EntityAnimationType.WAKE_UP
-                    NpcAnimationType.HIT_CRITICAL -> WrapperPlayServerEntityAnimation.EntityAnimationType.CRITICAL_HIT
-                    NpcAnimationType.HIT_MAGIC -> WrapperPlayServerEntityAnimation.EntityAnimationType.MAGIC_CRITICAL_HIT
-                }
             )
         }
 
@@ -93,24 +99,6 @@ sealed class BukkitPackets {
 
         data class NpcHeadRotationPacket(val entityId: Int, val yaw: Float) : NpcPackets() {
             override fun build() = WrapperPlayServerEntityHeadLook(entityId, yaw)
-        }
-
-        data class NpcInfoAddPacket(
-            val profile: UserProfile,
-            val displayName: Component,
-            val listed: Boolean = false
-        ) : NpcPackets() {
-            override fun build() = WrapperPlayServerPlayerInfoUpdate(
-                WrapperPlayServerPlayerInfoUpdate.Action.ADD_PLAYER,
-                WrapperPlayServerPlayerInfoUpdate.PlayerInfo(
-                    profile,
-                    listed,
-                    0,
-                    GameMode.SURVIVAL,
-                    displayName,
-                    null
-                )
-            )
         }
 
         data class NpcInfoRemovePacket(val npcUuid: UUID) : NpcPackets() {

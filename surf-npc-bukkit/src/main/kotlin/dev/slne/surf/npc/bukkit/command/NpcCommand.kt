@@ -25,7 +25,6 @@ fun npcCommand() = commandAPICommand("npc") {
     npcReloadFromDiskCommand()
     npcSaveToDiskCommand()
     npcRefreshCommand()
-    npcAnimateCommand()
 
     npcVersionCommand()
 }

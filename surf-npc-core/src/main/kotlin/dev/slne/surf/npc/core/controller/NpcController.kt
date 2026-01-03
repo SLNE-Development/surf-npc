@@ -3,7 +3,6 @@ package dev.slne.surf.npc.core.controller
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.NpcPose
-import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.rotation.NpcRotation
@@ -180,14 +179,6 @@ interface NpcController {
      * @return True if the property was removed successfully, false otherwise.
      */
     fun removeProperty(npc: Npc, key: String): Boolean
-
-    /**
-     * Plays an animation on an NPC.
-     *
-     * @param npc The NPC on which to play the animation.
-     * @param animationType The type of animation to play.
-     */
-    fun playAnimation(npc: Npc, animationType: NpcAnimationType)
 
     /**
      * Sets the pose of the specified NPC.

@@ -9,7 +9,6 @@ object PermissionRegistry : PermissionRegistry() {
     val COMMAND_NPC_CREATE = create("$PREFIX.command.create")
     val COMMAND_NPC_DELETE = create("$PREFIX.command.delete")
     val COMMAND_NPC_REFRESH = create("$PREFIX.command.refresh")
-    val COMMAND_NPC_ANIMATE = create("$PREFIX.command.animate")
 
     val COMMAND_NPC_LIST = create("$PREFIX.command.list")
     val COMMAND_NPC_INFO = create("$PREFIX.command.info")

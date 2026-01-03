@@ -1,11 +1,13 @@
 package dev.slne.surf.npc.api.npc
 
 import dev.slne.surf.npc.api.event.NpcEvent
-import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
+import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
+import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import it.unimi.dsi.fastutil.objects.ObjectSet
+import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
@@ -239,18 +241,14 @@ interface Npc {
      */
     fun <T : NpcEvent> callHandlers(event: T)
 
-
-    /**
-     * Plays an animation on the NPC.
-     *
-     * @param animationType The type of animation to play.
-     */
-    fun playAnimation(animationType: NpcAnimationType)
-
     /**
      * Updates the pose of the NPC to the specified pose.
      *
      * @param pose The new pose to set for the NPC. Acceptable values are defined in the [NpcPose] enum.
      */
     fun setPose(pose: NpcPose)
+
+    fun getSkinData(): NpcSkin
+    fun getDisplayName(): Component
+    fun getLocation(): NpcLocation
 }
