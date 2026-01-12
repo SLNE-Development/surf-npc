@@ -1,6 +1,5 @@
 package dev.slne.surf.npc.bukkit.npc
 
-import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.protocol.player.TextureProperty
 import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
@@ -12,7 +11,6 @@ import dev.slne.surf.npc.api.event.NpcShowEvent
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcEventHandler
 import dev.slne.surf.npc.api.npc.NpcPose
-import dev.slne.surf.npc.api.npc.animation.NpcAnimationType
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
@@ -93,7 +91,6 @@ class BukkitNpc(
             rotation.pitch
         )
 
-        BukkitPackets.NpcPackets.NpcInfoAddPacket(profile, displayName).build().sendPacket(uuid)
         BukkitPackets.NpcPackets.NpcSpawnPacket(
             id,
             npcUuid,
@@ -101,7 +98,8 @@ class BukkitNpc(
             rotationPair.first,
             rotationPair.second
         ).build().sendPacket(uuid)
-        BukkitPackets.NpcPackets.NpcMetaDataPacket(id, skinData.skinByte()).build().sendPacket(uuid)
+        BukkitPackets.NpcPackets.NpcMetaDataPacket(id, skinData.skinByte(), this)
+            .build().sendPacket(uuid)
 
         BukkitPackets.NpcTeamPackets.TeamCreatePacket("npc_$id", displayName).build()
             .sendPacket(uuid)
@@ -145,8 +143,6 @@ class BukkitNpc(
         forEachViewer {
             despawn(it)
             spawn(it)
-
-            playAnimation(NpcAnimationType.SWING_ARM_MAIN)
         }
     }
 
@@ -288,14 +284,6 @@ class BukkitNpc(
         }
     }
 
-    override fun playAnimation(animationType: NpcAnimationType) {
-        val packetEvents = PacketEvents.getAPI()
-
-        forEachViewer {
-            BukkitPackets.NpcPackets.NpcAnimationPacket(id, animationType).build().sendPacket(it)
-        }
-    }
-
     override fun setPose(pose: NpcPose) {
         val location = this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
             ?: error("Location is not set for NPC: $uniqueName")
@@ -318,6 +306,21 @@ class BukkitNpc(
                 pose
             ).build().sendPacket(it)
         }
+    }
+
+    override fun getSkinData(): NpcSkin {
+        return this.getPropertyValue(NpcProperty.Internal.SKIN_DATA, NpcSkin::class)
+            ?: error("Skin data is not set for NPC: $uniqueName")
+    }
+
+    override fun getDisplayName(): Component {
+        return this.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class)
+            ?: error("Display name is not set for NPC: $uniqueName")
+    }
+
+    override fun getLocation(): NpcLocation {
+        return this.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+            ?: error("Location is not set for NPC: $uniqueName")
     }
 
     override fun equals(other: Any?): Boolean {
