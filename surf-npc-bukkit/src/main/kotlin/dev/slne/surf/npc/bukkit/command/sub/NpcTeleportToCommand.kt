@@ -26,7 +26,7 @@ fun CommandAPICommand.npcTeleportToCommand() = subcommand("teleportto") {
         val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
             ?: return@playerExecutor run {
                 player.sendText {
-                    appendPrefix()
+                    appendErrorPrefix()
                     error("Der NPC hat keine gültige Position.")
                 }
             }
@@ -36,19 +36,19 @@ fun CommandAPICommand.npcTeleportToCommand() = subcommand("teleportto") {
         if (target != null) {
             val targetPlayer = target ?: return@playerExecutor run {
                 player.sendText {
-                    appendPrefix()
+                    appendErrorPrefix()
                     error("Der angegebene Spieler ist nicht mehr online.")
                 }
             }
 
             player.sendText {
-                appendPrefix()
+                appendInfoPrefix()
                 info("${targetPlayer.name} wird zu ${npc.uniqueName} teleportiert...")
             }
 
             targetPlayer.teleportAsync(bukkitLocation).thenRun {
                 player.sendText {
-                    appendPrefix()
+                    appendSuccessPrefix()
                     success("${targetPlayer.name} wurde zu ${npc.uniqueName} teleportiert.")
                 }
             }
@@ -56,13 +56,13 @@ fun CommandAPICommand.npcTeleportToCommand() = subcommand("teleportto") {
         }
 
         player.sendText {
-            appendPrefix()
+            appendInfoPrefix()
             info("Du wirst zu ${npc.uniqueName} teleportiert...")
         }
 
         player.teleportAsync(bukkitLocation).thenRun {
             player.sendText {
-                appendPrefix()
+                appendSuccessPrefix()
                 success("Du wurdest zu ${npc.uniqueName} teleportiert.")
             }
         }

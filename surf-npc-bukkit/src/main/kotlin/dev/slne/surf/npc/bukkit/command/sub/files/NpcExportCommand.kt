@@ -20,7 +20,7 @@ fun CommandAPICommand.npcExportCommand() = subcommand("export") {
         storageService.export(npc)
 
         player.sendText {
-            appendPrefix()
+            appendSuccessPrefix()
             success("Der NPC '${npc.uniqueName}' wurde erfolgreich exportiert.")
         }
     }

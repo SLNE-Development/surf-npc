@@ -14,10 +14,11 @@ fun CommandAPICommand.npcExportAllCommand() = subcommand("export-all") {
         val amount = storageService.exportAll()
 
         player.sendText {
-            appendPrefix()
             if (amount > 0) {
+                appendSuccessPrefix()
                 success("Alle NPCs wurden erfolgreich exportiert. ($amount)")
             } else {
+                appendErrorPrefix()
                 error("Es wurden keine NPCs zum Export gefunden.")
             }
         }

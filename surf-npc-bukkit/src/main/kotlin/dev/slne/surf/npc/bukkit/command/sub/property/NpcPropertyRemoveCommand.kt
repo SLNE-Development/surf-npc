@@ -21,7 +21,7 @@ fun CommandAPICommand.npcPropertyRemoveCommand() = subcommand("remove") {
 
         if (npc.isFromPlugin()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
             return@playerExecutor
@@ -29,7 +29,7 @@ fun CommandAPICommand.npcPropertyRemoveCommand() = subcommand("remove") {
 
         if (!npc.hasProperty(key)) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der NPC '${npc.uniqueName}' besitzt keine Property mit dem Key '${key}'.")
             }
             return@playerExecutor
@@ -38,7 +38,7 @@ fun CommandAPICommand.npcPropertyRemoveCommand() = subcommand("remove") {
         npc.removeProperty(key)
 
         player.sendText {
-            appendPrefix()
+            appendSuccessPrefix()
             success("Die Property '${key}' wurde erfolgreich vom NPC '${npc.uniqueName}' entfernt.")
         }
     }

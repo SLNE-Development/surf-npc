@@ -14,10 +14,11 @@ fun CommandAPICommand.npcSaveToDiskCommand() = subcommand("save-to-disk") {
         val amount = storageService.saveToDisk()
 
         player.sendText {
-            appendPrefix()
             if (amount > 0) {
+                appendSuccessPrefix()
                 success("Es wurden $amount NPCs erfolgreich auf die Festplatte gespeichert.")
             } else {
+                appendErrorPrefix()
                 error("Es wurden keine NPCs auf die Festplatte gespeichert.")
             }
         }

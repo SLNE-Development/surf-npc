@@ -27,7 +27,7 @@ fun CommandAPICommand.npcPropertyAddCommand() = subcommand("add") {
 
         if (npc.isFromPlugin()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
             return@playerExecutor
@@ -42,7 +42,7 @@ fun CommandAPICommand.npcPropertyAddCommand() = subcommand("add") {
         )
 
         player.sendText {
-            appendPrefix()
+            appendSuccessPrefix()
 
             if (exists) {
                 success("Die Property '${key}' wurde erfolgreich dem NPC '${npc.uniqueName}' neu gesetzt.")

@@ -14,7 +14,7 @@ class NpcPropertyTypeArgument(nodeName: String) :
         propertyTypeRegistry.get(info.input)
             ?: throw CustomArgumentException.fromAdventureComponent(
                 buildText {
-                    appendPrefix()
+                    appendErrorPrefix()
                     error("Der Npc Property Type '${info.input}' wurde nicht gefunden.")
                 })
     }) {

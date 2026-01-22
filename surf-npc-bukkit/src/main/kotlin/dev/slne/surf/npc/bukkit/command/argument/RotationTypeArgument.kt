@@ -13,7 +13,7 @@ class RotationTypeArgument(nodeName: String) :
         NpcRotationType.entries.find { it.name.equals(info.input, ignoreCase = true) }
             ?: throw CustomArgumentException.fromAdventureComponent(
                 buildText {
-                    appendPrefix()
+                    appendErrorPrefix()
                     error("Der Npc '${info.input}' wurde nicht gefunden.")
                 })
     }) {
