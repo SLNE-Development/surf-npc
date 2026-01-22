@@ -14,10 +14,11 @@ fun CommandAPICommand.npcImportAllCommand() = subcommand("import-all") {
         val amount = storageService.importAll()
 
         player.sendText {
-            appendPrefix()
             if (amount > 0) {
+                appendSuccessPrefix()
                 success("Du hast erfolgreich $amount NPCs importiert.")
             } else {
+                appendErrorPrefix
                 error("Es wurden keine NPCs zum Import gefunden.")
             }
         }

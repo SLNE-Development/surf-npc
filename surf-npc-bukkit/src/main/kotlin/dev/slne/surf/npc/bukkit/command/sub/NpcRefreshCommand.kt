@@ -19,7 +19,7 @@ fun CommandAPICommand.npcRefreshCommand() = subcommand("refresh") {
         npc.refresh()
 
         player.sendText {
-            appendPrefix()
+            appendSuccessPrefix()
             success("Der NPC ")
             variableValue(npc.uniqueName)
             success(" wurde aktualisiert.")

@@ -32,14 +32,14 @@ fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
 
         if (!isValidName(name)) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc Name ist ungültig.")
             }
             return@playerExecutor
         }
 
         player.sendText {
-            appendPrefix()
+            appendInfoPrefix()
             info("Der Npc wird erstellt. Dies kann einen Moment dauern...")
         }
 
@@ -60,14 +60,14 @@ fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
 
             if (npcResult.isFailure()) {
                 player.sendText {
-                    appendPrefix()
+                    appendErrorPrefix()
                     error("Der Npc konnte nicht erstellt werden: ${(npcResult as? NpcCreationResult.Failure)?.reason}")
                 }
                 return@launch
             }
 
             player.sendText {
-                appendPrefix()
+                appendSuccessPrefix()
                 success("Der Npc wurde erfolgreich erstellt.")
             }
         }

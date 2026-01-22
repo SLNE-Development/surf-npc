@@ -45,7 +45,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
 
             withEventHandler<NpcInteractEvent> {
                 it.player.sendText {
-                    appendPrefix()
+                    appendInfoPrefix()
                     spacer("[")
                     variableKey(uniqueName)
                     spacer("]")

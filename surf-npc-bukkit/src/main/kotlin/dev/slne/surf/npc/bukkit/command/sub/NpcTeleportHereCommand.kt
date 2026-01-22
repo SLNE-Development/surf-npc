@@ -22,7 +22,7 @@ fun CommandAPICommand.npcTeleportHereCommand() = subcommand("teleporthere") {
 
         if (npc.isFromPlugin()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
             return@playerExecutor
@@ -31,14 +31,14 @@ fun CommandAPICommand.npcTeleportHereCommand() = subcommand("teleporthere") {
         if (target != null) {
             val targetPlayer = target ?: return@playerExecutor run {
                 player.sendText {
-                    appendPrefix()
+                    appendErrorPrefix()
                     error("Der angegebene Spieler ist nicht mehr online.")
                 }
             }
 
             npc.teleport(targetPlayer)
             player.sendText {
-                appendPrefix()
+                appendSuccessPrefix()
                 success("Der NPC ${npc.uniqueName} wurde zu ${targetPlayer.name} teleportiert.")
             }
             return@playerExecutor
@@ -46,7 +46,7 @@ fun CommandAPICommand.npcTeleportHereCommand() = subcommand("teleporthere") {
 
         npc.teleport(player)
         player.sendText {
-            appendPrefix()
+            appendSuccessPrefix()
             success("Der NPC ${npc.uniqueName} wurde zu dir teleportiert.")
         }
         return@playerExecutor

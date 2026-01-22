@@ -14,10 +14,11 @@ fun CommandAPICommand.npcReloadFromDiskCommand() = subcommand("reload-from-disk"
         val amount = storageService.reloadFromDisk()
 
         player.sendText {
-            appendPrefix()
             if (amount > 0) {
+                appendSuccessPrefix()
                 success("Es wurden $amount NPCs erfolgreich von der Festplatte neu geladen.")
             } else {
+                appendErrorPrefix()
                 error("Es wurden keine NPCs von der Festplatte neu geladen.")
             }
         }

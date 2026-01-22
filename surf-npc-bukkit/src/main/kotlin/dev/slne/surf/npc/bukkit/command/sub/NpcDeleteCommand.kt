@@ -19,7 +19,7 @@ fun CommandAPICommand.npcDeleteCommand() = subcommand("delete") {
 
         if (npc.isFromPlugin()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
             return@playerExecutor
@@ -29,14 +29,14 @@ fun CommandAPICommand.npcDeleteCommand() = subcommand("delete") {
 
         if (npcController.getNpc(npc.id) == null) {
             player.sendText {
-                appendPrefix()
+                appendSuccessPrefix()
                 success("Der Npc ")
                 variableValue(npc.uniqueName)
                 success(" wurde gelöscht.")
             }
         } else {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc ${npc.uniqueName} konnte nicht gelöscht werden.")
             }
         }

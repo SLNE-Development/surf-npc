@@ -26,7 +26,7 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
 
         if (npc.isFromPlugin()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
             return@playerExecutor
@@ -56,7 +56,7 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
         npc.refresh()
 
         player.sendText {
-            appendPrefix()
+            appendSuccessPrefix()
             success("Die Rotation des Npc ")
             variableValue(npc.uniqueName)
             success(" wurde auf $rotationType geändert.")

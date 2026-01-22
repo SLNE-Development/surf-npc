@@ -24,7 +24,7 @@ fun CommandAPICommand.npcListCommand() = subcommand("list") {
 
         if (npcs.isEmpty()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Es sind keine Npcs vorhanden.")
             }
             return@playerExecutor

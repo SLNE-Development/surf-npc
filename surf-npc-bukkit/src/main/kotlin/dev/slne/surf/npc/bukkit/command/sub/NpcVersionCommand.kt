@@ -16,14 +16,14 @@ fun CommandAPICommand.npcVersionCommand() = subcommand("version") {
         plugin.launch {
             executor.sendText {
                 appendNewline()
-                appendPrefix()
+                appendInfoPrefix()
                 if (versionService.isUpToDate()) info("Das Plugin ist up-to-date.") else variableKey(
                     "Es gibt eine neuere Version."
                 )
 
                 versionService.currentVersion.let {
                     appendNewline {
-                        appendPrefix()
+                        appendInfoPrefix()
                         variableKey("Aktuelle Version: ")
                         variableValue(it.toString())
                     }
@@ -31,14 +31,14 @@ fun CommandAPICommand.npcVersionCommand() = subcommand("version") {
 
                 versionService.latestVersion.let {
                     appendNewline {
-                        appendPrefix()
+                        appendInfoPrefix()
                         variableKey("Neueste Version: ")
                         variableValue(it.toString())
                     }
                 }
 
                 appendNewline {
-                    appendPrefix()
+                    appendInfoPrefix()
                     success("Neuste Version herunterladen: ")
                     variableValue("[DOWNLOAD]")
                     clickOpensUrl(

@@ -18,11 +18,11 @@ fun CommandAPICommand.npcImportCommand() = subcommand("import") {
         val result = storageService.import(fileName)
 
         player.sendText {
-            appendPrefix()
-
             if (result) {
+                appendSuccessPrefix()
                 success("Der NPC aus der Datei '$fileName' wurde erfolgreich importiert.")
             } else {
+                appendErrorPrefix()
                 error("Fehler beim Importieren der NPCs aus der Datei '$fileName'.")
             }
         }

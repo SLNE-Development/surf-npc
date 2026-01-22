@@ -15,14 +15,14 @@ class NpcArgument(nodeName: String) :
             npcController.getNpc(info.input.toInt())
                 ?: throw CustomArgumentException.fromAdventureComponent(
                     buildText {
-                        appendPrefix()
+                        appendErrorPrefix()
                         error("Der Npc mit der ID '${info.input}' wurde nicht gefunden.")
                     })
         } else {
             npcController.getNpc(info.input)
                 ?: throw CustomArgumentException.fromAdventureComponent(
                     buildText {
-                        appendPrefix()
+                        appendErrorPrefix()
                         error("Der Npc '${info.input}' wurde nicht gefunden.")
                     })
         }

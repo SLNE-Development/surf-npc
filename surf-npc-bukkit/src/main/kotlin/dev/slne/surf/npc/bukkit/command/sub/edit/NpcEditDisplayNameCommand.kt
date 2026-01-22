@@ -27,7 +27,7 @@ fun CommandAPICommand.npcEditDisplayNameCommand() = subcommand("displayname") {
 
         if (npc.isFromPlugin()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
             return@playerExecutor
@@ -45,7 +45,7 @@ fun CommandAPICommand.npcEditDisplayNameCommand() = subcommand("displayname") {
         npc.refresh()
 
         player.sendText {
-            appendPrefix()
+            appendSuccessPrefix()
             success("Der Anzeigename des Npc ")
             variableValue(npc.uniqueName)
             success(" wurden aktualisiert.")

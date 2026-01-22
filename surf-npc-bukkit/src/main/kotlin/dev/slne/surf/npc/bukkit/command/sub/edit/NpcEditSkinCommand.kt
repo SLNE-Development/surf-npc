@@ -27,14 +27,14 @@ fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
 
         if (npc.isFromPlugin()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
             }
             return@playerExecutor
         }
 
         player.sendText {
-            appendPrefix()
+            appendInfoPrefix()
             info("Die Skin-Daten für den Spieler ")
             variableValue(skinPlayer)
             info(" werden geladen...")
@@ -54,7 +54,7 @@ fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
             npc.refresh()
 
             player.sendText {
-                appendPrefix()
+                appendSuccessPrefix()
                 success("Die Skin-Daten für den Npc ")
                 variableValue(npc.uniqueName)
                 success(" wurden aktualisiert.")

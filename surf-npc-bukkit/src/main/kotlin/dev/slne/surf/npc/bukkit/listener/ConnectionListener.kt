@@ -38,7 +38,7 @@ class ConnectionListener : Listener {
 
             versionService.latestVersion?.let {
                 player.sendText {
-                    appendPrefix()
+                    appendInfoPrefix()
                     info("Es ist eine")
                     appendSpace()
                     variableValue("neue Version")
@@ -49,7 +49,7 @@ class ConnectionListener : Listener {
                     appendSpace()
                     info("verfügbar!")
                     appendNewline()
-                    appendPrefix()
+                    appendInfoPrefix()
                     spacer(
                         "Klicke hier, um den neusten Release herunterzuladen.".toSmallCaps()
                     )

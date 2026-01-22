@@ -28,7 +28,7 @@ fun CommandAPICommand.npcPropertyListCommand() = subcommand("list") {
 
         if (properties.isEmpty()) {
             player.sendText {
-                appendPrefix()
+                appendErrorPrefix()
                 error("Der NPC '${npc.uniqueName}' besitzt keine Eigenschaften.")
             }
             return@playerExecutor
