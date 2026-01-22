@@ -15,12 +15,9 @@ import dev.slne.surf.npc.bukkit.service.versionService
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.npc.core.service.storageService
 import dev.slne.surf.surfapi.bukkit.api.event.register
-import dev.slne.surf.surfapi.bukkit.api.metrics.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitMain : SuspendingJavaPlugin() {
-    private lateinit var metrics: Metrics
-
     override fun onEnable() {
         PacketEvents.getAPI().eventManager.registerListener(
             NpcListener(),
@@ -30,8 +27,6 @@ class BukkitMain : SuspendingJavaPlugin() {
         ConnectionListener().register()
         WorldChangeListener().register()
         InternalNpcEventListener().register()
-
-        metrics = Metrics(this, 27049)
 
         propertyTypeRegistry.register(BooleanPropertyType(NpcPropertyType.Types.BOOLEAN))
         propertyTypeRegistry.register(ComponentPropertyType(NpcPropertyType.Types.COMPONENT))
@@ -58,10 +53,6 @@ class BukkitMain : SuspendingJavaPlugin() {
     }
 
     override fun onDisable() {
-        if (::metrics.isInitialized) {
-            metrics.shutdown()
-        }
-
         storageService.saveNpcs()
     }
 }
