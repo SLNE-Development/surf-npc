@@ -12,7 +12,7 @@ buildscript {
 
 allprojects {
     group = "dev.slne.surf.npc"
-    version = findProperty("version")!!
+    version = findProperty("version") as String
 }
 
 subprojects {
