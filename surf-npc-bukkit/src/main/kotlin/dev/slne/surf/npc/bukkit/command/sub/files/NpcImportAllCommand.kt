@@ -18,7 +18,7 @@ fun CommandAPICommand.npcImportAllCommand() = subcommand("import-all") {
                 appendSuccessPrefix()
                 success("Du hast erfolgreich $amount NPCs importiert.")
             } else {
-                appendErrorPrefix
+                appendErrorPrefix()
                 error("Es wurden keine NPCs zum Import gefunden.")
             }
         }
