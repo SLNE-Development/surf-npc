@@ -24,6 +24,7 @@ import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
 import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
 import dev.slne.surf.surfapi.core.api.util.random
 import dev.slne.surf.surfapi.core.api.util.toObjectSet
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -37,8 +38,8 @@ import kotlin.math.sqrt
 val npcController = NpcController()
 
 class NpcController {
-    private val _npcs = mutableObject2ObjectMapOf<String, Npc>()
-    val npcs get() = _npcs.values.toObjectSet()
+    private val _npcs: Object2ObjectMap<String, Npc> = mutableObject2ObjectMapOf<String, Npc>()
+    val npcs: ObjectSet<Npc> get() = _npcs.values.toObjectSet()
 
     fun createNpc(
         displayName: Component,
@@ -87,6 +88,10 @@ class NpcController {
         _npcs.remove(npc.uniqueName)
     }
 
+    fun unregisterAll() {
+        _npcs.clear()
+    }
+
     fun saveNpc(npc: Npc) {
         _npcs[npc.uniqueName] = npc
         npcStorageService.save(npc)
@@ -115,7 +120,7 @@ class NpcController {
         saveNpc(updated)
     }
 
-    private fun showToViewer(npc: Npc, uuid: UUID) {
+    fun showToViewer(npc: Npc, uuid: UUID) {
         val player = Bukkit.getPlayer(uuid) ?: return
 
         if (npc.entityType == EntityType.MANNEQUIN) {
@@ -165,7 +170,7 @@ class NpcController {
         }
     }
 
-    private fun hideFromViewer(npc: Npc, uuid: UUID) {
+    fun hideFromViewer(npc: Npc, uuid: UUID) {
         val player = Bukkit.getPlayer(uuid) ?: return
 
         BukkitPackets.NpcPackets.NpcDestroyPacket(npc.id, npc.nameTagId).build().sendPacket(uuid)
@@ -238,6 +243,11 @@ class NpcController {
         npc.show()
     }
 
+    fun refreshNpc(npc: Npc, uuid: UUID) {
+        hideFromViewer(npc, uuid)
+        showToViewer(npc, uuid)
+    }
+
     fun refreshRotation(npc: Npc) {
         npc.forEachViewer {
             refreshRotation(npc, it)
@@ -264,7 +274,6 @@ class NpcController {
 
     fun getNpc(id: Int): Npc? = npcs.find { it.id == id }
     fun getNpc(uniqueName: String): Npc? = npcs.find { it.uniqueName == uniqueName }
-    fun getNpcs(): ObjectSet<Npc> = npcs
 
     fun setPose(npc: Npc, pose: NpcPose) {
         val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)

@@ -9,7 +9,6 @@ import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.miniMessage
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
@@ -25,7 +24,7 @@ fun CommandAPICommand.npcEditDisplayNameCommand() = subcommand("displayname") {
         val name = miniMessage.deserialize(displayName)
 
         npc.addProperty(
-            BukkitNpcProperty(
+            NpcProperty(
                 NpcProperty.Internal.DISPLAYNAME,
                 name,
                 NpcPropertyType.Types.COMPONENT_TYPE

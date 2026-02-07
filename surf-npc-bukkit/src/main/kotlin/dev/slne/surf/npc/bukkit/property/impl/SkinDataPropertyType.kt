@@ -3,7 +3,6 @@ package dev.slne.surf.npc.bukkit.property.impl
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
-import dev.slne.surf.npc.bukkit.npc.skin.BukkitNpcSkin
 import dev.slne.surf.surfapi.core.api.util.toObjectSet
 
 class SkinDataPropertyType(override val id: String) : NpcPropertyType {
@@ -21,7 +20,7 @@ class SkinDataPropertyType(override val id: String) : NpcPropertyType {
             val parts = it.getOrNull(3)?.split(",")?.map { part -> NpcSkinPart.valueOf(part) }
                 ?: emptyList()
 
-            BukkitNpcSkin(ownerName, skinValue, signature, parts.toObjectSet())
+            NpcSkin(ownerName, skinValue, signature, parts.toObjectSet())
         }
     }
 }

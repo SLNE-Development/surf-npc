@@ -11,7 +11,6 @@ import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.plugin
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.skinDataFromName
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
@@ -36,7 +35,7 @@ fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
 
 
             npc.addProperty(
-                BukkitNpcProperty(
+                NpcProperty(
                     NpcProperty.Internal.SKIN_DATA,
                     skinData,
                     NpcPropertyType.Types.SKIN_DATA_TYPE

@@ -7,12 +7,11 @@ import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
 
 import dev.slne.surf.npc.api.npc.Npc
-import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
-import dev.slne.surf.npc.bukkit.util.toLocation
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import org.bukkit.Location
 import org.bukkit.entity.Player
 
 fun CommandAPICommand.npcTeleportToCommand() = subcommand("teleportto") {
@@ -23,15 +22,13 @@ fun CommandAPICommand.npcTeleportToCommand() = subcommand("teleportto") {
         val npc: Npc by args
         val target: Player? by args
 
-        val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+        val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
             ?: return@playerExecutor run {
                 player.sendText {
                     appendErrorPrefix()
                     error("Der NPC hat keine gültige Position.")
                 }
             }
-
-        val bukkitLocation = location.toLocation()
 
         if (target != null) {
             val targetPlayer = target ?: return@playerExecutor run {
@@ -46,7 +43,7 @@ fun CommandAPICommand.npcTeleportToCommand() = subcommand("teleportto") {
                 info("${targetPlayer.name} wird zu ${npc.uniqueName} teleportiert...")
             }
 
-            targetPlayer.teleportAsync(bukkitLocation).thenRun {
+            targetPlayer.teleportAsync(location).thenRun {
                 player.sendText {
                     appendSuccessPrefix()
                     success("${targetPlayer.name} wurde zu ${npc.uniqueName} teleportiert.")
@@ -60,7 +57,7 @@ fun CommandAPICommand.npcTeleportToCommand() = subcommand("teleportto") {
             info("Du wirst zu ${npc.uniqueName} teleportiert...")
         }
 
-        player.teleportAsync(bukkitLocation).thenRun {
+        player.teleportAsync(location).thenRun {
             player.sendText {
                 appendSuccessPrefix()
                 success("Du wurdest zu ${npc.uniqueName} teleportiert.")

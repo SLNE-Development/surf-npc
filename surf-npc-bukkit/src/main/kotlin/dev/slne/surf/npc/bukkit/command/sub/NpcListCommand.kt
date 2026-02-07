@@ -5,8 +5,8 @@ import dev.jorel.commandapi.kotlindsl.integerArgument
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
-import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.surfapi.core.api.font.toSmallCaps
 import dev.slne.surf.surfapi.core.api.messages.CommonComponents
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText

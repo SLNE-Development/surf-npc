@@ -1,13 +1,13 @@
 package dev.slne.surf.npc.bukkit.listener
 
-import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
+import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.service.versionService
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
-import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.surfapi.core.api.font.toSmallCaps
 import dev.slne.surf.surfapi.core.api.messages.adventure.clickOpensUrl
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -24,11 +24,11 @@ class ConnectionListener : Listener {
             }
             .filter {
                 val npcLocation =
-                    it.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
-                npcLocation == null || npcLocation.world == player.world.name
+                    it.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
+                npcLocation == null || npcLocation.world.uid == player.world.uid
             }
             .forEach {
-                it.spawn(player.uniqueId)
+                npcController.showToViewer(it, player.uniqueId)
             }
 
         if (player.hasPermission(PermissionRegistry.UPDATE_NOTIFY)) {

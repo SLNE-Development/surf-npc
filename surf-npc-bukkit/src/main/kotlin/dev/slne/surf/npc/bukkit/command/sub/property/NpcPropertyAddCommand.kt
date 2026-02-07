@@ -6,10 +6,10 @@ import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.stringArgument
 import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.command.argument.npcPropertyTypeArgument
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
@@ -28,7 +28,7 @@ fun CommandAPICommand.npcPropertyAddCommand() = subcommand("add") {
         val exists = npc.hasProperty(key)
 
         npc.addProperty(
-            BukkitNpcProperty(
+            NpcProperty(
                 key, propertyType.decode(value), propertyType
             )
         )

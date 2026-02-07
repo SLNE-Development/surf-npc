@@ -9,11 +9,10 @@ import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.slne.surf.npc.api.event.NpcCollisionEvent
 import dev.slne.surf.npc.api.event.NpcInteractEvent
-import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
+import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.plugin
-import dev.slne.surf.npc.bukkit.util.toLocation
-import dev.slne.surf.npc.core.controller.npcController
+import org.bukkit.Location
 import org.bukkit.entity.Player
 
 class NpcListener : PacketListener {
@@ -24,15 +23,15 @@ class NpcListener : PacketListener {
             PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION -> {
                 for (npc in npcController.getNpcs()) {
                     val npcLoc =
-                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
                             ?: continue
                     val playerLoc = player.location
 
-                    if (playerLoc.world.name != npcLoc.world) {
+                    if (playerLoc.world.name != npcLoc.world.name) {
                         continue
                     }
 
-                    if (playerLoc.distanceSquared(npcLoc.toLocation()) > 20 * 20) {
+                    if (playerLoc.distanceSquared(npcLoc) > 20 * 20) {
                         continue
                     }
 
@@ -43,15 +42,15 @@ class NpcListener : PacketListener {
             PacketType.Play.Client.PLAYER_POSITION -> {
                 for (npc in npcController.getNpcs()) {
                     val npcLoc =
-                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, NpcLocation::class)
+                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
                             ?: continue
                     val playerLoc = player.location
 
-                    if (playerLoc.world.name != npcLoc.world) {
+                    if (playerLoc.world.name != npcLoc.world.name) {
                         continue
                     }
 
-                    if (playerLoc.distanceSquared(npcLoc.toLocation()) > 1 * 1) {
+                    if (playerLoc.distanceSquared(npcLoc) > 1 * 1) {
                         continue
                     }
 
