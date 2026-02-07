@@ -2,352 +2,121 @@ package dev.slne.surf.npc.bukkit.service
 
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
+import dev.slne.surf.npc.bukkit.config.NpcConfig
+import dev.slne.surf.npc.bukkit.config.NpcPropertyConfig
 import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.plugin
-import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
-import dev.slne.surf.surfapi.core.api.util.logger
+
+import dev.slne.surf.surfapi.core.api.config.manager.SpongeConfigManager
+import dev.slne.surf.surfapi.core.api.config.surfConfigApi
 import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
-import dev.slne.surf.surfapi.core.api.util.random
 import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
-import org.bukkit.configuration.file.YamlConfiguration
 import java.nio.file.Files
-import java.nio.file.Path
-import java.util.*
 
-val storageService = StorageService()
+val npcStorageService = NpcStorageService()
 
-class StorageService {
-    private val npcFolder: Path
-        get() = plugin.dataPath.resolve("npcs")
+class NpcStorageService {
+
+    private val npcFolder get() = plugin.dataPath.resolve("npcs")
+    private val configManagers =
+        mutableObject2ObjectMapOf<String, SpongeConfigManager<NpcConfig>>()
 
     fun initialize() {
-        if (!Files.exists(npcFolder)) {
-            Files.createDirectories(npcFolder)
-        }
+        Files.createDirectories(npcFolder)
     }
 
-    fun loadNpcs(): Int {
-        val files = Files.list(npcFolder).filter { it.toString().endsWith(".yml") }.toList()
-
-        files.forEach { path ->
-            val config = YamlConfiguration.loadConfiguration(path.toFile())
-            try {
-                val id = config.getInt("npc.data.id")
-                val uuid = UUID.fromString(config.getString("npc.data.uuid"))
-                val nameTagId = config.getInt("npc.data.nameTagId")
-                val nameTagUuid = UUID.fromString(
-                    config.getString("npc.data.nameTagUuid")
-                        ?: error("NameTag UUID is missing in NPC config file: ${path.fileName}")
-                )
-                val sittingId = config.getInt("npc.data.sittingId", random.nextInt())
-                val sittingUuid =
-                    config.getString("npc.data.sittingUuid")?.let { UUID.fromString(it) }
-                        ?: UUID.randomUUID()
-
-                val uniqueName = config.getString("npc.data.uniqueName")
-                    ?: error("Unique Name is missing in NPC config file: ${path.fileName}")
-
-                val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
-                val viewers = config.getStringList("npc.data.viewers").map(UUID::fromString)
-                    .toMutableObjectSet()
-
-                val npc = BukkitNpc(
-                    id = id,
-                    npcUuid = uuid,
-                    nameTagId = nameTagId,
-                    nameTagUuid = nameTagUuid,
-                    viewers = if (viewerAmount == -1) null else viewers,
-                    properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
-                    uniqueName = uniqueName,
-                    npcSittingId = sittingId,
-                    npcSittingUuid = sittingUuid,
-                )
-
-                val propsSection =
-                    config.getConfigurationSection("npc.data.properties") ?: return@forEach
-                val sectionKeys = propsSection.getKeys(false)
-
-                sectionKeys.forEach { key ->
-                    val valueString =
-                        config.getString("npc.data.properties.$key.value") ?: return@forEach
-                    val typeString =
-                        config.getString("npc.data.properties.$key.type") ?: return@forEach
-
-                    val type = propertyTypeRegistry.get(typeString)
-                        ?: error("Unknown property type: $typeString")
-                    val value = type.decode(valueString)
-
-                    npc.addProperty(
-                        BukkitNpcProperty(
-                            key, value, type
-                        )
-                    )
-                }
-
-                npcController.registerNpc(npc)
-            } catch (e: Exception) {
-                logger().atWarning()
-                    .log("Failed to load NPC from file ${path.fileName}: ${e.message}")
-            }
-        }
-
-        logger().atInfo()
-            .log("Successfully loaded ${npcController.getNpcs().size} NPCs from ${files.size} files!")
-
-        return npcController.getNpcs().size
-    }
-
-    fun saveNpcs(): Int {
-        Files.list(npcFolder)
-            .filter { it.toString().endsWith(".yml") }
-            .forEach(Files::delete)
-
-        val staticNpcs = npcController.getNpcs().filter { it.isStatic() }
-
-        staticNpcs.forEach { npc ->
-            val file = npcFolder.resolve("${npc.uniqueName}.yml").toFile()
-            val config = YamlConfiguration()
-
-            config["npc.data.id"] = npc.id
-            config["npc.data.uuid"] = npc.npcUuid.toString()
-            config["npc.data.nameTagId"] = npc.nameTagId
-            config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
-            config["npc.data.uniqueName"] = npc.uniqueName
-
-            config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
-            config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
-            config["npc.data.sittingId"] = npc.npcSittingId
-            config["npc.data.sittingUuid"] = npc.npcSittingUuid.toString()
-
-            npc.properties.values.forEach {
-                val path = "npc.data.properties.${it.key}"
-                config["$path.value"] = it.type.encode(it.value)
-                config["$path.type"] = it.type.id
-            }
-
-            config.save(file)
-        }
-
-        logger().atInfo().log("Successfully saved ${staticNpcs.size} NPCs to files!")
-        return staticNpcs.size
-    }
-
-    fun import(fileName: String): Boolean {
-        val file = npcFolder.resolve("$fileName.yml").toFile()
-
-        if (!file.exists()) {
-            logger().atWarning().log("NPC file $fileName does not exist in the NPC folder.")
-            return false
-        }
-
-        val config = YamlConfiguration.loadConfiguration(file)
-        try {
-            val uniqueName = config.getString("npc.data.uniqueName")
-                ?: error("Unique name is missing in NPC config file: $fileName.yml")
-
-            if (npcController.getNpc(uniqueName) != null) {
-                logger().atWarning()
-                    .log("NPC with unique name '$uniqueName' already exists. Skipping import.")
-                return false
-            }
-
-            val id = config.getInt("npc.data.id")
-            val uuid = UUID.fromString(config.getString("npc.data.uuid"))
-            val nameTagId = config.getInt("npc.data.nameTagId")
-            val nameTagUuid = UUID.fromString(
-                config.getString("npc.data.nameTagUuid")
-                    ?: error("NameTag UUID is missing in NPC config file: $fileName.yml")
-            )
-            val sittingId = config.getInt("npc.data.sittingId", random.nextInt())
-            val sittingUuid = config.getString("npc.data.sittingUuid")?.let { UUID.fromString(it) }
-                ?: UUID.randomUUID()
-            val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
-            val viewers =
-                config.getStringList("npc.data.viewers").map(UUID::fromString).toMutableObjectSet()
-
-            val npc = BukkitNpc(
-                id = id,
-                npcUuid = uuid,
-                nameTagId = nameTagId,
-                nameTagUuid = nameTagUuid,
-                viewers = if (viewerAmount == -1) null else viewers,
-                properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
-                uniqueName = uniqueName,
-                npcSittingId = sittingId,
-                npcSittingUuid = sittingUuid,
+    fun loadAll(): Int {
+        Files.list(npcFolder).filter {
+            Files.exists(it.resolve("npc.yml"))
+        }.forEach { dir ->
+            val manager = surfConfigApi.createSpongeYmlConfigManager(
+                NpcConfig::class.java,
+                dir,
+                "npc.yml"
             )
 
-            val propsSection = config.getConfigurationSection("npc.data.properties") ?: return false
-            val sectionKeys = propsSection.getKeys(false)
+            val config = manager.config
 
-            sectionKeys.forEach { key ->
-                val valueString =
-                    config.getString("npc.data.properties.$key.value") ?: return@forEach
-                val typeString = config.getString("npc.data.properties.$key.type") ?: return@forEach
+            val npc = Npc(
+                id = config.id,
+                npcUuid = config.npcUuid,
+                entityType = config.entityType,
+                nameTagId = config.nameTagId,
+                nameTagUuid = config.nameTagUuid,
+                uniqueName = config.uniqueName,
+                npcSittingId = config.sittingId,
+                npcSittingUuid = config.sittingUuid,
+                viewers = if (config.viewerAmount == -1) null
+                else config.viewers.toMutableObjectSet(),
+                properties = mutableObject2ObjectMapOf<String, NpcProperty>()
+            )
 
-                val type = propertyTypeRegistry.get(typeString)
-                    ?: error("Unknown property type: $typeString")
-                val value = type.decode(valueString)
+            config.properties.forEach { (key, prop) ->
+                val type = propertyTypeRegistry.get(prop.type) ?: return@forEach
+                val value = type.decode(prop.value)
 
                 npc.addProperty(
-                    BukkitNpcProperty(
-                        key, value, type
-                    )
+                    NpcProperty(key, value, type)
                 )
             }
 
             npcController.registerNpc(npc)
-            npc.show()
-        } catch (e: Exception) {
-            logger().atWarning().log("Failed to import NPC from file $fileName.yml: ${e.message}")
-            return false
-        }
-
-        return true
-    }
-
-    fun export(npc: Npc) {
-        val file = npcFolder.resolve("${npc.uniqueName}.yml").toFile()
-        val config = YamlConfiguration()
-
-        config["npc.data.id"] = npc.id
-        config["npc.data.uuid"] = npc.npcUuid.toString()
-        config["npc.data.nameTagId"] = npc.nameTagId
-        config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
-        config["npc.data.uniqueName"] = npc.uniqueName
-        config["npc.data.sittingId"] = npc.npcSittingId
-        config["npc.data.sittingUuid"] = npc.npcSittingUuid.toString()
-
-        config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
-        config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
-
-        npc.properties.values.forEach {
-            val path = "npc.data.properties.${it.key}"
-            config["$path.value"] = it.type.encode(it.value)
-            config["$path.type"] = it.type.id
-        }
-
-        config.save(file)
-    }
-
-    fun importAll(): Int {
-        val existingNames = npcController.getNpcs().map { it.uniqueName }.toSet()
-        val files = Files.list(npcFolder).filter { it.toString().endsWith(".yml") }.toList()
-        var importedCount = 0
-
-        files.forEach { path ->
-            val config = YamlConfiguration.loadConfiguration(path.toFile())
-
-            try {
-                val uniqueName = config.getString("npc.data.uniqueName")
-                    ?: error("Unique name is missing in NPC config file: ${path.fileName}")
-
-                if (existingNames.contains(uniqueName)) {
-                    return@forEach
-                }
-
-                val id = config.getInt("npc.data.id")
-                val uuid = UUID.fromString(config.getString("npc.data.uuid"))
-                val nameTagId = config.getInt("npc.data.nameTagId")
-                val nameTagUuid = UUID.fromString(
-                    config.getString("npc.data.nameTagUuid")
-                        ?: error("NameTag UUID is missing in NPC config file: ${path.fileName}")
-                )
-                val sittingId = config.getInt("npc.data.sittingId", random.nextInt())
-                val sittingUuid =
-                    config.getString("npc.data.sittingUuid")?.let { UUID.fromString(it) }
-                        ?: UUID.randomUUID()
-
-                val viewerAmount = config.getInt("npc.data.viewerAmount", -1)
-                val viewers = config.getStringList("npc.data.viewers").map(UUID::fromString)
-                    .toMutableObjectSet()
-
-                val npc = BukkitNpc(
-                    id = id,
-                    npcUuid = uuid,
-                    nameTagId = nameTagId,
-                    nameTagUuid = nameTagUuid,
-                    viewers = if (viewerAmount == -1) null else viewers,
-                    properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
-                    uniqueName = uniqueName,
-                    npcSittingId = sittingId,
-                    npcSittingUuid = sittingUuid,
-                )
-
-                val propsSection =
-                    config.getConfigurationSection("npc.data.properties") ?: return@forEach
-                val sectionKeys = propsSection.getKeys(false)
-
-                sectionKeys.forEach { key ->
-                    val valueString =
-                        config.getString("npc.data.properties.$key.value") ?: return@forEach
-                    val typeString =
-                        config.getString("npc.data.properties.$key.type") ?: return@forEach
-
-                    val type = propertyTypeRegistry.get(typeString)
-                        ?: error("Unknown property type: $typeString")
-                    val value = type.decode(valueString)
-
-                    npc.addProperty(
-                        BukkitNpcProperty(
-                            key, value, type
-                        )
-                    )
-                }
-
-                npcController.registerNpc(npc)
-                npc.show()
-                importedCount++
-            } catch (e: Exception) {
-                logger().atWarning()
-                    .log("Failed to import NPC from file ${path.fileName}: ${e.message}")
-            }
-        }
-        return importedCount
-    }
-
-
-    fun exportAll(): Int {
-        Files.list(npcFolder)
-            .filter { it.toString().endsWith(".yml") }
-            .forEach(Files::delete)
-
-        npcController.getNpcs().forEach { npc ->
-            val file = npcFolder.resolve("${npc.uniqueName}.yml").toFile()
-            val config = YamlConfiguration()
-
-            config["npc.data.id"] = npc.id
-            config["npc.data.uuid"] = npc.npcUuid.toString()
-            config["npc.data.nameTagId"] = npc.nameTagId
-            config["npc.data.nameTagUuid"] = npc.nameTagUuid.toString()
-            config["npc.data.uniqueName"] = npc.uniqueName
-            config["npc.data.sittingId"] = npc.npcSittingId
-            config["npc.data.sittingUuid"] = npc.npcSittingUuid.toString()
-
-            config["npc.data.viewerAmount"] = npc.viewers?.size ?: -1
-            config["npc.data.viewers"] = npc.viewers?.map(UUID::toString)
-
-            npc.properties.values.forEach {
-                val path = "npc.data.properties.${it.key}"
-                config["$path.value"] = it.type.encode(it.value)
-                config["$path.type"] = it.type.id
-            }
-
-            config.save(file)
+            configManagers[npc.uniqueName] = manager
         }
 
         return npcController.getNpcs().size
     }
 
-    fun reloadFromDisk(): Int {
-        npcController.despawnAllNpcs()
-        npcController.getNpcs().forEach { it.delete() }
+    fun save(npc: Npc) {
+        val dir = npcFolder.resolve(npc.uniqueName)
+        Files.createDirectories(dir)
 
-        return loadNpcs()
+        val manager = configManagers.getOrPut(npc.uniqueName) {
+            surfConfigApi.createSpongeYmlConfigManager(
+                NpcConfig::class.java,
+                dir,
+                "npc.yml"
+            )
+        }
+
+        manager.config.apply {
+            id = npc.id
+            npcUuid = npc.npcUuid
+            nameTagId = npc.nameTagId
+            nameTagUuid = npc.nameTagUuid
+            uniqueName = npc.uniqueName
+            sittingId = npc.npcSittingId
+            sittingUuid = npc.npcSittingUuid
+            viewerAmount = npc.viewers?.size ?: -1
+            viewers = npc.viewers?.toList() ?: emptyList()
+            properties = npc.properties.values.associate {
+                it.key to NpcPropertyConfig(
+                    type = it.type.id,
+                    value = it.type.encode(it.value)
+                )
+            }
+        }
+
+        manager.save()
     }
 
-    fun saveToDisk(): Int {
-        return saveNpcs()
+    fun saveAll(): Int {
+        npcController.getNpcs().forEach { save(it) }
+        return npcController.getNpcs().size
+    }
+
+    fun delete(npc: Npc) {
+        val dir = npcFolder.resolve(npc.uniqueName)
+        configManagers.remove(npc.uniqueName)
+        if (Files.exists(dir)) {
+            dir.toFile().deleteRecursively()
+        }
+    }
+
+    fun reload(): Int {
+        npcController.getNpcs().forEach { it.delete() }
+        configManagers.clear()
+        return loadAll()
     }
 }

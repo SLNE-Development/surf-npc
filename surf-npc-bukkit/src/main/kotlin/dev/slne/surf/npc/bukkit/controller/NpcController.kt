@@ -18,6 +18,7 @@ import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.bukkit.BukkitPackets
 import dev.slne.surf.npc.bukkit.plugin
 import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
+import dev.slne.surf.npc.bukkit.service.npcStorageService
 import dev.slne.surf.npc.bukkit.util.sendPacket
 import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
 import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
@@ -78,8 +79,17 @@ class NpcController {
         return npc
     }
 
+    fun registerNpc(npc: Npc) {
+        _npcs[npc.uniqueName] = npc
+    }
+
+    fun unregisterNpc(npc: Npc) {
+        _npcs.remove(npc.uniqueName)
+    }
+
     fun saveNpc(npc: Npc) {
         _npcs[npc.uniqueName] = npc
+        npcStorageService.save(npc)
     }
 
     fun addViewer(npc: Npc, uuid: UUID) {
