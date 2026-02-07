@@ -6,6 +6,7 @@ import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
+import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.paper.command.argument.npcArgument
 import dev.slne.surf.npc.paper.util.PermissionRegistry
@@ -31,7 +32,7 @@ fun CommandAPICommand.npcInfoCommand() = subcommand("info") {
             ?: error("NPC ${npc.uniqueName} has no location set")
 
         val rotationType =
-            npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, Boolean::class)
+            npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, NpcRotationType::class)
                 ?: error("NPC ${npc.uniqueName} has no rotation type set")
         val skinData = npc.getPropertyValue(NpcProperty.Internal.SKIN_DATA, NpcSkin::class)
             ?: error("NPC ${npc.uniqueName} has no skin data set")
@@ -81,7 +82,7 @@ fun CommandAPICommand.npcInfoCommand() = subcommand("info") {
             append(CommonComponents.EM_DASH)
             appendSpace()
             variableKey("Rotation: ")
-            variableValue(if (rotationType) "Per-Player" else "Fixed")
+            variableValue(rotationType.name)
             appendNewline()
 
             append(CommonComponents.EM_DASH)
