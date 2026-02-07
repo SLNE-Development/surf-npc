@@ -6,8 +6,8 @@ import org.bukkit.Location
 
 class LocationPropertyType(override val id: String) : NpcPropertyType {
     override fun encode(value: Any): String {
-        require(value is Location) { "Expected SNpcLocation, got ${value::class}" }
-        return "${value.world}:${value.x}:${value.y}:${value.z}"
+        require(value is Location) { "Expected Location, got ${value::class}" }
+        return "${value.world.name}:${value.x}:${value.y}:${value.z}"
     }
 
     override fun decode(value: String): Location {

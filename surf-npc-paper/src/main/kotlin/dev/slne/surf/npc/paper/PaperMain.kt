@@ -17,7 +17,7 @@ import dev.slne.surf.npc.paper.service.versionService
 import dev.slne.surf.surfapi.bukkit.api.event.register
 import org.bukkit.plugin.java.JavaPlugin
 
-class BukkitMain : SuspendingJavaPlugin() {
+class PaperMain : SuspendingJavaPlugin() {
     override fun onEnable() {
         PacketEvents.getAPI().eventManager.registerListener(
             NpcListener(),
@@ -39,6 +39,7 @@ class BukkitMain : SuspendingJavaPlugin() {
         propertyTypeRegistry.register(UuidPropertyType(NpcPropertyType.Types.UUID_ID))
         propertyTypeRegistry.register(NamedTextColorPropertyType(NpcPropertyType.Types.NAMED_TEXT_COLOR_ID))
         propertyTypeRegistry.register(SkinDataPropertyType(NpcPropertyType.Types.SKIN_DATA_ID))
+        propertyTypeRegistry.register(RotationTypePropertyType(NpcPropertyType.Types.ROTATION_TYPE_ID))
 
         npcStorageService.initialize()
         npcStorageService.loadAll()
@@ -55,4 +56,4 @@ class BukkitMain : SuspendingJavaPlugin() {
     }
 }
 
-val plugin get() = JavaPlugin.getPlugin(BukkitMain::class.java)
+val plugin get() = JavaPlugin.getPlugin(PaperMain::class.java)

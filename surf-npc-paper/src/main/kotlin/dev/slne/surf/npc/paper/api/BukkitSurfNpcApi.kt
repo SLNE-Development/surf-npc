@@ -120,7 +120,7 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
             NpcProperty(
                 NpcProperty.Internal.ROTATION_TYPE,
                 rotationType,
-                NpcPropertyType.Types.STRING_TYPE
+                NpcPropertyType.Types.ROTATION_TYPE_TYPE
             )
         )
     }
@@ -144,8 +144,8 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         npc.getPropertyValue(NpcProperty.Internal.PERSISTENCE, Boolean::class) ?: false
 
     override fun getRotationType(npc: Npc) =
-        npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, String::class)
-            ?.let { NpcRotationType.valueOf(it) } ?: NpcRotationType.PER_PLAYER
+        npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, NpcRotationType::class)
+            ?: NpcRotationType.PER_PLAYER
 
     override fun getProperties(npc: Npc) = npc.properties.values.toObjectSet()
 

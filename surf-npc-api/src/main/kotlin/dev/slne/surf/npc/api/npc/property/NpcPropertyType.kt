@@ -23,6 +23,7 @@ interface NpcPropertyType {
         val COMPONENT_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(COMPONENT_ID)
         val SKIN_DATA_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(SKIN_DATA_ID)
         val LOCATION_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(LOCATION_ID)
+        val ROTATION_TYPE_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(ROTATION_TYPE_ID)
 
         const val BOOLEAN_ID = "boolean"
 
@@ -75,5 +76,7 @@ interface NpcPropertyType {
          * Represents a skin data property type for an NPC.
          */
         const val SKIN_DATA_ID = "skin_data"
+
+        const val ROTATION_TYPE_ID = "rotation_type"
     }
 }

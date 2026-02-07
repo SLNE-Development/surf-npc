@@ -15,6 +15,7 @@ import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.entity.EntityType
 
 class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
     override fun onEnable() {
@@ -32,9 +33,10 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             }
 
             uniqueName = "example_npc"
+            type = EntityType.MANNEQUIN
 
             /**
-             * Skin data can be created using the DSL or by using the SurfNpcApi#getSkin function.
+             * Skin data can be created using the DSL or by using the [dev.slne.surf.npc.api.SurfNpcApi.fetchSkin] function.
              */
             skin {
                 ownerName = "YourSkinOwner"
