@@ -13,7 +13,7 @@ class WorldChangeListener : Listener {
         val player = event.player
         val world = player.world
 
-        npcController.getNpcs().mapNotNull {
+        npcController.npcs.mapNotNull {
             val npcLocation = it.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
             if (npcLocation?.world?.name == world.name) it to npcLocation else null
         }.forEach { (npc, _) ->

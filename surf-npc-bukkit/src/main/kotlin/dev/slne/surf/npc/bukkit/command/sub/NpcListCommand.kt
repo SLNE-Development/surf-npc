@@ -19,7 +19,7 @@ fun CommandAPICommand.npcListCommand() = subcommand("list") {
     withPermission(PermissionRegistry.COMMAND_NPC_LIST)
     integerArgument("page", optional = true)
     playerExecutor { player, args ->
-        val npcs = npcController.getNpcs()
+        val npcs = npcController.npcs
         val page = args.getOrDefaultUnchecked("page", 1)
 
         if (npcs.isEmpty()) {

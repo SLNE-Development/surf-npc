@@ -65,7 +65,7 @@ class NpcStorageService {
                 configManagers[npc.uniqueName] = manager
             }
 
-        return npcController.getNpcs().size
+        return npcController.npcs.size
     }
 
     fun save(npc: Npc) {
@@ -101,8 +101,8 @@ class NpcStorageService {
     }
 
     fun saveAll(): Int {
-        npcController.getNpcs().forEach { save(it) }
-        return npcController.getNpcs().size
+        npcController.npcs.forEach { save(it) }
+        return npcController.npcs.size
     }
 
     fun delete(npc: Npc) {
@@ -112,7 +112,7 @@ class NpcStorageService {
     }
 
     fun reload(): Int {
-        npcController.getNpcs().forEach { it.delete() }
+        npcController.npcs.forEach { it.delete() }
         configManagers.clear()
         return loadAll()
     }

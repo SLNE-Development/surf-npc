@@ -29,7 +29,7 @@ class NpcArgument(nodeName: String) :
     }) {
     init {
         replaceSuggestions(ArgumentSuggestions.stringCollection {
-            npcController.getNpcs().map { it.uniqueName }
+            npcController.npcs.map { it.uniqueName }
         })
     }
 }

@@ -17,7 +17,7 @@ class ConnectionListener : Listener {
     fun onConnect(event: PlayerJoinEvent) {
         val player = event.player
 
-        npcController.getNpcs()
+        npcController.npcs
             .filter {
                 val viewers = it.viewers
                 viewers == null || viewers.contains(player.uniqueId)

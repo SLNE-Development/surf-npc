@@ -21,7 +21,7 @@ class NpcListener : PacketListener {
 
         when (event.packetType) {
             PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION -> {
-                for (npc in npcController.getNpcs()) {
+                for (npc in npcController.npcs) {
                     val npcLoc =
                         npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
                             ?: continue
@@ -40,7 +40,7 @@ class NpcListener : PacketListener {
             }
 
             PacketType.Play.Client.PLAYER_POSITION -> {
-                for (npc in npcController.getNpcs()) {
+                for (npc in npcController.npcs) {
                     val npcLoc =
                         npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
                             ?: continue

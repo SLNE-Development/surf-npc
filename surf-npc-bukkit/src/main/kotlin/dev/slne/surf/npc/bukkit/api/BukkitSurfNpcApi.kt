@@ -159,7 +159,7 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
 
     override fun getNpc(id: Int) = npcController.getNpc(id)
     override fun getNpc(uniqueName: String) = npcController.getNpc(uniqueName)
-    override fun getNpcs() = npcController.getNpcs()
+    override fun getNpcs() = npcController.npcs
     override fun setPose(
         npc: Npc,
         pose: NpcPose
