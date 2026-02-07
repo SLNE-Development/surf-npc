@@ -10,6 +10,7 @@ import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
+import dev.slne.surf.npc.bukkit.util.skinDataFromName
 import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
@@ -40,6 +41,10 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         persistent,
         skin
     )
+
+    override fun fetchSkin(username: String): NpcSkin {
+        skinDataFromName(username)
+    }
 
     override fun saveNpc(npc: Npc) = npcController.saveNpc(npc)
 

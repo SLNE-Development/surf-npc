@@ -25,7 +25,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.bukkit.Location
 
 suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO) {
-    val uuid = PlayerLookupService.getUuid(name) ?: return@withContext skinDataDefault()
+    val uuid = PlayerLookupService.getUuid(name) ?: return@withContext NpcSkin.empty()
 
     val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {
@@ -44,26 +44,26 @@ suspend fun skinDataFromName(name: String): NpcSkin = withContext(Dispatchers.IO
         if (!response.status.isSuccess()) {
             logger().atSevere()
                 .log("Error retrieving skin data for $name: ${response.status.value} - ${response.status.description}")
-            return@withContext skinDataDefault()
+            return@withContext NpcSkin.empty()
         }
 
         val json = Json.parseToJsonElement(response.bodyAsText()).jsonObject
-        val properties = json["properties"]?.jsonArray ?: return@withContext skinDataDefault()
+        val properties = json["properties"]?.jsonArray ?: return@withContext NpcSkin.empty()
 
         val textureProperty = properties.firstOrNull {
             it.jsonObject["name"]?.jsonPrimitive?.content == "textures"
-        } ?: return@withContext skinDataDefault()
+        } ?: return@withContext NpcSkin.empty()
 
         val textureObj = textureProperty.jsonObject
         val value =
-            textureObj["value"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
+            textureObj["value"]?.jsonPrimitive?.content ?: return@withContext NpcSkin.empty()
         val signature =
-            textureObj["signature"]?.jsonPrimitive?.content ?: return@withContext skinDataDefault()
+            textureObj["signature"]?.jsonPrimitive?.content ?: return@withContext NpcSkin.empty()
 
         return@withContext NpcSkin(name, value, signature, NpcSkinPart.entries.toObjectSet())
     } catch (e: Exception) {
         logger().atSevere().log("Exception while retrieving skin data: ${e.message}")
-        return@withContext skinDataDefault()
+        return@withContext NpcSkin.empty()
     } finally {
         client.close()
     }
