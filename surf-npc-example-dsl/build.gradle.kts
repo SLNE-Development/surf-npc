@@ -14,6 +14,6 @@ surfPaperPluginApi {
     generateLibraryLoader(false)
     foliaSupported(true)
     serverDependencies {
-        registerRequired("surf-npc-bukkit")
+        registerRequired("surf-npc-paper")
     }
 }
