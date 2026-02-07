@@ -3,18 +3,15 @@ package dev.slne.surf.npc.bukkit.command.sub
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.*
-import dev.slne.surf.npc.api.npc.NpcCreatorType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
-import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.bukkit.command.argument.rotationTypeArgument
-import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
-import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
+import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.plugin
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.skinDataFromName
-import dev.slne.surf.npc.core.controller.npcController
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.entity.EntityType
 
 fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
     withPermission(PermissionRegistry.COMMAND_NPC_CREATE)
@@ -22,11 +19,13 @@ fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
     textArgument("name")
     stringArgument("skin")
     rotationTypeArgument("rotationType")
+    entityTypeArgument("type")
     playerExecutor { player, args ->
         val name: String by args
         val uniqueName: String by args
         val skin: String by args
         val rotationType: NpcRotationType by args
+        val type: EntityType by args
         val location = player.location
         val createdBy = player.name
 
@@ -47,24 +46,15 @@ fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
 
         plugin.launch {
             val skinData = skinDataFromName(skin)
-            val npcResult = npcController.createNpc(
-                uniqueName,
-                parsedName,
-                skinData,
-                BukkitNpcLocation(location.x, location.y, location.z, location.world.name),
-                rotationType,
-                BukkitNpcRotation(location.yaw, location.pitch),
+            npcController.createNpc(
+                displayName = parsedName,
+                uniqueName = uniqueName,
+                location = location,
+                skin = skinData,
+                rotationType = rotationType,
                 persistent = true,
-                npcCreatorType = NpcCreatorType.Client(createdBy)
+                type = type
             )
-
-            if (npcResult.isFailure()) {
-                player.sendText {
-                    appendErrorPrefix()
-                    error("Der Npc konnte nicht erstellt werden: ${(npcResult as? NpcCreationResult.Failure)?.reason}")
-                }
-                return@launch
-            }
 
             player.sendText {
                 appendSuccessPrefix()

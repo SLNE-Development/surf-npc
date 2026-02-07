@@ -6,7 +6,7 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.CustomArgument
 import dev.jorel.commandapi.arguments.StringArgument
 import dev.slne.surf.npc.api.npc.Npc
-import dev.slne.surf.npc.core.controller.npcController
+import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 
 class NpcArgument(nodeName: String) :

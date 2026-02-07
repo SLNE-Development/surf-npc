@@ -42,9 +42,7 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         skin
     )
 
-    override fun fetchSkin(username: String): NpcSkin {
-        skinDataFromName(username)
-    }
+    override suspend fun fetchSkin(username: String): NpcSkin = skinDataFromName(username)
 
     override fun saveNpc(npc: Npc) = npcController.saveNpc(npc)
 

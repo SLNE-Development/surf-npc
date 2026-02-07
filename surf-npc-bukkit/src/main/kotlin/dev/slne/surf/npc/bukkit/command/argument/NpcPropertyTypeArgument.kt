@@ -6,7 +6,7 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.CustomArgument
 import dev.jorel.commandapi.arguments.StringArgument
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import dev.slne.surf.npc.core.property.propertyTypeRegistry
+import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 
 class NpcPropertyTypeArgument(nodeName: String) :
