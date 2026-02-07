@@ -10,11 +10,10 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.command.argument.rotationTypeArgument
-import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
 import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
-import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import org.bukkit.Location
 
 fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
     withPermission(PermissionRegistry.COMMAND_NPC_EDIT_ROTATION)
@@ -28,19 +27,25 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
             BukkitNpcProperty(
                 NpcProperty.Internal.ROTATION_TYPE,
                 rotationType == NpcRotationType.PER_PLAYER,
-                propertyTypeRegistry.get(NpcPropertyType.Types.BOOLEAN_ID) ?: return@playerExecutor
+                NpcPropertyType.Types.BOOLEAN_TYPE
             )
         )
+
+        val prevLocation = npc.getLocation()
 
         if (rotationType == NpcRotationType.FIXED) {
             npc.addProperty(
                 BukkitNpcProperty(
-                    NpcProperty.Internal.R,
-                    BukkitNpcRotation(
-                        player.yaw, player.pitch
+                    NpcProperty.Internal.LOCATION,
+                    Location(
+                        prevLocation.world,
+                        prevLocation.x,
+                        prevLocation.y,
+                        prevLocation.z,
+                        player.yaw,
+                        player.pitch
                     ),
-                    propertyTypeRegistry.get(NpcPropertyType.Types.NPC_ROTATION_ID)
-                        ?: return@playerExecutor
+                    NpcPropertyType.Types.LOCATION_TYPE
                 )
             )
         }
