@@ -12,8 +12,8 @@ import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.command.argument.rotationTypeArgument
 import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
 import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
+import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
-import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
 fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
@@ -23,14 +23,6 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
     playerExecutor { player, args ->
         val npc: Npc by args
         val rotationType: NpcRotationType by args
-
-        if (npc.isFromPlugin()) {
-            player.sendText {
-                appendErrorPrefix()
-                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-            }
-            return@playerExecutor
-        }
 
         npc.addProperty(
             BukkitNpcProperty(
@@ -43,7 +35,7 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
         if (rotationType == NpcRotationType.FIXED) {
             npc.addProperty(
                 BukkitNpcProperty(
-                    NpcProperty.Internal.ROTATION_FIXED,
+                    NpcProperty.Internal.R,
                     BukkitNpcRotation(
                         player.yaw, player.pitch
                     ),

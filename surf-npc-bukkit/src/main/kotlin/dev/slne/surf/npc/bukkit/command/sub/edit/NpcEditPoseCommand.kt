@@ -20,14 +20,6 @@ fun CommandAPICommand.npcEditPoseCommand() = subcommand("pose") {
         val npc: Npc by args
         val pose: NpcPose by args
 
-        if (npc.isFromPlugin()) {
-            player.sendText {
-                appendErrorPrefix()
-                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-            }
-            return@playerExecutor
-        }
-
         npc.setPose(pose)
 
         player.sendText {

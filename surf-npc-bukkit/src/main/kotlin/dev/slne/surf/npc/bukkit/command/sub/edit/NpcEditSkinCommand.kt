@@ -14,7 +14,6 @@ import dev.slne.surf.npc.bukkit.plugin
 import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.skinDataFromName
-import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
 fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
@@ -24,14 +23,6 @@ fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
     playerExecutor { player, args ->
         val npc: Npc by args
         val skinPlayer: String by args
-
-        if (npc.isFromPlugin()) {
-            player.sendText {
-                appendErrorPrefix()
-                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-            }
-            return@playerExecutor
-        }
 
         player.sendText {
             appendInfoPrefix()
@@ -48,7 +39,7 @@ fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
                 BukkitNpcProperty(
                     NpcProperty.Internal.SKIN_DATA,
                     skinData,
-                    propertyTypeRegistry.get(NpcPropertyType.Types.SKIN_DATA_ID) ?: return@launch
+                    NpcPropertyType.Types.SKIN_DATA_TYPE
                 )
             )
             npc.refresh()

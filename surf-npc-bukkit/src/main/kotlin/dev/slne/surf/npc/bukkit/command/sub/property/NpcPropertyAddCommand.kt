@@ -25,14 +25,6 @@ fun CommandAPICommand.npcPropertyAddCommand() = subcommand("add") {
         val value: String by args
         val propertyType: NpcPropertyType by args
 
-        if (npc.isFromPlugin()) {
-            player.sendText {
-                appendErrorPrefix()
-                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-            }
-            return@playerExecutor
-        }
-
         val exists = npc.hasProperty(key)
 
         npc.addProperty(

@@ -19,14 +19,6 @@ fun CommandAPICommand.npcPropertyRemoveCommand() = subcommand("remove") {
         val npc: Npc by args
         val key: String by args
 
-        if (npc.isFromPlugin()) {
-            player.sendText {
-                appendErrorPrefix()
-                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-            }
-            return@playerExecutor
-        }
-
         if (!npc.hasProperty(key)) {
             player.sendText {
                 appendErrorPrefix()

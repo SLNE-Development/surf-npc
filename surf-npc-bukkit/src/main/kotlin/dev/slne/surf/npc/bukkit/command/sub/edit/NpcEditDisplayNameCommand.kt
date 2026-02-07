@@ -12,7 +12,6 @@ import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.miniMessage
-import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
 fun CommandAPICommand.npcEditDisplayNameCommand() = subcommand("displayname") {
@@ -25,20 +24,11 @@ fun CommandAPICommand.npcEditDisplayNameCommand() = subcommand("displayname") {
 
         val name = miniMessage.deserialize(displayName)
 
-        if (npc.isFromPlugin()) {
-            player.sendText {
-                appendErrorPrefix()
-                error("Der Npc wurde von einem Plugin erstellt und kann daher nicht bearbeitet werden.")
-            }
-            return@playerExecutor
-        }
-
         npc.addProperty(
             BukkitNpcProperty(
                 NpcProperty.Internal.DISPLAYNAME,
                 name,
-                propertyTypeRegistry.get(NpcPropertyType.Types.COMPONENT_ID)
-                    ?: return@playerExecutor
+                NpcPropertyType.Types.COMPONENT_TYPE
             )
         )
 
