@@ -16,6 +16,7 @@ import dev.slne.surf.npc.bukkit.util.toEntityPose
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.entity.EntityType
 import java.util.*
 import com.github.retrooper.packetevents.protocol.world.Location as PacketLocation
 import org.bukkit.Location as BukkitLocation
@@ -28,15 +29,18 @@ sealed class BukkitPackets {
             val entityId: Int,
             val uuid: UUID,
             val location: BukkitLocation,
-            val yaw: Float,
-            val pitch: Float
+            val type: EntityType
         ) : NpcPackets() {
             override fun build() = WrapperPlayServerSpawnEntity(
                 entityId,
                 uuid,
-                EntityTypes.MANNEQUIN,
-                PacketLocation(Vector3d(location.x, location.y, location.z), yaw, pitch),
-                yaw,
+                SpigotConversionUtil.fromBukkitEntityType(type),
+                PacketLocation(
+                    Vector3d(location.x, location.y, location.z),
+                    location.yaw,
+                    location.pitch
+                ),
+                location.yaw,
                 0,
                 null
             )

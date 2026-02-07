@@ -1,16 +1,16 @@
-package dev.slne.surf.npc.bukkit.npc.property.impl
+package dev.slne.surf.npc.bukkit.property.impl
 
-import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
+import dev.slne.surf.npc.bukkit.controller.locationOf
+import org.bukkit.Location
 
-class NpcLocationPropertyType(override val id: String) : NpcPropertyType {
+class LocationPropertyType(override val id: String) : NpcPropertyType {
     override fun encode(value: Any): String {
-        require(value is NpcLocation) { "Expected SNpcLocation, got ${value::class}" }
+        require(value is Location) { "Expected SNpcLocation, got ${value::class}" }
         return "${value.world}:${value.x}:${value.y}:${value.z}"
     }
 
-    override fun decode(value: String): NpcLocation {
+    override fun decode(value: String): Location {
         val parts = value.split(":")
         require(parts.size == 4) { "Invalid location format: $value" }
 
@@ -22,7 +22,7 @@ class NpcLocationPropertyType(override val id: String) : NpcPropertyType {
         val z = parts[3].toDoubleOrNull()
             ?: throw IllegalArgumentException("Invalid Z coordinate: ${parts[3]}")
 
-        return BukkitNpcLocation(x, y, z, worldName)
+        return locationOf(worldName, x, y, z)
     }
 }
 

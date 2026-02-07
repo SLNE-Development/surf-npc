@@ -3,29 +3,19 @@ package dev.slne.surf.npc.bukkit.api
 import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.npc.Npc
-import dev.slne.surf.npc.api.npc.NpcCreatorType
-import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
-import dev.slne.surf.npc.api.result.NpcCreationResult
-import dev.slne.surf.npc.api.result.NpcDeletionResult
-import dev.slne.surf.npc.bukkit.npc.location.BukkitNpcLocation
-import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
-import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
-import dev.slne.surf.npc.bukkit.npc.skin.BukkitNpcSkin
-import dev.slne.surf.npc.bukkit.util.skinDataFromName
-import dev.slne.surf.npc.core.controller.npcController
-import dev.slne.surf.npc.core.property.propertyTypeRegistry
-import it.unimi.dsi.fastutil.objects.ObjectList
+import dev.slne.surf.npc.bukkit.controller.npcController
+import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
+import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.util.Services
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.Location
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import java.util.*
 
 @AutoService(SurfNpcApi::class)
@@ -33,139 +23,137 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
     override fun createNpc(
         displayName: Component,
         uniqueName: String,
-        skin: NpcSkin,
-        location: NpcLocation,
+        type: EntityType,
+        location: Location,
         viewers: ObjectSet<UUID>?,
         rotationType: NpcRotationType,
-        fixedRotation: NpcRotation?,
         persistent: Boolean,
-        glowing: Boolean,
-        glowingColor: NamedTextColor,
-        plugin: JavaPlugin,
-        npcCreatorType: NpcCreatorType
-    ): NpcCreationResult {
-        return npcController.createNpc(
-            uniqueName,
-            displayName,
-            skin,
-            location,
-            rotationType,
-            fixedRotation ?: BukkitNpcRotation(0f, 0f),
-            viewers,
-            persistent,
-            glowing,
-            glowingColor,
-            NpcCreatorType.Plugin(plugin.name)
+        skin: NpcSkin
+    ) = npcController.createNpc(
+        displayName,
+        uniqueName,
+        type,
+        location,
+        viewers,
+        rotationType,
+        persistent,
+        skin
+    )
+
+    override fun saveNpc(npc: Npc) = npcController.saveNpc(npc)
+
+    override fun addViewer(npc: Npc, uuid: UUID) = npcController.addViewer(npc, uuid)
+    override fun removeViewer(npc: Npc, uuid: UUID) = npcController.removeViewer(npc, uuid)
+    override fun hasViewer(
+        npc: Npc,
+        uuid: UUID
+    ) = npcController.hasViewer(npc, uuid)
+
+    override fun clearViewers(npc: Npc) = npcController.clearViewers(npc)
+
+    override fun teleport(npc: Npc, player: Player) = npcController.teleport(npc, player)
+    override fun editNpc(
+        npc: Npc,
+        edit: Npc.() -> Unit
+    ) = npcController.editNpc(npc, edit)
+
+    override fun refreshNpc(npc: Npc) = npcController.refreshNpc(npc)
+    override fun refreshRotation(npc: Npc) = npcController.refreshRotation(npc)
+    override fun deleteNpc(npc: Npc) = npcController.deleteNpc(npc)
+    override fun showNpc(npc: Npc) = npcController.showNpc(npc)
+    override fun hideNpc(npc: Npc) = npcController.hideNpc(npc)
+    override fun setDisplayName(
+        npc: Npc,
+        displayName: Component
+    ) = npcController.editNpc(npc) {
+        this.addProperty(
+            NpcProperty(
+                NpcProperty.Internal.DISPLAYNAME,
+                displayName,
+                NpcPropertyType.Types.COMPONENT_TYPE
+            )
         )
     }
 
-    override fun deleteNpc(npc: Npc): NpcDeletionResult {
-        return npcController.deleteNpc(npc)
+    override fun setSkinData(
+        npc: Npc,
+        skin: NpcSkin
+    ) = npcController.editNpc(npc) {
+        this.addProperty(
+            NpcProperty(
+                NpcProperty.Internal.SKIN_DATA,
+                skin,
+                NpcPropertyType.Types.SKIN_DATA_TYPE
+            )
+        )
     }
 
-    override fun showNpc(npc: Npc, uuid: UUID) {
-        npcController.showNpc(npc, uuid)
+    override fun setLocation(npc: Npc, location: Location) = npcController.editNpc(npc) {
+        this.addProperty(
+            NpcProperty(
+                NpcProperty.Internal.LOCATION,
+                location,
+                NpcPropertyType.Types.LOCATION_TYPE
+            )
+        )
     }
 
-    override fun hideNpc(npc: Npc, uuid: UUID) {
-        npcController.hideNpc(npc, uuid)
-    }
-
-    override fun setSkin(npc: Npc, skin: NpcSkin) {
-        npcController.setSkin(npc, skin)
+    override fun setPersistence(npc: Npc, persistent: Boolean) = npcController.editNpc(npc) {
+        this.addProperty(
+            NpcProperty(
+                NpcProperty.Internal.PERSISTENCE,
+                persistent,
+                NpcPropertyType.Types.BOOLEAN_TYPE
+            )
+        )
     }
 
     override fun setRotationType(
         npc: Npc,
         rotationType: NpcRotationType
-    ) {
-        npcController.setRotationType(npc, rotationType)
+    ) = npcController.editNpc(npc) {
+        this.addProperty(
+            NpcProperty(
+                NpcProperty.Internal.ROTATION_TYPE,
+                rotationType,
+                NpcPropertyType.Types.STRING_TYPE
+            )
+        )
     }
 
-    override fun setRotation(npc: Npc, rotation: NpcRotation) {
-        npcController.setRotation(npc, rotation)
-    }
+    override fun getDisplayName(npc: Npc) =
+        npc.getPropertyValue(NpcProperty.Internal.DISPLAYNAME, Component::class)
+            ?: Component.empty()
 
-    override fun getProperties(npc: Npc): ObjectSet<NpcProperty> {
-        return npcController.getProperties(npc)
-    }
+    override fun getSkinData(npc: Npc) =
+        npc.getPropertyValue(NpcProperty.Internal.SKIN_DATA, NpcSkin::class)
+
+    override fun getLocation(npc: Npc) =
+        npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class) ?: Location(
+            null,
+            0.0,
+            0.0,
+            0.0
+        )
+
+    override fun isPersistent(npc: Npc) =
+        npc.getPropertyValue(NpcProperty.Internal.PERSISTENCE, Boolean::class) ?: false
+
+    override fun getRotationType(npc: Npc) =
+        npc.getPropertyValue(NpcProperty.Internal.ROTATION_TYPE, String::class)
+            ?.let { NpcRotationType.valueOf(it) } ?: NpcRotationType.PER_PLAYER
+
+    override fun getProperties(npc: Npc) = npc.properties.values.toObjectSet()
 
     override fun addProperty(
         npc: Npc,
         property: NpcProperty
-    ): Boolean {
-        return npcController.addProperty(npc, property)
-    }
+    ) = npc.addProperty(property)
 
-    override fun removeProperty(
-        npc: Npc,
-        key: String
-    ): Boolean {
-        return npcController.removeProperty(npc, key)
-    }
+    override fun getPropertyTypeOrThrow(id: String) =
+        propertyTypeRegistry.get(id) ?: error("Property type with id '$id' not found")
 
-    override fun createProperty(
-        key: String,
-        value: Any,
-        type: NpcPropertyType
-    ): NpcProperty {
-        return BukkitNpcProperty(key, value, type)
-    }
-
-    override suspend fun getSkin(name: String): NpcSkin {
-        return skinDataFromName(name)
-    }
-
-    override fun getNpc(id: Int): Npc? {
-        return npcController.getNpc(id)
-    }
-
-    override fun getNpc(uniqueName: String): Npc? {
-        return npcController.getNpc(uniqueName)
-    }
-
-    override fun getNpcs(): ObjectList<Npc> {
-        return npcController.getNpcs()
-    }
-
-    override fun despawnAllNpcs() {
-        npcController.despawnAllNpcs()
-    }
-
-    override fun createRotation(
-        yaw: Float,
-        pitch: Float
-    ): NpcRotation {
-        return BukkitNpcRotation(yaw, pitch)
-    }
-
-    override fun createSkinData(
-        owner: String,
-        value: String,
-        signature: String,
-        parts: ObjectSet<NpcSkinPart>
-    ): NpcSkin {
-        return BukkitNpcSkin(owner, value, signature, parts)
-    }
-
-    override fun createLocation(
-        x: Double,
-        y: Double,
-        z: Double,
-        worldName: String
-    ): NpcLocation {
-        return BukkitNpcLocation(x, y, z, worldName)
-    }
-
-    override fun registerPropertyType(type: NpcPropertyType) {
-        propertyTypeRegistry.register(type)
-    }
-
-    override fun unregisterPropertyType(type: NpcPropertyType) {
-        propertyTypeRegistry.unregister(type)
-    }
-
-    override fun getPropertyType(id: String): NpcPropertyType? {
-        return propertyTypeRegistry.get(id)
-    }
+    override fun getNpc(id: Int) = npcController.getNpc(id)
+    override fun getNpc(uniqueName: String) = npcController.getNpc(uniqueName)
+    override fun getNpcs() = npcController.getNpcs()
 }

@@ -1,36 +1,33 @@
 package dev.slne.surf.npc.bukkit.service
 
-import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
-import dev.slne.surf.npc.bukkit.npc.BukkitNpc
-import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
+import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.plugin
-import dev.slne.surf.npc.core.controller.npcController
-import dev.slne.surf.npc.core.property.propertyTypeRegistry
-import dev.slne.surf.npc.core.service.StorageService
+import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
+import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
 import dev.slne.surf.surfapi.core.api.util.random
 import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
-import net.kyori.adventure.util.Services
 import org.bukkit.configuration.file.YamlConfiguration
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
-@AutoService(StorageService::class)
-class BukkitStorageService : StorageService, Services.Fallback {
+val storageService = StorageService()
+
+class StorageService {
     private val npcFolder: Path
         get() = plugin.dataPath.resolve("npcs")
 
-    override fun initialize() {
+    fun initialize() {
         if (!Files.exists(npcFolder)) {
             Files.createDirectories(npcFolder)
         }
     }
 
-    override fun loadNpcs(): Int {
+    fun loadNpcs(): Int {
         val files = Files.list(npcFolder).filter { it.toString().endsWith(".yml") }.toList()
 
         files.forEach { path ->
@@ -101,7 +98,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
         return npcController.getNpcs().size
     }
 
-    override fun saveNpcs(): Int {
+    fun saveNpcs(): Int {
         Files.list(npcFolder)
             .filter { it.toString().endsWith(".yml") }
             .forEach(Files::delete)
@@ -136,7 +133,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
         return staticNpcs.size
     }
 
-    override fun import(fileName: String): Boolean {
+    fun import(fileName: String): Boolean {
         val file = npcFolder.resolve("$fileName.yml").toFile()
 
         if (!file.exists()) {
@@ -210,7 +207,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
         return true
     }
 
-    override fun export(npc: Npc) {
+    fun export(npc: Npc) {
         val file = npcFolder.resolve("${npc.uniqueName}.yml").toFile()
         val config = YamlConfiguration()
 
@@ -234,7 +231,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
         config.save(file)
     }
 
-    override fun importAll(): Int {
+    fun importAll(): Int {
         val existingNames = npcController.getNpcs().map { it.uniqueName }.toSet()
         val files = Files.list(npcFolder).filter { it.toString().endsWith(".yml") }.toList()
         var importedCount = 0
@@ -311,7 +308,7 @@ class BukkitStorageService : StorageService, Services.Fallback {
     }
 
 
-    override fun exportAll(): Int {
+    fun exportAll(): Int {
         Files.list(npcFolder)
             .filter { it.toString().endsWith(".yml") }
             .forEach(Files::delete)
@@ -343,14 +340,14 @@ class BukkitStorageService : StorageService, Services.Fallback {
         return npcController.getNpcs().size
     }
 
-    override fun reloadFromDisk(): Int {
+    fun reloadFromDisk(): Int {
         npcController.despawnAllNpcs()
         npcController.getNpcs().forEach { it.delete() }
 
         return loadNpcs()
     }
 
-    override fun saveToDisk(): Int {
+    fun saveToDisk(): Int {
         return saveNpcs()
     }
 }

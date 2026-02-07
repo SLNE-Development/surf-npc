@@ -3,11 +3,9 @@ package dev.slne.surf.npc.api.dsl
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
 import dev.slne.surf.npc.api.surfNpcApi
-import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 

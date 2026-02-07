@@ -1,13 +1,21 @@
 package dev.slne.surf.npc.api.npc
 
 import dev.slne.surf.npc.api.event.NpcEvent
-import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
+import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
+import dev.slne.surf.npc.api.surfNpcApi
+import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
+import dev.slne.surf.surfapi.core.api.util.mutableObjectListOf
+import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
+import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.reflect.KClass
@@ -23,232 +31,97 @@ typealias NpcEventHandler<T> = (T) -> Unit
 /**
  * Represents a non-player character (NPC) in the game.
  */
-interface Npc {
-    /**
-     * The unique identifier of the NPC.
-     */
-    val id: Int
-
-    /**
-     * The unique name of the NPC.
-     */
-    val uniqueName: String
-
-    /**
-     * The UUID of the NPC.
-     */
-    val npcUuid: UUID
-
-    /**
-     * The unique identifier for the NPC's name tag.
-     */
-    val nameTagId: Int
-
-    /**
-     * The UUID associated with the NPC's name tag.
-     */
-    val nameTagUuid: UUID
-
-    /**
-     * A map of properties associated with the NPC.
-     */
-    val properties: Object2ObjectMap<String, NpcProperty>
-
-    /**
-     * A set of UUIDs representing players who can view the NPC,
-     * if the list is null, everyone can see it.
-     */
-    val viewers: ObjectSet<UUID>?
-
-    /**
-     * Represents the unique identifier for the NPC's sitting state.
-     *
-     * This identifier corresponds to the NPC's sitting entity, such as an invisible armor stand.
-     * It is used to manage and reference the sitting state of the NPC.
-     */
-    val npcSittingId: Int
-
-    /**
-     * Represents the unique identifier (UUID) associated with an NPC's sitting entity.
-     * This UUID is primarily used to manage and interact with the sitting entity of the NPC,
-     * such as spawning or assigning specific behaviors or properties.
-     */
+data class Npc(
+    val id: Int,
+    val uniqueName: String,
+    val entityType: EntityType,
+    val npcUuid: UUID,
+    val nameTagId: Int,
+    val nameTagUuid: UUID,
+    val properties: Object2ObjectMap<String, NpcProperty>,
+    val viewers: ObjectSet<UUID>?,
+    val npcSittingId: Int,
     val npcSittingUuid: UUID
+) {
+    private val eventHandlers =
+        mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
 
-    /**
-     * Spawns the NPC for a specific player.
-     *
-     * @param uuid The UUID of the player.
-     */
-    fun spawn(uuid: UUID)
+    fun show() = surfNpcApi.showNpc(this)
+    fun hide() = surfNpcApi.hideNpc(this)
 
-    /**
-     * Despawns the NPC for a specific player.
-     *
-     * @param uuid The UUID of the player.
-     */
-    fun despawn(uuid: UUID)
+    fun refresh() = surfNpcApi.refreshNpc(this)
+    fun refreshRotation(uuid: UUID) = surfNpcApi.refreshRotation(this)
 
-    /**
-     * Refreshes the NPC's state.
-     */
-    fun refresh()
+    fun delete() = surfNpcApi.deleteNpc(this)
+    fun teleport(player: Player) = surfNpcApi.teleport(this, player)
+    fun retrieveViewers(): ObjectSet<UUID> =
+        viewers ?: Bukkit.getOnlinePlayers().map { it.uniqueId }.toObjectSet()
 
-    /**
-     * Refreshes the rotation of the NPC for a specific player.
-     *
-     * @param uuid The UUID of the player.
-     */
-    fun refreshRotation(uuid: UUID)
+    fun forEachViewer(action: (UUID) -> Unit) = retrieveViewers().forEach(action)
 
-    /**
-     * Deletes the NPC from the game.
-     */
-    fun delete()
+    fun addProperty(property: NpcProperty) = surfNpcApi.editNpc(this) {
+        this.properties[property.key] = property
+    }
 
-    /**
-     * Teleports the NPC to a player's location.
-     *
-     * @param player The player to teleport the NPC to.
-     */
-    fun teleport(player: Player)
+    fun addProperties(vararg properties: Triple<String, Any, NpcPropertyType>) =
+        surfNpcApi.editNpc(this) {
+            properties.forEach { (key, value, type) ->
+                this.properties[key] = NpcProperty(key, value, type)
+            }
+        }
 
+    fun addProperties(vararg properties: NpcProperty) = surfNpcApi.editNpc(this) {
+        properties.forEach { this.properties[it.key] = it }
+    }
 
-    /**
-     * Retrieves the set of UUIDs representing players who can view the NPC.
-     * Returns the viewer list, or if null all online players
-     *
-     *
-     * @return A set of UUIDs of players who can view the NPC, or null if the NPC is visible to all players.
-     */
-    fun retrieveViewers(): ObjectSet<UUID>
+    fun getProperty(key: String): NpcProperty? = properties[key]
 
-    fun forEachViewer(action: (UUID) -> Unit)
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> getPropertyValue(key: String, clazz: KClass<T>): T? =
+        getProperty(key)?.value as? T
 
-    /**
-     * Makes the NPC visible to all players.
-     */
-    fun show()
+    fun removeProperty(key: String) = surfNpcApi.editNpc(this) {
+        this.properties.remove(key)
+    }
 
-    /**
-     * Hides the NPC from all players.
-     */
-    fun hide()
+    fun hasProperty(key: String): Boolean = getProperty(key) != null
+    fun clearProperties() = surfNpcApi.editNpc(this) {
+        this.properties.clear()
+    }
 
-    /**
-     * Adds a property to the NPC.
-     *
-     * @param property The property to add.
-     */
-    fun addProperty(property: NpcProperty)
+    fun hasProperties(): Boolean = properties.isNotEmpty()
 
-    /**
-     * Adds multiple properties to the NPC.
-     *
-     * @param properties A variable number of properties to add, each represented as a Triple containing the key, value, and type.
-     */
-    fun addProperties(vararg properties: Triple<String, Any, NpcPropertyType>)
-
-    /**
-     * Checks if the NPC is static, meaning it has a persistence property set to true.
-     * If the NPC is static, it will be persistent across server restarts.
-     */
     fun isStatic() =
         properties.any { it.key == NpcProperty.Internal.PERSISTENCE && it.value.value as? Boolean ?: false }
 
-    /**
-     * Checks if the NPC is created by a plugin.
-     *
-     * @return True if the NPC is created by a plugin, false otherwise.
-     */
-    fun isFromPlugin() =
-        properties.any { it.key == NpcProperty.Internal.CREATOR_TYPE && it.value.value is NpcCreatorType.Plugin }
+    fun <T : NpcEvent> addEventHandler(eventClass: KClass<T>, handler: NpcEventHandler<T>) =
+        eventHandlers.computeIfAbsent(eventClass) { mutableObjectListOf() }
+            .add(handler)
 
+    fun <T : NpcEvent> removeEventHandler(eventClass: KClass<T>, handler: NpcEventHandler<T>) =
+        eventHandlers[eventClass]?.remove(handler)
 
-    /**
-     * Adds properties to the NPC.
-     *
-     * @param properties The properties to add.
-     */
-    fun addProperties(vararg properties: NpcProperty)
+    @Suppress("UNCHECKED_CAST")
+    fun <T : NpcEvent> callHandlers(event: T) =
+        eventHandlers[event::class]?.forEach { (it as NpcEventHandler<T>)(event) }
 
-    /**
-     * Retrieves a property of the NPC by its key.
-     *
-     * @param key The key of the property.
-     * @return The property associated with the key, or null if not found.
-     */
-    fun getProperty(key: String): NpcProperty?
+    fun save() = surfNpcApi.saveNpc(this)
 
-    /**
-     * Retrieves the value of a property by its key and type.
-     *
-     * @param key The key of the property.
-     * @param clazz The class type of the property value.
-     * @return The value of the property, or null if not found.
-     */
-    fun <T : Any> getPropertyValue(key: String, clazz: KClass<T>): T?
+    fun addViewer(uuid: UUID) = surfNpcApi.addViewer(this, uuid)
+    fun removeViewer(uuid: UUID) = surfNpcApi.removeViewer(this, uuid)
+    fun hasViewer(uuid: UUID): Boolean = surfNpcApi.hasViewer(this, uuid)
+    fun clearViewers() = surfNpcApi.clearViewers(this)
 
-    /**
-     * Removes a property from the NPC by its key.
-     *
-     * @param key The key of the property to remove.
-     */
-    fun removeProperty(key: String)
+    fun setDisplayName(displayName: Component) = surfNpcApi.setDisplayName(this, displayName)
+    fun setSkinData(skin: NpcSkin) = surfNpcApi.setSkinData(this, skin)
+    fun setLocation(location: Location) = surfNpcApi.setLocation(this, location)
+    fun setPersistence(persistent: Boolean) = surfNpcApi.setPersistence(this, persistent)
+    fun setRotationType(rotationType: NpcRotationType) =
+        surfNpcApi.setRotationType(this, rotationType)
 
-    /**
-     * Checks if the NPC has a specific property.
-     *
-     * @param key The key of the property.
-     * @return True if the property exists, false otherwise.
-     */
-    fun hasProperty(key: String): Boolean
-
-    /**
-     * Clears all properties from the NPC.
-     */
-    fun clearProperties()
-
-    /**
-     * Checks if the NPC has any properties.
-     *
-     * @return True if the NPC has properties, false otherwise.
-     */
-    fun hasProperties(): Boolean
-
-
-    /**
-     * Registers an event handler for a specific type of NPC event.
-     *
-     * @param T The type of the event that the handler will process.
-     * @param eventClass The class of the event to handle.
-     * @param handler The handler to be invoked when the event occurs.
-     */
-    fun <T : NpcEvent> addEventHandler(eventClass: KClass<T>, handler: NpcEventHandler<T>)
-
-    /**
-     * Removes a previously registered event handler for a specific NPC event type.
-     *
-     * @param eventClass The class of the event type for which the handler is to be removed.
-     * @param handler The handler instance to be removed from the event type.
-     */
-    fun <T : NpcEvent> removeEventHandler(eventClass: KClass<T>, handler: NpcEventHandler<T>)
-
-    /**
-     * Invokes all registered event handlers for the given event.
-     *
-     * @param event The event to be handled. The event must be a subclass of [NpcEvent].
-     */
-    fun <T : NpcEvent> callHandlers(event: T)
-
-    /**
-     * Updates the pose of the NPC to the specified pose.
-     *
-     * @param pose The new pose to set for the NPC. Acceptable values are defined in the [NpcPose] enum.
-     */
-    fun setPose(pose: NpcPose)
-
-    fun getSkinData(): NpcSkin
-    fun getDisplayName(): Component
-    fun getLocation(): NpcLocation
+    fun getDisplayName(): Component = surfNpcApi.getDisplayName(this)
+    fun getSkinData(): NpcSkin? = surfNpcApi.getSkinData(this)
+    fun getLocation(): Location = surfNpcApi.getLocation(this)
+    fun isPersistent(): Boolean = surfNpcApi.isPersistent(this)
+    fun getRotationType(): NpcRotationType = surfNpcApi.getRotationType(this)
 }

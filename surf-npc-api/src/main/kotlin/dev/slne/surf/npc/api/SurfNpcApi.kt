@@ -1,258 +1,68 @@
 package dev.slne.surf.npc.api
 
 import dev.slne.surf.npc.api.npc.Npc
-import dev.slne.surf.npc.api.npc.NpcCreatorType
-import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
-import dev.slne.surf.npc.api.result.NpcCreationResult
-import dev.slne.surf.npc.api.result.NpcDeletionResult
-import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.surfapi.core.api.util.requiredService
-import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.Location
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import java.util.*
 
-/**
- * API for managing NPCs (Non-Player Characters) in the Surf framework.
- */
 interface SurfNpcApi {
-
-    /**
-     * Creates a new NPC.
-     *
-     * @param displayName The display name of the NPC.
-     * @param uniqueName The unique name of the NPC.
-     * @param skin The skin data of the NPC.
-     * @param location The location of the NPC.
-     * @param viewers The set of UUIDs of players who can see the NPC (default: null, meaning all players).
-     * @param rotationType The rotation type of the NPC (default: FIXED).
-     * @param fixedRotation The fixed rotation of the NPC, if applicable (default: null).
-     * @param persistent Whether the NPC should be persistent (default: false).
-     * @param glowing Whether the NPC should glow (default: false).
-     * @param glowingColor The color of the glow effect (default: NamedTextColor.WHITE).
-     * @return The result of the NPC creation.
-     */
     fun createNpc(
         displayName: Component,
         uniqueName: String,
-        skin: NpcSkin,
-        location: NpcLocation,
+        type: EntityType,
+        location: Location,
         viewers: ObjectSet<UUID>? = null,
         rotationType: NpcRotationType = NpcRotationType.PER_PLAYER,
-        fixedRotation: NpcRotation? = null,
         persistent: Boolean = false,
-        glowing: Boolean = false,
-        glowingColor: NamedTextColor = NamedTextColor.WHITE,
-        plugin: JavaPlugin,
-        npcCreatorType: NpcCreatorType = NpcCreatorType.Plugin(plugin.name)
-    ): NpcCreationResult
+        skin: NpcSkin = NpcSkin.empty(),
+    ): Npc
 
-    /**
-     * Deletes an existing NPC.
-     *
-     * @param npc The NPC to delete.
-     * @return The result of the NPC deletion.
-     */
-    fun deleteNpc(npc: Npc): NpcDeletionResult
+    fun saveNpc(npc: Npc)
+    fun addViewer(npc: Npc, uuid: UUID)
+    fun removeViewer(npc: Npc, uuid: UUID)
+    fun hasViewer(npc: Npc, uuid: UUID): Boolean
+    fun clearViewers(npc: Npc)
 
-    /**
-     * Shows an NPC to a specific player.
-     *
-     * @param npc The NPC to show.
-     * @param uuid The UUID of the player.
-     */
-    fun showNpc(npc: Npc, uuid: UUID)
+    fun teleport(npc: Npc, player: Player)
 
-    /**
-     * Hides an NPC from a specific player.
-     *
-     * @param npc The NPC to hide.
-     * @param uuid The UUID of the player.
-     */
-    fun hideNpc(npc: Npc, uuid: UUID)
+    fun editNpc(npc: Npc, edit: Npc.() -> Unit)
+    fun refreshNpc(npc: Npc)
+    fun refreshRotation(npc: Npc)
+    fun deleteNpc(npc: Npc)
+    fun showNpc(npc: Npc)
+    fun hideNpc(npc: Npc)
 
-    /**
-     * Sets the skin of an NPC.
-     *
-     * @param npc The NPC to update.
-     * @param skin The new skin data.
-     */
-    fun setSkin(npc: Npc, skin: NpcSkin)
-
-    /**
-     * Sets the rotation type of an NPC.
-     *
-     * @param npc The NPC to update.
-     * @param rotationType The new rotation type.
-     */
+    fun setDisplayName(npc: Npc, displayName: Component)
+    fun setSkinData(npc: Npc, skin: NpcSkin)
+    fun setLocation(npc: Npc, location: Location)
+    fun setPersistence(npc: Npc, persistent: Boolean)
     fun setRotationType(npc: Npc, rotationType: NpcRotationType)
 
-    /**
-     * Sets the rotation of an NPC.
-     *
-     * @param npc The NPC to update.
-     * @param rotation The new rotation.
-     */
-    fun setRotation(npc: Npc, rotation: NpcRotation)
+    fun getDisplayName(npc: Npc): Component
+    fun getSkinData(npc: Npc): NpcSkin?
+    fun getLocation(npc: Npc): Location
+    fun isPersistent(npc: Npc): Boolean
+    fun getRotationType(npc: Npc): NpcRotationType
 
-    /**
-     * Retrieves the properties of an NPC.
-     *
-     * @param npc The NPC whose properties are to be retrieved.
-     * @return A set of properties associated with the NPC.
-     */
     fun getProperties(npc: Npc): ObjectSet<NpcProperty>
+    fun addProperty(npc: Npc, property: NpcProperty)
+    fun getPropertyTypeOrThrow(id: String): NpcPropertyType
 
-    /**
-     * Adds a property to an NPC.
-     *
-     * @param npc The NPC to update.
-     * @param property The property to add.
-     * @return True if the property was added, false otherwise.
-     */
-    fun addProperty(npc: Npc, property: NpcProperty): Boolean
-
-    /**
-     * Removes a property from an NPC.
-     *
-     * @param npc The NPC to update.
-     * @param key The property key
-     * @return True if the property was removed, false otherwise.
-     */
-    fun removeProperty(npc: Npc, key: String): Boolean
-
-    /**
-     * Creates a new property for an NPC.
-     *
-     * @param key The key of the property.
-     * @param value The value of the property.
-     * @param type The type of the property.
-     * @return The created property.
-     */
-    fun createProperty(
-        key: String,
-        value: Any,
-        type: NpcPropertyType
-    ): NpcProperty
-
-    /**
-     * Retrieves the skin data for the specified player name.
-     *
-     * @param name The name of the player whose skin data should be retrieved.
-     * @return The skin data of the player.
-     */
-    suspend fun getSkin(name: String): NpcSkin
-
-    /**
-     * Retrieves an NPC by its ID.
-     *
-     * @param id The ID of the NPC.
-     * @return The NPC with the specified ID, or null if not found.
-     */
     fun getNpc(id: Int): Npc?
-
-    /**
-     * Retrieves an NPC by its unique name.
-     *
-     * @param uniqueName The unique name of the NPC.
-     * @return The NPC with the specified unique name, or null if not found.
-     */
     fun getNpc(uniqueName: String): Npc?
-
-    /**
-     * Retrieves all NPCs.
-     *
-     * @return A list of all NPCs.
-     */
-    fun getNpcs(): ObjectList<Npc>
-
-    /**
-     * Despawns all NPCs.
-     */
-    fun despawnAllNpcs()
-
-    /**
-     * Creates a new rotation.
-     *
-     * @param yaw The yaw value of the rotation.
-     * @param pitch The pitch value of the rotation.
-     * @return The created rotation.
-     */
-    fun createRotation(
-        yaw: Float,
-        pitch: Float
-    ): NpcRotation
-
-    /**
-     * Creates new skin data.
-     *
-     * @param owner The owner of the skin.
-     * @param value The value of the skin.
-     * @param signature The signature of the skin.
-     * @return The created skin data.
-     */
-    fun createSkinData(
-        owner: String,
-        value: String,
-        signature: String,
-        parts: ObjectSet<NpcSkinPart> = objectSetOf(NpcSkinPart.entries)
-    ): NpcSkin
-
-    /**
-     * Creates a new location.
-     *
-     * @param x The x-coordinate of the location.
-     * @param y The y-coordinate of the location.
-     * @param z The z-coordinate of the location.
-     * @param worldName The name of the world.
-     * @return The created location.
-     */
-    fun createLocation(
-        x: Double,
-        y: Double,
-        z: Double,
-        worldName: String
-    ): NpcLocation
-
-    /**
-     * Registers a new property type for NPCs.
-     *
-     * @param type The property type to register.
-     */
-    fun registerPropertyType(type: NpcPropertyType)
-
-    /**
-     * Unregisters a previously registered property type.
-     *
-     * @param type The property type to unregister.
-     */
-    fun unregisterPropertyType(type: NpcPropertyType)
-
-    /**
-     * Retrieves a registered property type by its ID.
-     *
-     * @param id The ID of the property type.
-     * @return The found property type or null if not present.
-     */
-    fun getPropertyType(id: String): NpcPropertyType?
+    fun getNpcs(): ObjectSet<Npc>
 
     companion object {
-        /**
-         * The instance of the SurfNpcApi.
-         */
         val INSTANCE = requiredService<SurfNpcApi>()
     }
 }
 
-/**
- * A shortcut to access the SurfNpcApi instance.
- */
 val surfNpcApi get() = SurfNpcApi.INSTANCE

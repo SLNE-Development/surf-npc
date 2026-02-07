@@ -1,19 +1,14 @@
 package dev.slne.surf.npc.api.npc.skin
 
+import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
 import it.unimi.dsi.fastutil.objects.ObjectSet
 
-/**
- * Data class representing the skin data of an NPC.
- *
- * @property value The value of the skin data.
- * @property signature The signature of the skin data.
- */
-interface NpcSkin {
-    val ownerName: String
-    val value: String
-    val signature: String
+data class NpcSkin(
+    val ownerName: String,
+    val value: String,
+    val signature: String,
     val parts: ObjectSet<NpcSkinPart>
-
+) {
     fun skinByte(): Byte {
         var skinByte = 0
         if (NpcSkinPart.CAPE in parts) skinByte = skinByte or 0x01
@@ -24,5 +19,14 @@ interface NpcSkin {
         if (NpcSkinPart.RIGHT_PANTS_LEG in parts) skinByte = skinByte or 0x20
         if (NpcSkinPart.HAT in parts) skinByte = skinByte or 0x40
         return skinByte.toByte()
+    }
+
+    companion object {
+        fun empty() = NpcSkin(
+            ownerName = "",
+            value = "",
+            signature = "",
+            parts = mutableObjectSetOf()
+        )
     }
 }

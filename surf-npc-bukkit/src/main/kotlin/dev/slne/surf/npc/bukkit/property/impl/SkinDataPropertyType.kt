@@ -1,4 +1,4 @@
-package dev.slne.surf.npc.bukkit.npc.property.impl
+package dev.slne.surf.npc.bukkit.property.impl
 
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
@@ -18,7 +18,8 @@ class SkinDataPropertyType(override val id: String) : NpcPropertyType {
             val ownerName = it[0]
             val skinValue = it[1]
             val signature = it[2]
-            val parts = it.getOrNull(3)?.split(",")?.map { part -> NpcSkinPart.valueOf(part) } ?: emptyList()
+            val parts = it.getOrNull(3)?.split(",")?.map { part -> NpcSkinPart.valueOf(part) }
+                ?: emptyList()
 
             BukkitNpcSkin(ownerName, skinValue, signature, parts.toObjectSet())
         }

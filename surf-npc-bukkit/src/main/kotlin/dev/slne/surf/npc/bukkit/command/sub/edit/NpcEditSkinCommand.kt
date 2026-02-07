@@ -10,8 +10,8 @@ import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
-import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.plugin
+import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.bukkit.util.skinDataFromName
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
@@ -48,7 +48,7 @@ fun CommandAPICommand.npcEditSkinCommand() = subcommand("skin") {
                 BukkitNpcProperty(
                     NpcProperty.Internal.SKIN_DATA,
                     skinData,
-                    propertyTypeRegistry.get(NpcPropertyType.Types.SKIN_DATA) ?: return@launch
+                    propertyTypeRegistry.get(NpcPropertyType.Types.SKIN_DATA_ID) ?: return@launch
                 )
             )
             npc.refresh()

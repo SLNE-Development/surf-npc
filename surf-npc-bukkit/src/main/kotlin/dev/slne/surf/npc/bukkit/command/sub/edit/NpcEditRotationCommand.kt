@@ -10,8 +10,8 @@ import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.bukkit.command.argument.npcArgument
 import dev.slne.surf.npc.bukkit.command.argument.rotationTypeArgument
-import dev.slne.surf.npc.bukkit.npc.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.npc.rotation.BukkitNpcRotation
+import dev.slne.surf.npc.bukkit.property.BukkitNpcProperty
 import dev.slne.surf.npc.bukkit.util.PermissionRegistry
 import dev.slne.surf.npc.core.property.propertyTypeRegistry
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
@@ -36,7 +36,7 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
             BukkitNpcProperty(
                 NpcProperty.Internal.ROTATION_TYPE,
                 rotationType == NpcRotationType.PER_PLAYER,
-                propertyTypeRegistry.get(NpcPropertyType.Types.BOOLEAN) ?: return@playerExecutor
+                propertyTypeRegistry.get(NpcPropertyType.Types.BOOLEAN_ID) ?: return@playerExecutor
             )
         )
 
@@ -47,7 +47,7 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
                     BukkitNpcRotation(
                         player.yaw, player.pitch
                     ),
-                    propertyTypeRegistry.get(NpcPropertyType.Types.NPC_ROTATION)
+                    propertyTypeRegistry.get(NpcPropertyType.Types.NPC_ROTATION_ID)
                         ?: return@playerExecutor
                 )
             )

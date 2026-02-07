@@ -5,7 +5,6 @@ package dev.slne.surf.npc.api.dsl
 import dev.slne.surf.npc.api.event.NpcEvent
 import dev.slne.surf.npc.api.npc.location.NpcLocation
 import dev.slne.surf.npc.api.npc.property.NpcProperty
-import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.result.NpcCreationResult
@@ -27,7 +26,7 @@ class NpcDslBuilder {
     /**
      * The display name of the NPC.
      */
-    lateinit var displayName: SurfComponentBuilder.() -> Unit
+    private lateinit var displayName: SurfComponentBuilder.() -> Unit
 
     /**
      * The unique name of the NPC.
@@ -97,6 +96,10 @@ class NpcDslBuilder {
      */
     inline fun <reified T : NpcEvent> withEventHandler(noinline handler: (T) -> Unit) {
         withEventHandler(T::class, handler)
+    }
+
+    fun displayName(block: SurfComponentBuilder.() -> Unit) {
+        displayName = block
     }
 
 
@@ -175,7 +178,7 @@ fun skin(block: SkinBuilder.() -> Unit): NpcSkin {
  * @return The retrieved NPC skin.
  */
 suspend fun skin(name: String): NpcSkin {
-    return surfNpcApi.getSkin(name)
+    return surfNpcApi.fetchSkin(name)
 }
 
 fun npc(plugin: JavaPlugin, block: NpcDslBuilder.() -> Unit): NpcCreationResult {
