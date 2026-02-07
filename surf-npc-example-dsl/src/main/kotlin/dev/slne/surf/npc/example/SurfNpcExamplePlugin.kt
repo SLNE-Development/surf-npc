@@ -23,7 +23,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
         /**
          * Creates an example NPC using the DSL provided by the Surf-NPC API.
          */
-        npc(this) {
+        npc {
             displayName {
                 append(
                     MiniMessage.miniMessage()
@@ -85,11 +85,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
         surfNpcApi.addProperty(npc, npcProperty {
             key = "example_npc"
             value = true
-            type = surfNpcApi.getPropertyType(NpcPropertyType.Types.BOOLEAN_ID)
-                ?: return@npcProperty run {
-                    logger().atWarning()
-                        .log("Failed to create example NPC: Boolean property type not found.")
-                }
+            type = NpcPropertyType.Types.BOOLEAN_TYPE
         })
     }
 }
