@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.*
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
+import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.paper.command.argument.rotationTypeArgument
 import dev.slne.surf.npc.paper.controller.npcController
 import dev.slne.surf.npc.paper.plugin
@@ -15,17 +16,17 @@ import org.bukkit.entity.EntityType
 
 fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
     withPermission(PermissionRegistry.COMMAND_NPC_CREATE)
-    stringArgument("uniqueName")
     textArgument("name")
-    stringArgument("skin")
+    stringArgument("uniqueName")
     rotationTypeArgument("rotationType")
     entityTypeArgument("type")
+    stringArgument("optionalSkin", optional = true)
     playerExecutor { player, args ->
         val name: String by args
         val uniqueName: String by args
-        val skin: String by args
         val rotationType: NpcRotationType by args
         val type: EntityType by args
+        val optionalSkin: String? by args
         val location = player.location
         val createdBy = player.name
 
@@ -45,7 +46,7 @@ fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
         val parsedName = MiniMessage.miniMessage().deserialize(name)
 
         plugin.launch {
-            val skinData = skinDataFromName(skin)
+            val skinData = optionalSkin?.let { skinDataFromName(it) } ?: NpcSkin.empty()
             npcController.createNpc(
                 displayName = parsedName,
                 uniqueName = uniqueName,

@@ -78,7 +78,8 @@ fun CommandAPICommand.npcInfoCommand() = subcommand("info") {
                 variableValue(location.readableString())
                 clickRunsCommand("/npc teleport ${npc.id}")
             }
-
+            appendNewline()
+            
             append(CommonComponents.EM_DASH)
             appendSpace()
             variableKey("Rotation: ")
