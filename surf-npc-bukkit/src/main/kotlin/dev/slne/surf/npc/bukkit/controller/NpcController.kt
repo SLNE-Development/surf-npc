@@ -10,6 +10,7 @@ import dev.slne.surf.npc.api.event.NpcCreateEvent
 import dev.slne.surf.npc.api.event.NpcHideEvent
 import dev.slne.surf.npc.api.event.NpcShowEvent
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
@@ -104,19 +105,6 @@ class NpcController {
         saveNpc(updated)
     }
 
-    fun isGlobalViewer(npc: Npc): Boolean = npc.viewers == null
-    fun setGlobalViewer(npc: Npc, global: Boolean) {
-        if (global) {
-            npc.viewers?.forEach { hideFromViewer(npc, it) }
-            val updated = npc.copy(viewers = null)
-            saveNpc(updated)
-            showNpc(npc)
-        } else {
-            val updated = npc.copy(viewers = mutableObjectSetOf())
-            saveNpc(updated)
-        }
-    }
-
     private fun showToViewer(npc: Npc, uuid: UUID) {
         val player = Bukkit.getPlayer(uuid) ?: return
 
@@ -138,7 +126,7 @@ class NpcController {
                 npc.getLocation(),
                 npc.entityType
             ).build().sendPacket(uuid)
-            BukkitPackets.NpcPackets.NpcMetaDataPacket(npc.id, skin.skinByte(), npc)
+            BukkitPackets.NpcPackets.NpcMetaDataPacket(npc)
                 .build().sendPacket(uuid)
 
             BukkitPackets.NpcTeamPackets.TeamCreatePacket("npc_${npc.id}", npc.getDisplayName())
@@ -264,16 +252,33 @@ class NpcController {
         }
     }
 
-    fun getProperties(npc: Npc): ObjectSet<NpcProperty> = npc.properties.values.toObjectSet()
-    fun addProperty(npc: Npc, property: NpcProperty) {
-        val updated = npc.copy(properties = npc.properties.also { it[property.key] = property })
-        saveNpc(updated)
-    }
-
     fun getNpc(id: Int): Npc? = npcs.find { it.id == id }
     fun getNpc(uniqueName: String): Npc? = npcs.find { it.uniqueName == uniqueName }
     fun getNpcs(): ObjectSet<Npc> = npcs
 
+    fun setPose(npc: Npc, pose: NpcPose) {
+        val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
+            ?: error("Location is not set for NPC: ${npc.uniqueName}")
+
+        npc.forEachViewer {
+            if (pose == NpcPose.SITTING) {
+                BukkitPackets.NpcExtraPackets.ExtraSpawnPacket(npc, location).build()
+                    .sendPacket(it)
+                BukkitPackets.NpcExtraPackets.ExtraMetaDataPacket(npc).build().sendPacket(it)
+                BukkitPackets.NpcExtraPackets.ExtraMountPacket(npc).build().sendPacket(it)
+            } else {
+                BukkitPackets.NpcExtraPackets.ExtraDestroyPacket(npc).build().sendPacket(it)
+                npc.refresh()
+            }
+
+            BukkitPackets.NpcPackets.NpcPoseChangePacket(npc.id, pose).build().sendPacket(it)
+            BukkitPackets.NpcNameTagPackets.NameTagCorrectionPacket(
+                npc.nameTagId,
+                location,
+                pose
+            ).build().sendPacket(it)
+        }
+    }
 
 }
 

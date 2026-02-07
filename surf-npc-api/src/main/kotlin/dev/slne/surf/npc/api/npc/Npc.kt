@@ -124,4 +124,6 @@ data class Npc(
     fun getLocation(): Location = surfNpcApi.getLocation(this)
     fun isPersistent(): Boolean = surfNpcApi.isPersistent(this)
     fun getRotationType(): NpcRotationType = surfNpcApi.getRotationType(this)
+
+    fun setPose(pose: NpcPose) = surfNpcApi.setPose(this, pose)
 }

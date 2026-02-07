@@ -1,6 +1,7 @@
 package dev.slne.surf.npc.api
 
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
@@ -59,6 +60,8 @@ interface SurfNpcApi {
     fun getNpc(id: Int): Npc?
     fun getNpc(uniqueName: String): Npc?
     fun getNpcs(): ObjectSet<Npc>
+
+    fun setPose(npc: Npc, pose: NpcPose)
 
     companion object {
         val INSTANCE = requiredService<SurfNpcApi>()

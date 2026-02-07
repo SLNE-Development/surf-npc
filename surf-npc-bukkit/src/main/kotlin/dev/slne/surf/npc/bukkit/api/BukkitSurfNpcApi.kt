@@ -3,6 +3,7 @@ package dev.slne.surf.npc.bukkit.api
 import com.google.auto.service.AutoService
 import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.npc.Npc
+import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
@@ -156,4 +157,8 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
     override fun getNpc(id: Int) = npcController.getNpc(id)
     override fun getNpc(uniqueName: String) = npcController.getNpc(uniqueName)
     override fun getNpcs() = npcController.getNpcs()
+    override fun setPose(
+        npc: Npc,
+        pose: NpcPose
+    ) = npcController.setPose(npc, pose)
 }

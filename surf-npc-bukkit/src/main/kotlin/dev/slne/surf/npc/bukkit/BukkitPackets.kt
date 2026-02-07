@@ -9,6 +9,7 @@ import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.*
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcPose
+import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.bukkit.util.buildMetaData
 import dev.slne.surf.npc.bukkit.util.buildNullInfo
 import dev.slne.surf.npc.bukkit.util.emptyComponent
@@ -47,37 +48,55 @@ sealed class BukkitPackets {
         }
 
         data class NpcMetaDataPacket(
-            val entityId: Int,
-            val skinParts: Byte = 0x7F.toByte(),
             val npc: Npc
         ) :
             NpcPackets() {
-            override fun build() = WrapperPlayServerEntityMetadata(
-                entityId,
-                listOf(
-                    buildMetaData(16, EntityDataTypes.BYTE, skinParts),
-                    buildMetaData(
-                        17, EntityDataTypes.RESOLVABLE_PROFILE, ItemProfile(
-                            npc.uniqueName,
-                            npc.npcUuid,
-                            listOf(
-                                ItemProfile.Property(
-                                    "textures",
-                                    npc.getSkinData().value,
-                                    npc.getSkinData().signature
+            override fun build() = when (npc.entityType) {
+                EntityType.MANNEQUIN -> {
+                    val skin = npc.getSkinData() ?: NpcSkin.empty()
+
+                    WrapperPlayServerEntityMetadata(
+                        npc.id,
+                        listOf(
+                            buildMetaData(16, EntityDataTypes.BYTE, skin.skinByte()),
+                            buildMetaData(
+                                17, EntityDataTypes.RESOLVABLE_PROFILE, ItemProfile(
+                                    npc.uniqueName,
+                                    npc.npcUuid,
+                                    listOf(
+                                        ItemProfile.Property(
+                                            "textures",
+                                            skin.value,
+                                            skin.signature
+                                        )
+                                    )
                                 )
-                            )
+                            ),
+                            buildMetaData(18, EntityDataTypes.BOOLEAN, true),
+                            buildMetaData(
+                                19,
+                                EntityDataTypes.OPTIONAL_ADV_COMPONENT,
+                                Optional.of(npc.getDisplayName())
+                            ),
+                            buildMetaData(0, EntityDataTypes.BYTE, 0x02.toByte()),
                         )
-                    ),
-                    buildMetaData(18, EntityDataTypes.BOOLEAN, true),
-                    buildMetaData(
-                        19,
-                        EntityDataTypes.OPTIONAL_ADV_COMPONENT,
-                        Optional.of(npc.getDisplayName())
-                    ),
-                    buildMetaData(0, EntityDataTypes.BYTE, 0x02.toByte()),
-                )
-            )
+                    )
+                }
+
+                else -> {
+                    WrapperPlayServerEntityMetadata(
+                        npc.id,
+                        listOf(
+                            buildMetaData(
+                                2,
+                                EntityDataTypes.OPTIONAL_ADV_COMPONENT,
+                                Optional.of(npc.getDisplayName())
+                            ),
+                            buildMetaData(3, EntityDataTypes.BOOLEAN, true),
+                        )
+                    )
+                }
+            }
         }
 
         data class NpcPoseChangePacket(val entityId: Int, val pose: NpcPose) : NpcPackets() {
