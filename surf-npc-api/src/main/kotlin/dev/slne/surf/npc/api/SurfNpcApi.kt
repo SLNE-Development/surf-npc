@@ -26,6 +26,8 @@ interface SurfNpcApi {
         skin: NpcSkin = NpcSkin.empty(),
     ): Npc
 
+    fun fetchSkin(username: String): NpcSkin
+
     fun saveNpc(npc: Npc)
     fun addViewer(npc: Npc, uuid: UUID)
     fun removeViewer(npc: Npc, uuid: UUID)

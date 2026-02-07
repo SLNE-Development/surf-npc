@@ -12,7 +12,7 @@ import dev.slne.surf.npc.bukkit.listener.NpcListener
 import dev.slne.surf.npc.bukkit.listener.WorldChangeListener
 import dev.slne.surf.npc.bukkit.property.impl.*
 import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
-import dev.slne.surf.npc.bukkit.service.storageService
+import dev.slne.surf.npc.bukkit.service.npcStorageService
 import dev.slne.surf.npc.bukkit.service.versionService
 import dev.slne.surf.surfapi.bukkit.api.event.register
 import org.bukkit.plugin.java.JavaPlugin
@@ -40,8 +40,8 @@ class BukkitMain : SuspendingJavaPlugin() {
         propertyTypeRegistry.register(NamedTextColorPropertyType(NpcPropertyType.Types.NAMED_TEXT_COLOR_ID))
         propertyTypeRegistry.register(SkinDataPropertyType(NpcPropertyType.Types.SKIN_DATA_ID))
 
-        storageService.initialize()
-        storageService.loadNpcs()
+        npcStorageService.initialize()
+        npcStorageService.loadAll()
 
         npcCommand()
 
@@ -51,7 +51,7 @@ class BukkitMain : SuspendingJavaPlugin() {
     }
 
     override fun onDisable() {
-        storageService.saveNpcs()
+        npcStorageService.saveAll()
     }
 }
 

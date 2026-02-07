@@ -7,12 +7,12 @@ import dev.slne.surf.npc.bukkit.config.NpcPropertyConfig
 import dev.slne.surf.npc.bukkit.controller.npcController
 import dev.slne.surf.npc.bukkit.plugin
 import dev.slne.surf.npc.bukkit.property.propertyTypeRegistry
-
 import dev.slne.surf.surfapi.core.api.config.manager.SpongeConfigManager
 import dev.slne.surf.surfapi.core.api.config.surfConfigApi
 import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
 import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
 import java.nio.file.Files
+import java.nio.file.Path
 
 val npcStorageService = NpcStorageService()
 
@@ -26,57 +26,56 @@ class NpcStorageService {
         Files.createDirectories(npcFolder)
     }
 
+    private fun npcFile(uniqueName: String): Path =
+        npcFolder.resolve("$uniqueName.yml")
+
     fun loadAll(): Int {
-        Files.list(npcFolder).filter {
-            Files.exists(it.resolve("npc.yml"))
-        }.forEach { dir ->
-            val manager = surfConfigApi.createSpongeYmlConfigManager(
-                NpcConfig::class.java,
-                dir,
-                "npc.yml"
-            )
-
-            val config = manager.config
-
-            val npc = Npc(
-                id = config.id,
-                npcUuid = config.npcUuid,
-                entityType = config.entityType,
-                nameTagId = config.nameTagId,
-                nameTagUuid = config.nameTagUuid,
-                uniqueName = config.uniqueName,
-                npcSittingId = config.sittingId,
-                npcSittingUuid = config.sittingUuid,
-                viewers = if (config.viewerAmount == -1) null
-                else config.viewers.toMutableObjectSet(),
-                properties = mutableObject2ObjectMapOf<String, NpcProperty>()
-            )
-
-            config.properties.forEach { (key, prop) ->
-                val type = propertyTypeRegistry.get(prop.type) ?: return@forEach
-                val value = type.decode(prop.value)
-
-                npc.addProperty(
-                    NpcProperty(key, value, type)
+        Files.list(npcFolder)
+            .filter { it.toString().endsWith(".yml") }
+            .forEach { file ->
+                val manager = surfConfigApi.createSpongeYmlConfigManager(
+                    NpcConfig::class.java,
+                    file.parent,
+                    file.fileName.toString()
                 )
-            }
 
-            npcController.registerNpc(npc)
-            configManagers[npc.uniqueName] = manager
-        }
+                val config = manager.config
+
+                val npc = Npc(
+                    id = config.id,
+                    npcUuid = config.npcUuid,
+                    entityType = config.entityType,
+                    nameTagId = config.nameTagId,
+                    nameTagUuid = config.nameTagUuid,
+                    uniqueName = config.uniqueName,
+                    npcSittingId = config.sittingId,
+                    npcSittingUuid = config.sittingUuid,
+                    viewers = if (config.viewerAmount == -1) null
+                    else config.viewers.toMutableObjectSet(),
+                    properties = mutableObject2ObjectMapOf()
+                )
+
+                config.properties.forEach { (key, prop) ->
+                    val type = propertyTypeRegistry.get(prop.type) ?: return@forEach
+                    val value = type.decode(prop.value)
+                    npc.addProperty(NpcProperty(key, value, type))
+                }
+
+                npcController.registerNpc(npc)
+                configManagers[npc.uniqueName] = manager
+            }
 
         return npcController.getNpcs().size
     }
 
     fun save(npc: Npc) {
-        val dir = npcFolder.resolve(npc.uniqueName)
-        Files.createDirectories(dir)
+        val file = npcFile(npc.uniqueName)
 
         val manager = configManagers.getOrPut(npc.uniqueName) {
             surfConfigApi.createSpongeYmlConfigManager(
                 NpcConfig::class.java,
-                dir,
-                "npc.yml"
+                file.parent,
+                file.fileName.toString()
             )
         }
 
@@ -107,11 +106,9 @@ class NpcStorageService {
     }
 
     fun delete(npc: Npc) {
-        val dir = npcFolder.resolve(npc.uniqueName)
+        val file = npcFile(npc.uniqueName)
         configManagers.remove(npc.uniqueName)
-        if (Files.exists(dir)) {
-            dir.toFile().deleteRecursively()
-        }
+        Files.deleteIfExists(file)
     }
 
     fun reload(): Int {
