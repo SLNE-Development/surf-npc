@@ -12,6 +12,8 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 import java.util.*
 
 interface SurfNpcApi {
@@ -35,6 +37,8 @@ interface SurfNpcApi {
     fun clearViewers(npc: Npc)
 
     fun teleport(npc: Npc, player: Player)
+
+    fun setEquipment(npc: Npc, slot: EquipmentSlot, item: ItemStack)
 
     fun editNpc(npc: Npc, edit: Npc.() -> Unit)
     fun refreshNpc(npc: Npc)

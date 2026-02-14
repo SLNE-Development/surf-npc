@@ -31,6 +31,8 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 import java.util.*
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -40,6 +42,9 @@ val npcController = NpcController()
 class NpcController {
     private val _npcs: Object2ObjectMap<String, Npc> = mutableObject2ObjectMapOf<String, Npc>()
     val npcs: ObjectSet<Npc> get() = _npcs.values.toObjectSet()
+
+    private val equipments =
+        mutableObject2ObjectMapOf<Int, Object2ObjectMap<EquipmentSlot, ItemStack>>()
 
     fun createNpc(
         displayName: Component,
@@ -163,6 +168,7 @@ class NpcController {
                 .sendPacket(uuid)
 
             refreshRotation(npc, uuid)
+            refreshEquipment(npc, uuid)
 
             plugin.launch(plugin.globalRegionDispatcher) {
                 NpcShowEvent(player, npc).callEvent()
@@ -181,6 +187,17 @@ class NpcController {
                 player,
                 npc
             ).callEvent()
+        }
+    }
+
+    private fun refreshEquipment(npc: Npc, uuid: UUID) {
+        equipments.forEach { (entityId, pair) ->
+            if (entityId == npc.id) {
+                pair.forEach { (slot, itemStack) ->
+                    BukkitPackets.NpcPackets.NpcSetEquipmentPacket(npc.id, slot, itemStack).build()
+                        .sendPacket(uuid)
+                }
+            }
         }
     }
 
@@ -222,6 +239,19 @@ class NpcController {
 
         saveNpc(updated)
         refreshNpc(updated)
+    }
+
+    fun setEquipment(npc: Npc, slot: EquipmentSlot, itemStack: ItemStack?) {
+        if (itemStack == null) {
+            equipments.remove(npc.id)
+        } else {
+            equipments[npc.id] =
+                (equipments[npc.id] ?: mutableObject2ObjectMapOf()).also { it[slot] = itemStack }
+        }
+
+        npc.forEachViewer {
+            refreshEquipment(npc, it)
+        }
     }
 
     fun teleport(npc: Npc, player: Player) {

@@ -18,6 +18,8 @@ import net.kyori.adventure.util.Services
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 import java.util.*
 
 @AutoService(SurfNpcApi::class)
@@ -60,6 +62,9 @@ class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
         npc: Npc,
         edit: Npc.() -> Unit
     ) = npcController.editNpc(npc, edit)
+
+    override fun setEquipment(npc: Npc, slot: EquipmentSlot, item: ItemStack) =
+        npcController.setEquipment(npc, slot, item)
 
     override fun refreshNpc(npc: Npc) = npcController.refreshNpc(npc)
     override fun refreshRotation(npc: Npc) = npcController.refreshRotation(npc)

@@ -4,6 +4,8 @@ import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemPro
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
+import com.github.retrooper.packetevents.protocol.player.Equipment
+import com.github.retrooper.packetevents.protocol.player.EquipmentSlot
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.*
@@ -18,6 +20,7 @@ import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.EntityType
+import org.bukkit.inventory.ItemStack
 import java.util.*
 import com.github.retrooper.packetevents.protocol.world.Location as PacketLocation
 import org.bukkit.Location as BukkitLocation
@@ -126,6 +129,24 @@ sealed class BukkitPackets {
 
         data class NpcInfoRemovePacket(val npcUuid: UUID) : NpcPackets() {
             override fun build() = WrapperPlayServerPlayerInfoRemove(npcUuid)
+        }
+
+        data class NpcSetEquipmentPacket(
+            val entityId: Int,
+            val slot: org.bukkit.inventory.EquipmentSlot,
+            val itemStack: ItemStack?
+        ) : NpcPackets() {
+            override fun build() = WrapperPlayServerEntityEquipment(
+                entityId,
+                listOf(
+                    Equipment(
+                        wrapEquipmentSlot(slot),
+                        itemStack?.let {
+                            SpigotConversionUtil.fromBukkitItemStack(it)
+                        } ?: com.github.retrooper.packetevents.protocol.item.ItemStack.EMPTY
+                    )
+                )
+            )
         }
 
         class NpcDestroyPacket(vararg val entityIds: Int) : NpcPackets() {
@@ -249,5 +270,17 @@ private fun calculateNametagLocation(
             .subtract(0.0, 1.62, 0.0)
 
         else -> npcLocation.clone()
+    }
+
+private fun wrapEquipmentSlot(slot: org.bukkit.inventory.EquipmentSlot): EquipmentSlot =
+    when (slot) {
+        org.bukkit.inventory.EquipmentSlot.HAND -> EquipmentSlot.MAIN_HAND
+        org.bukkit.inventory.EquipmentSlot.OFF_HAND -> EquipmentSlot.OFF_HAND
+        org.bukkit.inventory.EquipmentSlot.HEAD -> EquipmentSlot.HELMET
+        org.bukkit.inventory.EquipmentSlot.CHEST -> EquipmentSlot.CHEST_PLATE
+        org.bukkit.inventory.EquipmentSlot.LEGS -> EquipmentSlot.LEGGINGS
+        org.bukkit.inventory.EquipmentSlot.FEET -> EquipmentSlot.BOOTS
+        org.bukkit.inventory.EquipmentSlot.BODY -> EquipmentSlot.BODY
+        org.bukkit.inventory.EquipmentSlot.SADDLE -> EquipmentSlot.SADDLE
     }
 
