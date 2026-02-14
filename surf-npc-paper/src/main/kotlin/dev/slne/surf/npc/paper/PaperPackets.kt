@@ -35,22 +35,14 @@ sealed class BukkitPackets {
             val location: BukkitLocation,
             val type: EntityType
         ) : NpcPackets() {
-            override fun build() = WrapperPlayServerSpawnLivingEntity(
+            override fun build() = WrapperPlayServerSpawnEntity(
                 entityId,
                 uuid,
                 SpigotConversionUtil.fromBukkitEntityType(type),
-                PacketLocation(
-                    Vector3d(
-                        location.x,
-                        location.y,
-                        location.z
-                    ),
-                    location.yaw,
-                    location.pitch
-                ),
-                location.pitch,
-                Vector3d.zero(),
-                listOf<EntityData<*>>()
+                SpigotConversionUtil.fromBukkitLocation(location),
+                location.yaw,
+                0,
+                null
             )
         }
 
@@ -94,12 +86,12 @@ sealed class BukkitPackets {
                     WrapperPlayServerEntityMetadata(
                         npc.id,
                         listOf(
-                            buildMetaData(
-                                2,
-                                EntityDataTypes.OPTIONAL_ADV_COMPONENT,
-                                Optional.of(npc.getDisplayName())
-                            ),
-                            buildMetaData(3, EntityDataTypes.BOOLEAN, true),
+//                            buildMetaData(
+//                                2,
+//                                EntityDataTypes.OPTIONAL_ADV_COMPONENT,
+//                                Optional.of(npc.getDisplayName())
+//                            ),
+//                            buildMetaData(3, EntityDataTypes.BOOLEAN, true),
                         )
                     )
                 }

@@ -1,7 +1,5 @@
 package dev.slne.surf.npc.paper.controller
 
-import com.github.retrooper.packetevents.protocol.player.TextureProperty
-import com.github.retrooper.packetevents.protocol.player.UserProfile
 import com.github.retrooper.packetevents.util.Vector3d
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
@@ -128,51 +126,38 @@ class NpcController {
     fun showToViewer(npc: Npc, uuid: UUID) {
         val player = Bukkit.getPlayer(uuid) ?: return
 
-        if (npc.entityType == EntityType.MANNEQUIN) {
-            val userProfile = UserProfile(npc.npcUuid, npc.uniqueName)
-            val skin = npc.getSkinData() ?: NpcSkin.empty()
+        BukkitPackets.NpcPackets.NpcSpawnPacket(
+            npc.id,
+            npc.npcUuid,
+            npc.getLocation(),
+            npc.entityType
+        ).build().sendPacket(uuid)
+        BukkitPackets.NpcPackets.NpcMetaDataPacket(npc)
+            .build().sendPacket(uuid)
 
-            userProfile.textureProperties.add(
-                TextureProperty(
-                    "textures",
-                    skin.value,
-                    skin.signature
-                )
-            )
+        BukkitPackets.NpcTeamPackets.TeamCreatePacket("npc_${npc.id}", npc.getDisplayName())
+            .build()
+            .sendPacket(uuid)
+        BukkitPackets.NpcTeamPackets.TeamAddEntityPacket("npc_${npc.id}", npc.uniqueName)
+            .build()
+            .sendPacket(uuid)
 
-            BukkitPackets.NpcPackets.NpcSpawnPacket(
-                npc.id,
-                npc.npcUuid,
-                npc.getLocation(),
-                npc.entityType
-            ).build().sendPacket(uuid)
-            BukkitPackets.NpcPackets.NpcMetaDataPacket(npc)
-                .build().sendPacket(uuid)
+        BukkitPackets.NpcNameTagPackets.NameTagSpawnPacket(
+            npc.nameTagId,
+            npc.nameTagUuid,
+            npc.getLocation()
+        ).build().sendPacket(uuid)
+        BukkitPackets.NpcNameTagPackets.NameTagMetaDataPacket(
+            npc.nameTagId,
+            npc.getDisplayName()
+        ).build()
+            .sendPacket(uuid)
 
-            BukkitPackets.NpcTeamPackets.TeamCreatePacket("npc_${npc.id}", npc.getDisplayName())
-                .build()
-                .sendPacket(uuid)
-            BukkitPackets.NpcTeamPackets.TeamAddEntityPacket("npc_${npc.id}", npc.uniqueName)
-                .build()
-                .sendPacket(uuid)
+        refreshRotation(npc, uuid)
+        refreshEquipment(npc, uuid)
 
-            BukkitPackets.NpcNameTagPackets.NameTagSpawnPacket(
-                npc.nameTagId,
-                npc.nameTagUuid,
-                npc.getLocation()
-            ).build().sendPacket(uuid)
-            BukkitPackets.NpcNameTagPackets.NameTagMetaDataPacket(
-                npc.nameTagId,
-                npc.getDisplayName()
-            ).build()
-                .sendPacket(uuid)
-
-            refreshRotation(npc, uuid)
-            refreshEquipment(npc, uuid)
-
-            plugin.launch(plugin.globalRegionDispatcher) {
-                NpcShowEvent(player, npc).callEvent()
-            }
+        plugin.launch(plugin.globalRegionDispatcher) {
+            NpcShowEvent(player, npc).callEvent()
         }
     }
 
