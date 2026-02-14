@@ -17,6 +17,8 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -75,6 +77,9 @@ data class Npc(
     }
 
     fun getProperty(key: String): NpcProperty? = properties[key]
+
+    fun setEquipment(slot: EquipmentSlot, item: ItemStack) =
+        surfNpcApi.setEquipment(this, slot, item)
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> getPropertyValue(key: String, clazz: KClass<T>): T? =

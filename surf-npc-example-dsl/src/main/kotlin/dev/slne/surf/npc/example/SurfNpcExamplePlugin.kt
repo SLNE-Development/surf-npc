@@ -16,6 +16,8 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.EntityType
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemType
 
 class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
     override fun onEnable() {
@@ -79,6 +81,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
         val npc = surfNpcApi.getNpc("example_npc") ?: return run {
             logger().atWarning().log("Failed to create example NPC: NPC not found after creation.")
         }
+
+        npc.setEquipment(EquipmentSlot.HAND, ItemType.DIAMOND_SPEAR.createItemStack())
 
         /**
          * Adds a property to the NPC using the DSL.

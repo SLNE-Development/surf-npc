@@ -35,18 +35,22 @@ sealed class BukkitPackets {
             val location: BukkitLocation,
             val type: EntityType
         ) : NpcPackets() {
-            override fun build() = WrapperPlayServerSpawnEntity(
+            override fun build() = WrapperPlayServerSpawnLivingEntity(
                 entityId,
                 uuid,
                 SpigotConversionUtil.fromBukkitEntityType(type),
                 PacketLocation(
-                    Vector3d(location.x, location.y, location.z),
+                    Vector3d(
+                        location.x,
+                        location.y,
+                        location.z
+                    ),
                     location.yaw,
                     location.pitch
                 ),
-                location.yaw,
-                0,
-                null
+                location.pitch,
+                Vector3d.zero(),
+                listOf<EntityData<*>>()
             )
         }
 
