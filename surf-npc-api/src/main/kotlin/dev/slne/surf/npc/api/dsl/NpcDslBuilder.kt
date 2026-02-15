@@ -3,12 +3,10 @@
 package dev.slne.surf.npc.api.dsl
 
 import dev.slne.surf.npc.api.event.NpcEvent
-import dev.slne.surf.npc.api.npc.location.NpcLocation
+import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
-import dev.slne.surf.npc.api.npc.rotation.NpcRotation
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.api.result.NpcCreationResult
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
 import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
@@ -16,7 +14,8 @@ import dev.slne.surf.surfapi.core.api.util.mutableObjectListOf
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.Location
+import org.bukkit.entity.EntityType
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -39,10 +38,12 @@ class NpcDslBuilder {
      */
     lateinit var skin: NpcSkin
 
+    lateinit var type: EntityType
+
     /**
      * The location of the NPC.
      */
-    lateinit var location: NpcLocation
+    lateinit var location: Location
 
     /**
      * Whether the NPC is global. Defaults to true.
@@ -53,11 +54,6 @@ class NpcDslBuilder {
      * The rotation type of the NPC. Defaults to PER_PLAYER.
      */
     var rotationType: NpcRotationType = NpcRotationType.PER_PLAYER
-
-    /**
-     * The fixed rotation of the NPC, if applicable.
-     */
-    var fixedRotation: NpcRotation? = null
 
     /**
      * Whether the NPC should be persistent. Defaults to false.
@@ -99,6 +95,10 @@ class NpcDslBuilder {
         withEventHandler(T::class, handler)
     }
 
+    fun displayName(block: SurfComponentBuilder.() -> Unit) {
+        displayName = block
+    }
+
 
     /**
      * Configures the skin of the NPC using a DSL block.
@@ -117,15 +117,6 @@ class NpcDslBuilder {
     fun location(block: LocationBuilder.() -> Unit) {
         location = LocationBuilder().apply(block).build()
     }
-
-    /**
-     * Configures the fixed rotation of the NPC using a DSL block.
-     *
-     * @param block The DSL block for configuring the fixed rotation.
-     */
-    fun fixedRotation(block: RotationBuilder.() -> Unit) {
-        fixedRotation = RotationBuilder().apply(block).build()
-    }
 }
 
 /**
@@ -134,18 +125,8 @@ class NpcDslBuilder {
  * @param block The DSL block for configuring the location.
  * @return The created NPC location.
  */
-fun location(block: LocationBuilder.() -> Unit): NpcLocation {
+fun location(block: LocationBuilder.() -> Unit): Location {
     return LocationBuilder().apply(block).build()
-}
-
-/**
- * Creates an NPC rotation using a DSL block.
- *
- * @param block The DSL block for configuring the rotation.
- * @return The created NPC rotation.
- */
-fun rotation(block: RotationBuilder.() -> Unit): NpcRotation {
-    return RotationBuilder().apply(block).build()
 }
 
 /**
@@ -174,35 +155,30 @@ fun skin(block: SkinBuilder.() -> Unit): NpcSkin {
  * @param name The name of the skin.
  * @return The retrieved NPC skin.
  */
-suspend fun skin(name: String): NpcSkin {
-    return surfNpcApi.getSkin(name)
+suspend fun fetchedSkin(name: String): NpcSkin {
+    return surfNpcApi.fetchSkin(name)
 }
 
-fun npc(plugin: JavaPlugin, block: NpcDslBuilder.() -> Unit): NpcCreationResult {
+fun npc(block: NpcDslBuilder.() -> Unit): Npc {
     val builder = NpcDslBuilder().apply(block)
-    val result = surfNpcApi.createNpc(
+    val npc = surfNpcApi.createNpc(
         displayName = SurfComponentBuilder.builder().apply(builder.displayName).build(),
         uniqueName = builder.uniqueName,
+        type = builder.type,
         skin = builder.skin,
         location = builder.location,
         viewers = builder.viewers,
         rotationType = builder.rotationType,
-        fixedRotation = builder.fixedRotation,
-        persistent = builder.persistent,
-        glowing = builder.glowing,
-        glowingColor = builder.glowingColor,
-        plugin = plugin
+        persistent = builder.persistent
     )
 
-    (result as? NpcCreationResult.Success)?.let { success ->
-        builder.eventHandlers.forEach { (eventClass, handlersList) ->
-            handlersList.forEach { handler ->
-                success.npc.addEventHandler(eventClass as KClass<NpcEvent>) { ev ->
-                    handler(ev)
-                }
+    builder.eventHandlers.forEach { (eventClass, handlersList) ->
+        handlersList.forEach { handler ->
+            npc.addEventHandler(eventClass as KClass<NpcEvent>) { ev ->
+                handler(ev)
             }
         }
     }
 
-    return result
+    return npc
 }

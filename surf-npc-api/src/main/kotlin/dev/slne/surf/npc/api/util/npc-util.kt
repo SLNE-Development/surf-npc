@@ -13,3 +13,4 @@ import dev.slne.surf.npc.api.npc.NpcEventHandler
 inline fun <reified T : NpcEvent> Npc.addEventHandler(noinline handler: NpcEventHandler<T>) {
     this.addEventHandler(T::class, handler)
 }
+

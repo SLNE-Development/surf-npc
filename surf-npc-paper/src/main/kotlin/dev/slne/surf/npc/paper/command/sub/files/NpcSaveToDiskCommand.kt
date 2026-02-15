@@ -1,0 +1,25 @@
+package dev.slne.surf.npc.paper.command.sub.files
+
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.kotlindsl.playerExecutor
+import dev.jorel.commandapi.kotlindsl.subcommand
+import dev.slne.surf.npc.paper.service.npcStorageService
+import dev.slne.surf.npc.paper.util.PermissionRegistry
+import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+
+fun CommandAPICommand.npcSaveToDiskCommand() = subcommand("save-to-disk") {
+    withPermission(PermissionRegistry.COMMAND_NPC_SAVE_TO_DISK)
+    playerExecutor { player, args ->
+        val amount = npcStorageService.saveAll()
+
+        player.sendText {
+            if (amount > 0) {
+                appendSuccessPrefix()
+                success("Es wurden $amount NPCs erfolgreich auf die Festplatte gespeichert.")
+            } else {
+                appendErrorPrefix()
+                error("Es wurden keine NPCs auf die Festplatte gespeichert.")
+            }
+        }
+    }
+}

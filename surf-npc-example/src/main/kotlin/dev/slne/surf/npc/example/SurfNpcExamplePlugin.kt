@@ -2,41 +2,38 @@ package dev.slne.surf.npc.example
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import dev.slne.surf.npc.api.event.NpcInteractEvent
+import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.npc.api.util.addEventHandler
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
-import dev.slne.surf.surfapi.core.api.util.logger
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.entity.EntityType
 
 class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
     override fun onEnable() {
         Bukkit.getPluginManager().registerEvents(ExampleNpcListener(), this)
 
-        surfNpcApi.createNpc(
-            MiniMessage.miniMessage().deserialize("<rainbow>Example Npc by surf-npc-example"),
-            "example_npc",
-            createSkinData(),
-            surfNpcApi.createLocation(0.0, 0.0, 0.0, "world"),
-            plugin = this
+        val npc = surfNpcApi.createNpc(
+            displayName = MiniMessage.miniMessage()
+                .deserialize("<rainbow>Example Npc by surf-npc-example"),
+            uniqueName = "example_npc",
+            type = EntityType.MANNEQUIN,
+            location = Location(Bukkit.getWorlds().first(), 0.0, 0.0, 0.0),
+            skin = NpcSkin.empty()
         )
 
-        val npc = surfNpcApi.getNpc("example_npc") ?: return run {
-            logger().atWarning().log("Failed to create example NPC: NPC not found after creation.")
-        }
-
         surfNpcApi.addProperty(
-            npc, surfNpcApi.createProperty(
+            npc, NpcProperty(
                 "example_npc",
                 true,
-                surfNpcApi.getPropertyType(NpcPropertyType.Types.BOOLEAN) ?: return run {
-                    logger().atWarning()
-                        .log("Failed to create example NPC: Boolean property type not found.")
-                }
-            ))
+                NpcPropertyType.Types.BOOLEAN_TYPE
+            )
+        )
 
         npc.addEventHandler<NpcInteractEvent> {
             it.player.sendText {
@@ -48,13 +45,5 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
                 spacer("Ich bin ein Beispiel Npc. Diese Reaktion wurde mithilfe des DSL-Event Handlers erstellt.")
             }
         }
-    }
-
-    fun createSkinData(): NpcSkin {
-        return surfNpcApi.createSkinData(
-            owner = "OwnerName",
-            value = "SkinValue",
-            signature = "SkinSignature"
-        )
     }
 }

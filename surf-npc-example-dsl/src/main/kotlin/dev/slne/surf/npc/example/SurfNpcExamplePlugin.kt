@@ -15,6 +15,9 @@ import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.entity.EntityType
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemType
 
 class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
     override fun onEnable() {
@@ -23,8 +26,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
         /**
          * Creates an example NPC using the DSL provided by the Surf-NPC API.
          */
-        npc(this) {
-            displayName = {
+        npc {
+            displayName {
                 append(
                     MiniMessage.miniMessage()
                         .deserialize("<rainbow>Example Npc by surf-npc-example")
@@ -32,9 +35,10 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             }
 
             uniqueName = "example_npc"
+            type = EntityType.MANNEQUIN
 
             /**
-             * Skin data can be created using the DSL or by using the SurfNpcApi#getSkin function.
+             * Skin data can be created using the DSL or by using the [dev.slne.surf.npc.api.SurfNpcApi.fetchSkin] function.
              */
             skin {
                 ownerName = "YourSkinOwner"
@@ -78,6 +82,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
             logger().atWarning().log("Failed to create example NPC: NPC not found after creation.")
         }
 
+        npc.setEquipment(EquipmentSlot.HAND, ItemType.DIAMOND_SPEAR.createItemStack())
+
         /**
          * Adds a property to the NPC using the DSL.
          * This property is of type Boolean, which is registered in the surf-npc Api.
@@ -85,11 +91,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
         surfNpcApi.addProperty(npc, npcProperty {
             key = "example_npc"
             value = true
-            type = surfNpcApi.getPropertyType(NpcPropertyType.Types.BOOLEAN)
-                ?: return@npcProperty run {
-                    logger().atWarning()
-                        .log("Failed to create example NPC: Boolean property type not found.")
-                }
+            type = NpcPropertyType.Types.BOOLEAN_TYPE
         })
     }
 }
