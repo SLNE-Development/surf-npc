@@ -6,10 +6,7 @@ import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.paper.command.npcCommand
-import dev.slne.surf.npc.paper.listener.ConnectionListener
-import dev.slne.surf.npc.paper.listener.InternalNpcEventListener
-import dev.slne.surf.npc.paper.listener.NpcListener
-import dev.slne.surf.npc.paper.listener.WorldChangeListener
+import dev.slne.surf.npc.paper.listener.*
 import dev.slne.surf.npc.paper.property.impl.*
 import dev.slne.surf.npc.paper.property.propertyTypeRegistry
 import dev.slne.surf.npc.paper.service.npcStorageService
@@ -27,6 +24,10 @@ class PaperMain : SuspendingJavaPlugin() {
         ConnectionListener().register()
         WorldChangeListener().register()
         InternalNpcEventListener().register()
+
+        if (isCanvasServer) {
+            FoliaAdditionsListener.register()
+        }
 
         propertyTypeRegistry.register(BooleanPropertyType(NpcPropertyType.Types.BOOLEAN_ID))
         propertyTypeRegistry.register(ComponentPropertyType(NpcPropertyType.Types.COMPONENT_ID))
@@ -55,5 +56,9 @@ class PaperMain : SuspendingJavaPlugin() {
         npcStorageService.saveAll()
     }
 }
+
+val isCanvasServer = runCatching {
+    Class.forName("io.canvasmc.canvas.util.CanvasVersionFetcher")
+}.isSuccess
 
 val plugin get() = JavaPlugin.getPlugin(PaperMain::class.java)
