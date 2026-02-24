@@ -69,6 +69,10 @@ class NpcStorageService {
     }
 
     fun save(npc: Npc) {
+        if (!npc.isPersistent()) {
+            return
+        }
+
         val file = npcFile(npc.uniqueName)
 
         val manager = configManagers.getOrPut(npc.uniqueName) {
@@ -81,6 +85,7 @@ class NpcStorageService {
 
         manager.config.apply {
             id = npc.id
+            entityType = npc.entityType
             npcUuid = npc.npcUuid
             nameTagId = npc.nameTagId
             nameTagUuid = npc.nameTagUuid

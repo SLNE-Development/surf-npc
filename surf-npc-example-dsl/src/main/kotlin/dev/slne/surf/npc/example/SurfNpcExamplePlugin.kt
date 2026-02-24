@@ -62,7 +62,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
              * Location can be created using the DSL.
              */
             location {
-                world = "world"
+                world = Bukkit.getWorlds().first().name
                 x = 0.0
                 y = 0.0
                 z = 0.0

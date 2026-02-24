@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerChangedWorldEvent
 
-class WorldChangeListener : Listener {
+object WorldChangeListener : Listener {
     @EventHandler
     fun onWorldChanged(event: PlayerChangedWorldEvent) {
         val player = event.player

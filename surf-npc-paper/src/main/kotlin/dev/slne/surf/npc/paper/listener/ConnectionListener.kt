@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 
-class ConnectionListener : Listener {
+object ConnectionListener : Listener {
     @EventHandler
     fun onConnect(event: PlayerJoinEvent) {
         val player = event.player
