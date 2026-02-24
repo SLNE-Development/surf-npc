@@ -4,7 +4,7 @@ import dev.slne.surf.npc.api.event.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
-class InternalNpcEventListener : Listener {
+object InternalNpcEventListener : Listener {
     @EventHandler
     fun onNpcCollision(event: NpcCollisionEvent) {
         event.npc.callHandlers(event)

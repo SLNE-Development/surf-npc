@@ -21,9 +21,9 @@ class PaperMain : SuspendingJavaPlugin() {
             PacketListenerPriority.NORMAL
         )
 
-        ConnectionListener().register()
-        WorldChangeListener().register()
-        InternalNpcEventListener().register()
+        ConnectionListener.register()
+        WorldChangeListener.register()
+        InternalNpcEventListener.register()
 
         if (isCanvasServer) {
             FoliaAdditionsListener.register()
