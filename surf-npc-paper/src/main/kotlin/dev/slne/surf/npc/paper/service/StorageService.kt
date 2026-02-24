@@ -69,7 +69,7 @@ class NpcStorageService {
     }
 
     fun save(npc: Npc) {
-        if (npc.isPersistent()) {
+        if (!npc.isPersistent()) {
             return
         }
 
