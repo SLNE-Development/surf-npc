@@ -173,8 +173,7 @@ sealed class BukkitPackets {
                 entityId,
                 listOf(
                     buildMetaData(23, EntityDataTypes.ADV_COMPONENT, displayName),
-                    buildMetaData(15, EntityDataTypes.BYTE, 3.toByte()),
-                    buildMetaData(27, EntityDataTypes.BYTE, 0x02.toByte())
+                    buildMetaData(15, EntityDataTypes.BYTE, 3.toByte())
                 )
             )
         }
