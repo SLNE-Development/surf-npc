@@ -7,7 +7,6 @@ import com.github.retrooper.packetevents.protocol.player.User
 import com.github.retrooper.packetevents.wrapper.PacketWrapper
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import java.util.*
 
 fun UUID.toUser(): User? {
@@ -21,11 +20,10 @@ fun <T> buildMetaData(index: Int, type: EntityDataType<T>, value: T) = EntityDat
 )
 
 fun PacketWrapper<*>.sendPacket(uuid: UUID) {
-    PacketEvents.getAPI().playerManager.getUser(Bukkit.getPlayer(uuid) ?: return).sendPacket(this)
-}
+    val player = Bukkit.getPlayer(uuid) ?: return
+    val packetPlayer = PacketEvents.getAPI().playerManager.getUser(player) ?: return
 
-fun PacketWrapper<*>.sendPacket(player: Player) {
-    PacketEvents.getAPI().playerManager.getUser(player).sendPacket(this)
+    packetPlayer.sendPacket(this)
 }
 
 
