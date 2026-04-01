@@ -19,6 +19,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.util.BoundingBox
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -45,6 +46,30 @@ data class Npc(
     val npcSittingId: Int,
     val npcSittingUuid: UUID
 ) {
+    lateinit var boundingBox: BoundingBox
+    lateinit var rotationBox: BoundingBox
+
+    fun updateBoundingBoxes() {
+        val location = getLocation()
+        boundingBox = BoundingBox(
+            location.x - 0.5,
+            location.y,
+            location.z - 0.5,
+            location.x + 0.5,
+            location.y + 1.8,
+            location.z + 0.5
+        )
+
+        rotationBox = BoundingBox(
+            location.x - 20,
+            location.y - 20,
+            location.z - 20,
+            location.x + 20,
+            location.y + 20,
+            location.z + 20
+        )
+    }
+
     private val eventHandlers =
         mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
 

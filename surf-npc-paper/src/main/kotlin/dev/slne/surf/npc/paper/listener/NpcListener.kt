@@ -22,16 +22,15 @@ class NpcListener : PacketListener {
         when (event.packetType) {
             PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION -> {
                 for (npc in npcController.npcs) {
-                    val npcLoc =
-                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
-                            ?: continue
+                    val npcLoc = npc.getLocation()
+
                     val playerLoc = player.location
 
                     if (playerLoc.world.name != npcLoc.world.name) {
                         continue
                     }
 
-                    if (playerLoc.distanceSquared(npcLoc) > 20 * 20) {
+                    if (!npc.rotationBox.contains(player.location.toVector())) {
                         continue
                     }
 
@@ -50,7 +49,7 @@ class NpcListener : PacketListener {
                         continue
                     }
 
-                    if (playerLoc.distanceSquared(npcLoc) > 1 * 1) {
+                    if (!npc.boundingBox.contains(player.location.toVector())) {
                         continue
                     }
 

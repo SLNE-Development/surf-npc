@@ -73,6 +73,8 @@ class NpcController {
         npc.setSkinData(skin)
         npc.setDisplayName(displayName)
 
+        npc.updateBoundingBoxes()
+
         saveNpc(npc)
         npc.show()
 
@@ -222,6 +224,8 @@ class NpcController {
     fun editNpc(npc: Npc, edit: Npc.() -> Unit) {
         val updated = npc.apply(edit)
 
+        updated.updateBoundingBoxes()
+
         saveNpc(updated)
         refreshNpc(updated)
     }
@@ -241,6 +245,8 @@ class NpcController {
 
     fun teleport(npc: Npc, player: Player) {
         val location = player.location
+
+        npc.updateBoundingBoxes()
 
         npc.addProperty(
             NpcProperty(
