@@ -25,8 +25,8 @@ fun CommandAPICommand.npcEditRotationCommand() = subcommand("rotation") {
         npc.addProperty(
             NpcProperty(
                 NpcProperty.Internal.ROTATION_TYPE,
-                rotationType == NpcRotationType.PER_PLAYER,
-                NpcPropertyType.Types.BOOLEAN_TYPE
+                rotationType,
+                NpcPropertyType.Types.ROTATION_TYPE_TYPE
             )
         )
 
