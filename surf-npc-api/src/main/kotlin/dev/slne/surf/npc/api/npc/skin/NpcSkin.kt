@@ -1,6 +1,6 @@
 package dev.slne.surf.npc.api.npc.skin
 
-import dev.slne.surf.surfapi.core.api.util.toObjectSet
+import dev.slne.surf.api.core.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 
 data class NpcSkin(

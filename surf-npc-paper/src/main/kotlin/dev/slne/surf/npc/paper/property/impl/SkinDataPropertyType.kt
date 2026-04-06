@@ -1,9 +1,9 @@
 package dev.slne.surf.npc.paper.property.impl
 
+import dev.slne.surf.api.core.util.toObjectSet
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
-import dev.slne.surf.surfapi.core.api.util.toObjectSet
 
 class SkinDataPropertyType(override val id: String) : NpcPropertyType {
     override fun encode(value: Any): String {

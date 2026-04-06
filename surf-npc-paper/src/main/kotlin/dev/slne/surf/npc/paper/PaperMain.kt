@@ -4,6 +4,8 @@ import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.folia.launch
+import dev.slne.surf.api.paper.SurfApiPaper
+import dev.slne.surf.api.paper.event.register
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.paper.command.npcCommand
 import dev.slne.surf.npc.paper.listener.*
@@ -11,7 +13,6 @@ import dev.slne.surf.npc.paper.property.impl.*
 import dev.slne.surf.npc.paper.property.propertyTypeRegistry
 import dev.slne.surf.npc.paper.service.npcStorageService
 import dev.slne.surf.npc.paper.service.versionService
-import dev.slne.surf.surfapi.bukkit.api.event.register
 import org.bukkit.plugin.java.JavaPlugin
 
 class PaperMain : SuspendingJavaPlugin() {
@@ -25,7 +26,7 @@ class PaperMain : SuspendingJavaPlugin() {
         WorldChangeListener.register()
         InternalNpcEventListener.register()
 
-        if (isCanvasServer) {
+        if (SurfApiPaper.isCanvasMc) {
             FoliaAdditionsListener.register()
         }
 
@@ -56,9 +57,5 @@ class PaperMain : SuspendingJavaPlugin() {
         npcStorageService.saveAll()
     }
 }
-
-val isCanvasServer = runCatching {
-    Class.forName("io.canvasmc.canvas.util.CanvasVersionFetcher")
-}.isSuccess
 
 val plugin get() = JavaPlugin.getPlugin(PaperMain::class.java)

@@ -4,6 +4,10 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
+import dev.slne.surf.api.core.font.toSmallCaps
+import dev.slne.surf.api.core.messages.CommonComponents
+import dev.slne.surf.api.core.messages.adventure.clickRunsCommand
+import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
@@ -11,10 +15,6 @@ import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.paper.command.argument.npcArgument
 import dev.slne.surf.npc.paper.util.PermissionRegistry
 import dev.slne.surf.npc.paper.util.readableString
-import dev.slne.surf.surfapi.core.api.font.toSmallCaps
-import dev.slne.surf.surfapi.core.api.messages.CommonComponents
-import dev.slne.surf.surfapi.core.api.messages.adventure.clickRunsCommand
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Location
@@ -79,7 +79,7 @@ fun CommandAPICommand.npcInfoCommand() = subcommand("info") {
                 clickRunsCommand("/npc teleport ${npc.id}")
             }
             appendNewline()
-            
+
             append(CommonComponents.EM_DASH)
             appendSpace()
             variableKey("Rotation: ")

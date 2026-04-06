@@ -3,9 +3,9 @@ package dev.slne.surf.npc.paper.command.sub.files
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
+import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.npc.paper.service.npcStorageService
 import dev.slne.surf.npc.paper.util.PermissionRegistry
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
 fun CommandAPICommand.npcSaveToDiskCommand() = subcommand("save-to-disk") {
     withPermission(PermissionRegistry.COMMAND_NPC_SAVE_TO_DISK)

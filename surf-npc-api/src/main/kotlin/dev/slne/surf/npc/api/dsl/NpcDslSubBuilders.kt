@@ -1,10 +1,10 @@
 package dev.slne.surf.npc.api.dsl
 
+import dev.slne.surf.api.core.util.toObjectSet
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
-import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.bukkit.Bukkit
 import org.bukkit.Location

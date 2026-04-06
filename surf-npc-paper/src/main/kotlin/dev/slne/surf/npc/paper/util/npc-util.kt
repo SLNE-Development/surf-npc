@@ -2,12 +2,12 @@ package dev.slne.surf.npc.paper.util
 
 import com.github.retrooper.packetevents.protocol.entity.pose.EntityPose
 import com.github.retrooper.packetevents.protocol.player.ClientVersion
+import dev.slne.surf.api.core.service.PlayerLookupService
+import dev.slne.surf.api.core.util.logger
+import dev.slne.surf.api.core.util.toObjectSet
 import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
-import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
-import dev.slne.surf.surfapi.core.api.util.logger
-import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*

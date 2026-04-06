@@ -1,12 +1,12 @@
 package dev.slne.surf.npc.api
 
+import dev.slne.surf.api.core.util.requiredService
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcPose
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.surfapi.core.api.util.requiredService
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
@@ -69,9 +69,8 @@ interface SurfNpcApi {
 
     fun setPose(npc: Npc, pose: NpcPose)
 
-    companion object {
-        val INSTANCE = requiredService<SurfNpcApi>()
-    }
+    companion object : SurfNpcApi by surfNpcApi
 }
 
-val surfNpcApi get() = SurfNpcApi.INSTANCE
+@Deprecated("Use SurfNpcApi Class")
+val surfNpcApi = requiredService<SurfNpcApi>()

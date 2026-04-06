@@ -5,8 +5,8 @@ import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.CustomArgument
 import dev.jorel.commandapi.arguments.StringArgument
+import dev.slne.surf.api.core.messages.adventure.buildText
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
-import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 
 class RotationTypeArgument(nodeName: String) :
     CustomArgument<NpcRotationType, String>(StringArgument(nodeName), { info ->

@@ -1,6 +1,7 @@
 package dev.slne.surf.npc.paper.api
 
 import com.google.auto.service.AutoService
+import dev.slne.surf.api.core.util.toObjectSet
 import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.NpcPose
@@ -11,7 +12,6 @@ import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.paper.controller.npcController
 import dev.slne.surf.npc.paper.property.propertyTypeRegistry
 import dev.slne.surf.npc.paper.util.skinDataFromName
-import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Services
@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.*
 
 @AutoService(SurfNpcApi::class)
-class BukkitSurfNpcApi : SurfNpcApi, Services.Fallback {
+class PaperSurfNpcApi : SurfNpcApi, Services.Fallback {
     override fun createNpc(
         displayName: Component,
         uniqueName: String,

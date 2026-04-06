@@ -1,12 +1,12 @@
 package dev.slne.surf.npc.paper.listener
 
+import dev.slne.surf.api.core.font.toSmallCaps
+import dev.slne.surf.api.core.messages.adventure.clickOpensUrl
+import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.paper.controller.npcController
 import dev.slne.surf.npc.paper.service.versionService
 import dev.slne.surf.npc.paper.util.PermissionRegistry
-import dev.slne.surf.surfapi.core.api.font.toSmallCaps
-import dev.slne.surf.surfapi.core.api.messages.adventure.clickOpensUrl
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

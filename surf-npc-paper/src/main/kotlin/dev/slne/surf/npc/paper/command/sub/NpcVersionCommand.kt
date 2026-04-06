@@ -4,11 +4,11 @@ import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
+import dev.slne.surf.api.core.messages.adventure.clickOpensUrl
+import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.npc.paper.plugin
 import dev.slne.surf.npc.paper.service.versionService
 import dev.slne.surf.npc.paper.util.PermissionRegistry
-import dev.slne.surf.surfapi.core.api.messages.adventure.clickOpensUrl
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 
 fun CommandAPICommand.npcVersionCommand() = subcommand("version") {
     withPermission(PermissionRegistry.COMMAND_NPC_VERSION)

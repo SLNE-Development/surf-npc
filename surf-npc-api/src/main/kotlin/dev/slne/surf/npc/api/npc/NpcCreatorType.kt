@@ -3,7 +3,7 @@ package dev.slne.surf.npc.api.npc
 /**
  * Represents the type of an NPC creator.
  */
-sealed class NpcCreatorType() {
+sealed class NpcCreatorType {
 
     /**
      * Represents a player as the creator of the NPC.

@@ -1,5 +1,5 @@
 plugins {
-    id("dev.slne.surf.surfapi.gradle.paper-plugin")
+    id("dev.slne.surf.api.gradle.paper-plugin")
 }
 
 repositories {
@@ -11,7 +11,6 @@ repositories {
 
 dependencies {
     api(project(":surf-npc-api"))
-    compileOnly("io.canvasmc.canvas:canvas-api:1.21.11-R0.1-SNAPSHOT")
 }
 
 surfPaperPluginApi {
@@ -19,11 +18,6 @@ surfPaperPluginApi {
     authors.add("red")
     foliaSupported(true)
 
+    useCanvasMc()
     generateLibraryLoader(false)
-}
-
-configurations.all {
-    resolutionStrategy.capabilitiesResolution.withCapability("org.bukkit:bukkit") {
-        select("io.canvasmc.canvas:canvas-api:1.21.11-R0.1-SNAPSHOT")
-    }
 }

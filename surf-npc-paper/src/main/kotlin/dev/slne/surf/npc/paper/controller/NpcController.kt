@@ -4,6 +4,10 @@ import com.github.retrooper.packetevents.util.Vector3d
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
+import dev.slne.surf.api.core.util.mutableObject2ObjectMapOf
+import dev.slne.surf.api.core.util.mutableObjectSetOf
+import dev.slne.surf.api.core.util.random
+import dev.slne.surf.api.core.util.toObjectSet
 import dev.slne.surf.npc.api.event.NpcCreateEvent
 import dev.slne.surf.npc.api.event.NpcHideEvent
 import dev.slne.surf.npc.api.event.NpcShowEvent
@@ -18,10 +22,6 @@ import dev.slne.surf.npc.paper.plugin
 import dev.slne.surf.npc.paper.property.propertyTypeRegistry
 import dev.slne.surf.npc.paper.service.npcStorageService
 import dev.slne.surf.npc.paper.util.sendPacket
-import dev.slne.surf.surfapi.core.api.util.mutableObject2ObjectMapOf
-import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
-import dev.slne.surf.surfapi.core.api.util.random
-import dev.slne.surf.surfapi.core.api.util.toObjectSet
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.Component

@@ -1,17 +1,17 @@
 package dev.slne.surf.npc.example
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
+import dev.slne.surf.api.core.messages.adventure.sendText
+import dev.slne.surf.api.core.util.logger
+import dev.slne.surf.api.core.util.objectSetOf
+import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.dsl.npc
 import dev.slne.surf.npc.api.dsl.npcProperty
 import dev.slne.surf.npc.api.event.NpcInteractEvent
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkinPart
-import dev.slne.surf.npc.api.surfNpcApi
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
-import dev.slne.surf.surfapi.core.api.util.logger
-import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -78,7 +78,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
          * Retrieves the created NPC using the SurfNpcApi.
          * If the NPC is not found, it logs a warning message.
          */
-        val npc = surfNpcApi.getNpc("example_npc") ?: return run {
+        val npc = SurfNpcApi.getNpc("example_npc") ?: return run {
             logger().atWarning().log("Failed to create example NPC: NPC not found after creation.")
         }
 
@@ -88,7 +88,7 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
          * Adds a property to the NPC using the DSL.
          * This property is of type Boolean, which is registered in the surf-npc Api.
          */
-        surfNpcApi.addProperty(npc, npcProperty {
+        SurfNpcApi.addProperty(npc, npcProperty {
             key = "example_npc"
             value = true
             type = NpcPropertyType.Types.BOOLEAN_TYPE

@@ -3,6 +3,7 @@ package dev.slne.surf.npc.paper.command.sub
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.*
+import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.paper.command.argument.rotationTypeArgument
@@ -10,7 +11,6 @@ import dev.slne.surf.npc.paper.controller.npcController
 import dev.slne.surf.npc.paper.plugin
 import dev.slne.surf.npc.paper.util.PermissionRegistry
 import dev.slne.surf.npc.paper.util.skinDataFromName
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.EntityType
 
