@@ -1,7 +1,7 @@
 package dev.slne.surf.npc.paper.service
 
-import dev.slne.surf.api.core.config.SurfConfigApi
 import dev.slne.surf.api.core.config.manager.SpongeConfigManager
+import dev.slne.surf.api.core.config.surfConfigApi
 import dev.slne.surf.api.core.util.mutableObject2ObjectMapOf
 import dev.slne.surf.api.core.util.toMutableObjectSet
 import dev.slne.surf.npc.api.npc.Npc
@@ -33,7 +33,7 @@ class NpcStorageService {
         Files.list(npcFolder)
             .filter { it.toString().endsWith(".yml") }
             .forEach { file ->
-                val manager = SurfConfigApi.createSpongeYmlConfigManager(
+                val manager = surfConfigApi.createSpongeYmlConfigManager(
                     NpcConfig::class.java,
                     file.parent,
                     file.fileName.toString()
@@ -76,7 +76,7 @@ class NpcStorageService {
         val file = npcFile(npc.uniqueName)
 
         val manager = configManagers.getOrPut(npc.uniqueName) {
-            SurfConfigApi.createSpongeYmlConfigManager(
+            surfConfigApi.createSpongeYmlConfigManager(
                 NpcConfig::class.java,
                 file.parent,
                 file.fileName.toString()
