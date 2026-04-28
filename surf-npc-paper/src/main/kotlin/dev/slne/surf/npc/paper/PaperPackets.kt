@@ -1,5 +1,6 @@
 package dev.slne.surf.npc.paper
 
+import com.github.retrooper.packetevents.protocol.attribute.Attributes
 import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemProfile
 import com.github.retrooper.packetevents.protocol.entity.data.EntityData
 import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
@@ -145,6 +146,22 @@ sealed class BukkitPackets {
             )
         }
 
+        data class NpcSetScalePacket(
+            val entityId: Int,
+            val scale: Double
+        ) : NpcPackets() {
+            override fun build() = WrapperPlayServerUpdateAttributes(
+                entityId,
+                listOf(
+                    WrapperPlayServerUpdateAttributes.Property(
+                        Attributes.SCALE,
+                        scale,
+                        listOf()
+                    )
+                )
+            )
+        }
+
         class NpcDestroyPacket(vararg val entityIds: Int) : NpcPackets() {
             override fun build() = WrapperPlayServerDestroyEntities(*entityIds)
         }
@@ -154,13 +171,14 @@ sealed class BukkitPackets {
         data class NameTagSpawnPacket(
             val entityId: Int,
             val uuid: UUID,
-            val location: BukkitLocation
+            val location: BukkitLocation,
+            val scale: Double
         ) : NpcNameTagPackets() {
             override fun build() = WrapperPlayServerSpawnEntity(
                 entityId,
                 uuid,
                 EntityTypes.TEXT_DISPLAY,
-                PacketLocation(Vector3d(location.x, location.y + 2, location.z), 0f, 0f),
+                PacketLocation(Vector3d(location.x, location.y + 2.0 * scale, location.z), 0f, 0f),
                 0f,
                 0,
                 null
@@ -179,14 +197,12 @@ sealed class BukkitPackets {
         }
 
         data class NameTagCorrectionPacket(
-            val entityId: Int,
-            val npcLocation: BukkitLocation,
-            val npcPose: NpcPose
+            val npc: Npc
         ) : NpcNameTagPackets() {
             override fun build() = WrapperPlayServerEntityTeleport(
-                entityId,
+                npc.id,
                 SpigotConversionUtil.fromBukkitLocation(
-                    calculateNametagLocation(npcPose, npcLocation).add(0.0, 2.0, 0.0)
+                    calculateNametagLocation(npc.getPose(), npc.getLocation(), npc.getScale())
                 ),
                 false
             )
@@ -256,16 +272,19 @@ sealed class BukkitPackets {
 
 private fun calculateNametagLocation(
     npcPose: NpcPose,
-    npcLocation: BukkitLocation
-): BukkitLocation =
-    when (npcPose) {
-        NpcPose.SNEAKING -> npcLocation.clone().subtract(0.0, 0.2, 0.0)
-        NpcPose.SITTING -> npcLocation.clone().subtract(0.0, 0.62, 0.0)
-        NpcPose.SWIMMING, NpcPose.FALL_FLYING, NpcPose.SLEEPING -> npcLocation.clone()
-            .subtract(0.0, 1.62, 0.0)
-
-        else -> npcLocation.clone()
+    npcLocation: BukkitLocation,
+    scale: Double
+): BukkitLocation {
+    val base = when (npcPose) {
+        NpcPose.SNEAKING -> 0.2
+        NpcPose.SITTING -> 0.62
+        NpcPose.SWIMMING, NpcPose.FALL_FLYING, NpcPose.SLEEPING -> 1.62
+        else -> 0.0
     }
+
+    return npcLocation.clone().subtract(0.0, base * scale, 0.0)
+        .add(0.0, 2.0 * scale, 0.0)
+}
 
 private fun wrapEquipmentSlot(slot: org.bukkit.inventory.EquipmentSlot): EquipmentSlot =
     when (slot) {

@@ -3,12 +3,12 @@ package dev.slne.surf.npc.api.npc
 import dev.slne.surf.api.core.util.mutableObject2ObjectMapOf
 import dev.slne.surf.api.core.util.mutableObjectListOf
 import dev.slne.surf.api.core.util.toObjectSet
+import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.event.NpcEvent
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.api.surfNpcApi
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
@@ -73,49 +73,49 @@ data class Npc(
     private val eventHandlers =
         mutableObject2ObjectMapOf<KClass<out NpcEvent>, ObjectList<NpcEventHandler<*>>>()
 
-    fun show() = surfNpcApi.showNpc(this)
-    fun hide() = surfNpcApi.hideNpc(this)
+    fun show() = SurfNpcApi.showNpc(this)
+    fun hide() = SurfNpcApi.hideNpc(this)
 
-    fun refresh() = surfNpcApi.refreshNpc(this)
-    fun refreshRotation(uuid: UUID) = surfNpcApi.refreshRotation(this)
+    fun refresh() = SurfNpcApi.refreshNpc(this)
+    fun refreshRotation() = SurfNpcApi.refreshRotation(this)
 
-    fun delete() = surfNpcApi.deleteNpc(this)
-    fun teleport(player: Player) = surfNpcApi.teleport(this, player)
+    fun delete() = SurfNpcApi.deleteNpc(this)
+    fun teleport(player: Player) = SurfNpcApi.teleport(this, player)
     fun retrieveViewers(): ObjectSet<UUID> =
         viewers ?: Bukkit.getOnlinePlayers().map { it.uniqueId }.toObjectSet()
 
     fun forEachViewer(action: (UUID) -> Unit) = retrieveViewers().forEach(action)
 
-    fun addProperty(property: NpcProperty) = surfNpcApi.editNpc(this) {
+    fun addProperty(property: NpcProperty) = SurfNpcApi.editNpc(this) {
         this.properties[property.key] = property
     }
 
     fun addProperties(vararg properties: Triple<String, Any, NpcPropertyType>) =
-        surfNpcApi.editNpc(this) {
+        SurfNpcApi.editNpc(this) {
             properties.forEach { (key, value, type) ->
                 this.properties[key] = NpcProperty(key, value, type)
             }
         }
 
-    fun addProperties(vararg properties: NpcProperty) = surfNpcApi.editNpc(this) {
+    fun addProperties(vararg properties: NpcProperty) = SurfNpcApi.editNpc(this) {
         properties.forEach { this.properties[it.key] = it }
     }
 
     fun getProperty(key: String): NpcProperty? = properties[key]
 
     fun setEquipment(slot: EquipmentSlot, item: ItemStack) =
-        surfNpcApi.setEquipment(this, slot, item)
+        SurfNpcApi.setEquipment(this, slot, item)
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> getPropertyValue(key: String, clazz: KClass<T>): T? =
         getProperty(key)?.value as? T
 
-    fun removeProperty(key: String) = surfNpcApi.editNpc(this) {
+    fun removeProperty(key: String) = SurfNpcApi.editNpc(this) {
         this.properties.remove(key)
     }
 
     fun hasProperty(key: String): Boolean = getProperty(key) != null
-    fun clearProperties() = surfNpcApi.editNpc(this) {
+    fun clearProperties() = SurfNpcApi.editNpc(this) {
         this.properties.clear()
     }
 
@@ -135,25 +135,29 @@ data class Npc(
     fun <T : NpcEvent> callHandlers(event: T) =
         eventHandlers[event::class]?.forEach { (it as NpcEventHandler<T>)(event) }
 
-    fun save() = surfNpcApi.saveNpc(this)
+    fun save() = SurfNpcApi.saveNpc(this)
 
-    fun addViewer(uuid: UUID) = surfNpcApi.addViewer(this, uuid)
-    fun removeViewer(uuid: UUID) = surfNpcApi.removeViewer(this, uuid)
-    fun hasViewer(uuid: UUID): Boolean = surfNpcApi.hasViewer(this, uuid)
-    fun clearViewers() = surfNpcApi.clearViewers(this)
+    fun addViewer(uuid: UUID) = SurfNpcApi.addViewer(this, uuid)
+    fun removeViewer(uuid: UUID) = SurfNpcApi.removeViewer(this, uuid)
+    fun hasViewer(uuid: UUID): Boolean = SurfNpcApi.hasViewer(this, uuid)
+    fun clearViewers() = SurfNpcApi.clearViewers(this)
 
-    fun setDisplayName(displayName: Component) = surfNpcApi.setDisplayName(this, displayName)
-    fun setSkinData(skin: NpcSkin) = surfNpcApi.setSkinData(this, skin)
-    fun setLocation(location: Location) = surfNpcApi.setLocation(this, location)
-    fun setPersistence(persistent: Boolean) = surfNpcApi.setPersistence(this, persistent)
+    fun setDisplayName(displayName: Component) = SurfNpcApi.setDisplayName(this, displayName)
+    fun setSkinData(skin: NpcSkin) = SurfNpcApi.setSkinData(this, skin)
+    fun setLocation(location: Location) = SurfNpcApi.setLocation(this, location)
+    fun setPersistence(persistent: Boolean) = SurfNpcApi.setPersistence(this, persistent)
     fun setRotationType(rotationType: NpcRotationType) =
-        surfNpcApi.setRotationType(this, rotationType)
+        SurfNpcApi.setRotationType(this, rotationType)
 
-    fun getDisplayName(): Component = surfNpcApi.getDisplayName(this)
-    fun getSkinData(): NpcSkin? = surfNpcApi.getSkinData(this)
-    fun getLocation(): Location = surfNpcApi.getLocation(this)
-    fun isPersistent(): Boolean = surfNpcApi.isPersistent(this)
-    fun getRotationType(): NpcRotationType = surfNpcApi.getRotationType(this)
+    fun setScale(scale: Double) = SurfNpcApi.setScale(this, scale)
 
-    fun setPose(pose: NpcPose) = surfNpcApi.setPose(this, pose)
+    fun getDisplayName(): Component = SurfNpcApi.getDisplayName(this)
+    fun getSkinData(): NpcSkin? = SurfNpcApi.getSkinData(this)
+    fun getLocation(): Location = SurfNpcApi.getLocation(this)
+    fun getPose(): NpcPose = SurfNpcApi.getPose(this)
+    fun isPersistent(): Boolean = SurfNpcApi.isPersistent(this)
+    fun getRotationType(): NpcRotationType = SurfNpcApi.getRotationType(this)
+    fun getScale(): Double = SurfNpcApi.getScale(this)
+
+    fun setPose(pose: NpcPose) = SurfNpcApi.setPose(this, pose)
 }

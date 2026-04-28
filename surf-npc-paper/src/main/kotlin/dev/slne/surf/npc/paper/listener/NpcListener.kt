@@ -9,10 +9,8 @@ import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.slne.surf.npc.api.event.NpcCollisionEvent
 import dev.slne.surf.npc.api.event.NpcInteractEvent
-import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.paper.controller.npcController
 import dev.slne.surf.npc.paper.plugin
-import org.bukkit.Location
 import org.bukkit.entity.Player
 
 class NpcListener : PacketListener {
@@ -23,10 +21,12 @@ class NpcListener : PacketListener {
             PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION -> {
                 for (npc in npcController.npcs) {
                     val npcLoc = npc.getLocation()
+                    val npcWorld = npcLoc.world ?: continue
 
                     val playerLoc = player.location
+                    val playerWorld = playerLoc.world ?: continue
 
-                    if (playerLoc.world.name != npcLoc.world.name) {
+                    if (playerWorld.name != npcWorld.name) {
                         continue
                     }
 
@@ -34,18 +34,18 @@ class NpcListener : PacketListener {
                         continue
                     }
 
-                    npc.refreshRotation(player.uniqueId)
+                    npc.refreshRotation()
                 }
             }
 
             PacketType.Play.Client.PLAYER_POSITION -> {
                 for (npc in npcController.npcs) {
-                    val npcLoc =
-                        npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
-                            ?: continue
+                    val npcLoc = npc.getLocation()
+                    val npcWorld = npcLoc.world ?: continue
                     val playerLoc = player.location
+                    val playerWorld = playerLoc.world ?: continue
 
-                    if (playerLoc.world.name != npcLoc.world.name) {
+                    if (playerWorld.name != npcWorld.name) {
                         continue
                     }
 

@@ -13,29 +13,12 @@ data class NpcProperty(
     val type: NpcPropertyType
 ) {
     object Internal {
-        /**
-         * The display name of the NPC.
-         */
         const val DISPLAYNAME = "displayname"
-
-        /**
-         * The skin data of the NPC.
-         */
         const val SKIN_DATA = "skin_data"
-
-        /**
-         * The location of the NPC.
-         */
         const val LOCATION = "location"
-
-        /**
-         * The type of rotation for the NPC.
-         */
         const val ROTATION_TYPE = "rotation_type"
-
-        /**
-         * The persistence of the NPC.
-         */
         const val PERSISTENCE = "persistence"
+        const val SCALE = "scale"
+        const val POSE = "pose"
     }
 }

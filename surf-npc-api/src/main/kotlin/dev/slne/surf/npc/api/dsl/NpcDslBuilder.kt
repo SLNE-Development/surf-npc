@@ -5,12 +5,12 @@ package dev.slne.surf.npc.api.dsl
 import dev.slne.surf.api.core.messages.builder.SurfComponentBuilder
 import dev.slne.surf.api.core.util.mutableObject2ObjectMapOf
 import dev.slne.surf.api.core.util.mutableObjectListOf
+import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.event.NpcEvent
 import dev.slne.surf.npc.api.npc.Npc
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.rotation.NpcRotationType
 import dev.slne.surf.npc.api.npc.skin.NpcSkin
-import dev.slne.surf.npc.api.surfNpcApi
 import it.unimi.dsi.fastutil.objects.ObjectList
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import net.kyori.adventure.text.format.NamedTextColor
@@ -49,6 +49,8 @@ class NpcDslBuilder {
      * Whether the NPC is global. Defaults to true.
      */
     var viewers: ObjectSet<UUID>? = null
+
+    var scale: Double = 1.0
 
     /**
      * The rotation type of the NPC. Defaults to PER_PLAYER.
@@ -97,6 +99,10 @@ class NpcDslBuilder {
 
     fun displayName(block: SurfComponentBuilder.() -> Unit) {
         displayName = block
+    }
+
+    fun scale(scale: Double) {
+        this.scale = scale
     }
 
 
@@ -156,12 +162,12 @@ fun skin(block: SkinBuilder.() -> Unit): NpcSkin {
  * @return The retrieved NPC skin.
  */
 suspend fun fetchedSkin(name: String): NpcSkin {
-    return surfNpcApi.fetchSkin(name)
+    return SurfNpcApi.fetchSkin(name)
 }
 
 fun npc(block: NpcDslBuilder.() -> Unit): Npc {
     val builder = NpcDslBuilder().apply(block)
-    val npc = surfNpcApi.createNpc(
+    val npc = SurfNpcApi.createNpc(
         displayName = SurfComponentBuilder.builder().apply(builder.displayName).build(),
         uniqueName = builder.uniqueName,
         type = builder.type,
@@ -169,8 +175,10 @@ fun npc(block: NpcDslBuilder.() -> Unit): Npc {
         location = builder.location,
         viewers = builder.viewers,
         rotationType = builder.rotationType,
-        persistent = builder.persistent
+        persistent = builder.persistent,
     )
+
+    npc.setScale(builder.scale)
 
     builder.eventHandlers.forEach { (eventClass, handlersList) ->
         handlersList.forEach { handler ->

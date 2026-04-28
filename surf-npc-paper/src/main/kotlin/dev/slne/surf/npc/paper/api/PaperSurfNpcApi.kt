@@ -145,6 +145,19 @@ class PaperSurfNpcApi : SurfNpcApi, Services.Fallback {
             0.0
         )
 
+    override fun getScale(npc: Npc) =
+        npc.getPropertyValue(NpcProperty.Internal.SCALE, Double::class) ?: 1.0
+
+    override fun setScale(npc: Npc, scale: Double) = npcController.editNpc(npc) {
+        this.addProperty(
+            NpcProperty(
+                NpcProperty.Internal.SCALE,
+                scale,
+                NpcPropertyType.Types.DOUBLE_TYPE
+            )
+        )
+    }
+
     override fun isPersistent(npc: Npc) =
         npc.getPropertyValue(NpcProperty.Internal.PERSISTENCE, Boolean::class) ?: false
 
@@ -169,4 +182,6 @@ class PaperSurfNpcApi : SurfNpcApi, Services.Fallback {
         npc: Npc,
         pose: NpcPose
     ) = npcController.setPose(npc, pose)
+
+    override fun getPose(npc: Npc) = npcController.getPose(npc)
 }

@@ -28,12 +28,19 @@ fun CommandAPICommand.npcCreateCommand() = subcommand("create") {
         val type: EntityType by args
         val optionalSkin: String? by args
         val location = player.location
-        val createdBy = player.name
 
         if (!isValidName(name)) {
             player.sendText {
                 appendErrorPrefix()
                 error("Der Npc Name ist ungültig.")
+            }
+            return@playerExecutor
+        }
+
+        if (npcController.npcs.any { it.uniqueName == name }) {
+            player.sendText {
+                appendErrorPrefix()
+                error("Ein Npc mit diesem Namen existiert bereits.")
             }
             return@playerExecutor
         }

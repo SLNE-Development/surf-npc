@@ -5,7 +5,6 @@ import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.api.core.font.toSmallCaps
-import dev.slne.surf.api.core.messages.CommonComponents
 import dev.slne.surf.api.core.messages.adventure.clickRunsCommand
 import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.npc.api.npc.Npc
@@ -38,59 +37,57 @@ fun CommandAPICommand.npcInfoCommand() = subcommand("info") {
             ?: error("NPC ${npc.uniqueName} has no skin data set")
 
         player.sendText {
-            info("Npc Informationen".toSmallCaps(), TextDecoration.BOLD)
             appendNewline()
+            appendInfoPrefix()
+            info("Npc Informationen".toSmallCaps(), TextDecoration.BOLD)
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             variableKey("Name: ")
             variableValue(npc.uniqueName)
-            appendNewline()
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             variableKey("Anzeigename: ")
             append(displayName)
-            appendNewline()
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             variableKey("ID: ")
             variableValue(npc.id)
-            appendNewline()
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             variableKey("Nametag-ID: ")
             variableValue(npc.nameTagId)
-            appendNewline()
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             variableKey("Uuid: ")
             variableValue(npc.npcUuid.toString())
-            appendNewline()
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             append {
                 variableKey("Ort: ")
                 variableValue(location.readableString())
                 clickRunsCommand("/npc teleport ${npc.id}")
             }
-            appendNewline()
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             variableKey("Rotation: ")
             variableValue(rotationType.name)
-            appendNewline()
 
-            append(CommonComponents.EM_DASH)
-            appendSpace()
+            appendNewline()
+            appendInfoPrefix()
             variableKey("Skin: ")
             variableValue(skinData.ownerName)
+
             appendNewline()
+            appendInfoPrefix()
+            variableKey("Größe: ")
+            variableValue(npc.getScale())
         }
     }
 }
