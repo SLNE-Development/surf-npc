@@ -1,6 +1,6 @@
 package dev.slne.surf.npc.api.npc.property
 
-import dev.slne.surf.npc.api.surfNpcApi
+import dev.slne.surf.npc.api.SurfNpcApi
 
 /**
  * Represents the type of a property associated with an NPC.
@@ -12,20 +12,22 @@ interface NpcPropertyType {
     fun decode(value: String): Any
 
     object Types {
-        val BOOLEAN_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(BOOLEAN_ID)
-        val INT_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(INT_ID)
-        val LONG_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(LONG_ID)
-        val STRING_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(STRING_ID)
-        val DOUBLE_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(DOUBLE_ID)
-        val FLOAT_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(FLOAT_ID)
-        val UUID_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(UUID_ID)
-        val NAMED_TEXT_COLOR_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(NAMED_TEXT_COLOR_ID)
-        val COMPONENT_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(COMPONENT_ID)
-        val SKIN_DATA_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(SKIN_DATA_ID)
-        val LOCATION_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(LOCATION_ID)
-        val ROTATION_TYPE_TYPE get() = surfNpcApi.getPropertyTypeOrThrow(ROTATION_TYPE_ID)
+        val BOOLEAN_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(BOOLEAN_ID)
+        val INT_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(INT_ID)
+        val LONG_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(LONG_ID)
+        val STRING_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(STRING_ID)
+        val DOUBLE_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(DOUBLE_ID)
+        val FLOAT_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(FLOAT_ID)
+        val UUID_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(UUID_ID)
+        val NAMED_TEXT_COLOR_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(NAMED_TEXT_COLOR_ID)
+        val COMPONENT_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(COMPONENT_ID)
+        val SKIN_DATA_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(SKIN_DATA_ID)
+        val LOCATION_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(LOCATION_ID)
+        val ROTATION_TYPE_TYPE get() = SurfNpcApi.getPropertyTypeOrThrow(ROTATION_TYPE_ID)
+        val NPC_POSE get() = SurfNpcApi.getPropertyTypeOrThrow(NPC_POSE_ID)
 
         const val BOOLEAN_ID = "boolean"
+        const val NPC_POSE_ID = "pose"
 
         /**
          * Represents an integer property type.

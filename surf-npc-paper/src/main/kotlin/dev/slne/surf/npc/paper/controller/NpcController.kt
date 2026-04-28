@@ -32,13 +32,14 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
 val npcController = NpcController()
 
 class NpcController {
-    private val _npcs: Object2ObjectMap<String, Npc> = mutableObject2ObjectMapOf<String, Npc>()
+    private val _npcs = ConcurrentHashMap<String, Npc>()
     val npcs: ObjectSet<Npc> get() = _npcs.values.toObjectSet()
 
     private val equipments =
@@ -147,7 +148,8 @@ class NpcController {
         BukkitPackets.NpcNameTagPackets.NameTagSpawnPacket(
             npc.nameTagId,
             npc.nameTagUuid,
-            npc.getLocation()
+            npc.getLocation(),
+            npc.getScale()
         ).build().sendPacket(uuid)
         BukkitPackets.NpcNameTagPackets.NameTagMetaDataPacket(
             npc.nameTagId,
@@ -157,6 +159,7 @@ class NpcController {
 
         refreshRotation(npc, uuid)
         refreshEquipment(npc, uuid)
+        refreshScale(npc, uuid)
 
         plugin.launch(plugin.globalRegionDispatcher) {
             NpcShowEvent(player, npc).callEvent()
@@ -188,6 +191,10 @@ class NpcController {
         }
     }
 
+    private fun refreshScale(npc: Npc, uuid: UUID) {
+        BukkitPackets.NpcPackets.NpcSetScalePacket(npc.id, npc.getScale()).build().sendPacket(uuid)
+    }
+
     private fun refreshRotation(npc: Npc, uuid: UUID) {
         val rotationType = npc.getRotationType()
         val location = npc.getLocation()
@@ -199,12 +206,17 @@ class NpcController {
             }
 
             NpcRotationType.PER_PLAYER -> {
-                val npcVec = Vector3d(location.x, location.y, location.z)
+                val npcVec = Vector3d(
+                    location.x,
+                    location.y + 1.62 * npc.getScale(),
+                    location.z
+                )
+
                 val playerLoc = player.location
 
                 val dx = playerLoc.x - npcVec.x
                 val dz = playerLoc.z - npcVec.z
-                val dy = playerLoc.y - npcVec.y
+                val dy = (playerLoc.y + player.eyeHeight) - npcVec.y
 
                 val yaw = Math.toDegrees(atan2(-dx, dz)).toFloat()
                 val horizontalDist = sqrt((dx * dx) + (dz * dz))
@@ -296,9 +308,21 @@ class NpcController {
     fun getNpc(id: Int): Npc? = npcs.find { it.id == id }
     fun getNpc(uniqueName: String): Npc? = npcs.find { it.uniqueName == uniqueName }
 
+    fun getPose(npc: Npc) =
+        npc.getPropertyValue(NpcProperty.Internal.POSE, NpcPose::class) ?: NpcPose.STANDING
+
     fun setPose(npc: Npc, pose: NpcPose) {
         val location = npc.getPropertyValue(NpcProperty.Internal.LOCATION, Location::class)
             ?: error("Location is not set for NPC: ${npc.uniqueName}")
+
+        npc.addProperty(
+            NpcProperty(
+                NpcProperty.Internal.POSE,
+                pose,
+                propertyTypeRegistry.get(NpcPropertyType.Types.NPC_POSE_ID)
+                    ?: error("NPC_POSE property type not found")
+            )
+        )
 
         npc.forEachViewer {
             if (pose == NpcPose.SITTING) {
@@ -313,9 +337,7 @@ class NpcController {
 
             BukkitPackets.NpcPackets.NpcPoseChangePacket(npc.id, pose).build().sendPacket(it)
             BukkitPackets.NpcNameTagPackets.NameTagCorrectionPacket(
-                npc.nameTagId,
-                location,
-                pose
+                npc
             ).build().sendPacket(it)
         }
     }

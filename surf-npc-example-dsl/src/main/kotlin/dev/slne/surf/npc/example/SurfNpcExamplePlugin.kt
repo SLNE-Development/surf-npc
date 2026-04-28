@@ -58,6 +58,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
                 }
             }
 
+            scale(2.0)
+
             /**
              * Location can be created using the DSL.
              */

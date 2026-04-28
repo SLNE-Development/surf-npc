@@ -42,6 +42,7 @@ class PaperMain : SuspendingJavaPlugin() {
         propertyTypeRegistry.register(NamedTextColorPropertyType(NpcPropertyType.Types.NAMED_TEXT_COLOR_ID))
         propertyTypeRegistry.register(SkinDataPropertyType(NpcPropertyType.Types.SKIN_DATA_ID))
         propertyTypeRegistry.register(RotationTypePropertyType(NpcPropertyType.Types.ROTATION_TYPE_ID))
+        propertyTypeRegistry.register(NpcPosePropertyType(NpcPropertyType.Types.NPC_POSE_ID))
 
         npcStorageService.initialize()
         npcStorageService.loadAll()

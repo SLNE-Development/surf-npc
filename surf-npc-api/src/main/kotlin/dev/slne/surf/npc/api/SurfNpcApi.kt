@@ -52,12 +52,14 @@ interface SurfNpcApi {
     fun setLocation(npc: Npc, location: Location)
     fun setPersistence(npc: Npc, persistent: Boolean)
     fun setRotationType(npc: Npc, rotationType: NpcRotationType)
+    fun setScale(npc: Npc, scale: Double)
 
     fun getDisplayName(npc: Npc): Component
     fun getSkinData(npc: Npc): NpcSkin?
     fun getLocation(npc: Npc): Location
     fun isPersistent(npc: Npc): Boolean
     fun getRotationType(npc: Npc): NpcRotationType
+    fun getScale(npc: Npc): Double
 
     fun getProperties(npc: Npc): ObjectSet<NpcProperty>
     fun addProperty(npc: Npc, property: NpcProperty)
@@ -68,7 +70,9 @@ interface SurfNpcApi {
     fun getNpcs(): ObjectSet<Npc>
 
     fun setPose(npc: Npc, pose: NpcPose)
+    fun getPose(npc: Npc): NpcPose
 
+    @Suppress("DEPRECATION")
     companion object : SurfNpcApi by surfNpcApi
 }
 
