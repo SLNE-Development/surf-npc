@@ -1,9 +1,12 @@
 package dev.slne.surf.npc.paper.listener
 
+import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListener
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
+import com.github.retrooper.packetevents.manager.server.ServerVersion
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.protocol.player.InteractionHand
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientAttack
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
@@ -66,32 +69,61 @@ class NpcListener : PacketListener {
                 val packet = WrapperPlayClientInteractEntity(event)
                 val npc = npcController.getNpc(packet.entityId) ?: return
 
-                when (packet.action) {
-                    WrapperPlayClientInteractEntity.InteractAction.ATTACK -> {
-                        plugin.launch(plugin.entityDispatcher(player)) {
-                            NpcInteractEvent(
-                                player,
-                                npc
-                            ).callEvent()
-                        }
-                    }
-
-                    WrapperPlayClientInteractEntity.InteractAction.INTERACT -> {
-                        if (packet.hand != InteractionHand.MAIN_HAND) {
-                            return
+                if (PacketEvents.getAPI().serverManager.version.isNewerThanOrEquals(ServerVersion.V_26_1)) {
+                    when (packet.action) {
+                        WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT -> {
+                            if (packet.hand == InteractionHand.OFF_HAND) {
+                                plugin.launch(plugin.entityDispatcher(player)) {
+                                    NpcInteractEvent(
+                                        player,
+                                        npc
+                                    ).callEvent()
+                                }
+                            }
                         }
 
-                        plugin.launch(plugin.entityDispatcher(player)) {
-                            NpcInteractEvent(
-                                player,
-                                npc
-                            ).callEvent()
+                        else -> Unit
+                    }
+                } else {
+                    when (packet.action) {
+                        WrapperPlayClientInteractEntity.InteractAction.ATTACK -> {
+                            plugin.launch(plugin.entityDispatcher(player)) {
+                                NpcInteractEvent(
+                                    player,
+                                    npc
+                                ).callEvent()
+                            }
+                        }
+
+                        WrapperPlayClientInteractEntity.InteractAction.INTERACT -> {
+                            if (packet.hand != InteractionHand.MAIN_HAND) {
+                                return
+                            }
+
+                            plugin.launch(plugin.entityDispatcher(player)) {
+                                NpcInteractEvent(
+                                    player,
+                                    npc
+                                ).callEvent()
+                            }
+                        }
+
+                        WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT -> {
+                            // This is already handled by INTERACT action, so we can ignore it.
                         }
                     }
+                }
+            }
 
-                    WrapperPlayClientInteractEntity.InteractAction.INTERACT_AT -> {
-                        // This is already handled by INTERACT action, so we can ignore it.
-                    }
+            PacketType.Play.Client.ATTACK -> {
+                val packet = WrapperPlayClientAttack(event)
+                val npc = npcController.getNpc(packet.entityId) ?: return
+
+                plugin.launch(plugin.entityDispatcher(player)) {
+                    NpcInteractEvent(
+                        player,
+                        npc
+                    ).callEvent()
                 }
             }
         }
