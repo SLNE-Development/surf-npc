@@ -11,6 +11,7 @@ data class NpcConfig(
     var entityType: EntityType = EntityType.ZOMBIE,
     var nameTagId: Int = 0,
     var nameTagUuid: UUID = UUID.randomUUID(),
+    var transparentNameTag: Boolean = false,
     var uniqueName: String = "",
     var sittingId: Int = 0,
     var sittingUuid: UUID = UUID.randomUUID(),

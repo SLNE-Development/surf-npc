@@ -52,7 +52,8 @@ class NpcStorageService {
                     npcSittingUuid = config.sittingUuid,
                     viewers = if (config.viewerAmount == -1) null
                     else config.viewers.toMutableObjectSet(),
-                    properties = mutableObject2ObjectMapOf()
+                    properties = mutableObject2ObjectMapOf(),
+                    transparentNameTag = config.transparentNameTag
                 )
 
                 config.properties.forEach { (key, prop) ->
@@ -89,6 +90,7 @@ class NpcStorageService {
             npcUuid = npc.npcUuid
             nameTagId = npc.nameTagId
             nameTagUuid = npc.nameTagUuid
+            transparentNameTag = npc.transparentNameTag
             uniqueName = npc.uniqueName
             sittingId = npc.npcSittingId
             sittingUuid = npc.npcSittingUuid
