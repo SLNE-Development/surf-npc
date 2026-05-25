@@ -21,6 +21,7 @@ interface SurfNpcApi {
         displayName: Component,
         uniqueName: String,
         type: EntityType,
+        useTransparentBackground: Boolean = false,
         location: Location,
         viewers: ObjectSet<UUID>? = null,
         rotationType: NpcRotationType = NpcRotationType.PER_PLAYER,

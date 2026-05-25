@@ -58,6 +58,8 @@ class SurfNpcExamplePlugin() : SuspendingJavaPlugin() {
                 }
             }
 
+            useTransparentNametagBackground()
+
             scale(2.0)
 
             /**

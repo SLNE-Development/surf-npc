@@ -41,6 +41,7 @@ data class Npc(
     val npcUuid: UUID,
     val nameTagId: Int,
     val nameTagUuid: UUID,
+    val transparentNameTag: Boolean,
     val properties: Object2ObjectMap<String, NpcProperty>,
     val viewers: ObjectSet<UUID>?,
     val npcSittingId: Int,

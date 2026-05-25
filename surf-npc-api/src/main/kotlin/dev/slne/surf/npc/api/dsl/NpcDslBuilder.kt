@@ -40,6 +40,8 @@ class NpcDslBuilder {
 
     lateinit var type: EntityType
 
+    var useTransparentNametagBackground = false
+
     /**
      * The location of the NPC.
      */
@@ -103,6 +105,10 @@ class NpcDslBuilder {
 
     fun scale(scale: Double) {
         this.scale = scale
+    }
+
+    fun useTransparentNametagBackground(useTransparentNametagBackground: Boolean = true) {
+        this.useTransparentNametagBackground = useTransparentNametagBackground
     }
 
 
@@ -171,11 +177,12 @@ fun npc(block: NpcDslBuilder.() -> Unit): Npc {
         displayName = SurfComponentBuilder.builder().apply(builder.displayName).build(),
         uniqueName = builder.uniqueName,
         type = builder.type,
-        skin = builder.skin,
+        useTransparentBackground = builder.useTransparentNametagBackground,
         location = builder.location,
         viewers = builder.viewers,
         rotationType = builder.rotationType,
         persistent = builder.persistent,
+        skin = builder.skin,
     )
 
     npc.setScale(builder.scale)

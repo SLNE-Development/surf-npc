@@ -6,7 +6,6 @@ import dev.slne.surf.npc.api.SurfNpcApi
 import dev.slne.surf.npc.api.event.NpcInteractEvent
 import dev.slne.surf.npc.api.npc.property.NpcProperty
 import dev.slne.surf.npc.api.npc.property.NpcPropertyType
-import dev.slne.surf.npc.api.npc.skin.NpcSkin
 import dev.slne.surf.npc.api.util.addEventHandler
 import dev.slne.surf.npc.example.listener.ExampleNpcListener
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -23,8 +22,7 @@ class SurfNpcExamplePlugin : SuspendingJavaPlugin() {
                 .deserialize("<rainbow>Example Npc by surf-npc-example"),
             uniqueName = "example_npc",
             type = EntityType.MANNEQUIN,
-            location = Location(Bukkit.getWorlds().first(), 0.0, 0.0, 0.0),
-            skin = NpcSkin.empty()
+            location = Location(Bukkit.getWorlds().first(), 0.0, 0.0, 0.0)
         )
 
         SurfNpcApi.addProperty(

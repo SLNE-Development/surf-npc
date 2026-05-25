@@ -49,6 +49,7 @@ class NpcController {
         displayName: Component,
         uniqueName: String,
         type: EntityType,
+        useTransparentBackground: Boolean = false,
         location: Location,
         viewers: ObjectSet<UUID>? = null,
         rotationType: NpcRotationType = NpcRotationType.PER_PLAYER,
@@ -62,6 +63,7 @@ class NpcController {
             npcUuid = UUID.randomUUID(),
             nameTagId = random.nextInt(),
             nameTagUuid = UUID.randomUUID(),
+            useTransparentBackground,
             properties = mutableObject2ObjectMapOf<String, NpcProperty>(),
             viewers = viewers,
             npcSittingId = npcs.size + 1,
@@ -153,7 +155,8 @@ class NpcController {
         ).build().sendPacket(uuid)
         BukkitPackets.NpcNameTagPackets.NameTagMetaDataPacket(
             npc.nameTagId,
-            npc.getDisplayName()
+            npc.getDisplayName(),
+            npc.transparentNameTag
         ).build()
             .sendPacket(uuid)
 

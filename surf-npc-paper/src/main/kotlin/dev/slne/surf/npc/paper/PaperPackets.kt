@@ -185,14 +185,22 @@ sealed class BukkitPackets {
             )
         }
 
-        data class NameTagMetaDataPacket(val entityId: Int, val displayName: Component) :
+        data class NameTagMetaDataPacket(
+            val entityId: Int,
+            val displayName: Component,
+            val transparentBackground: Boolean
+        ) :
             NpcNameTagPackets() {
             override fun build() = WrapperPlayServerEntityMetadata(
                 entityId,
-                listOf(
-                    buildMetaData(23, EntityDataTypes.ADV_COMPONENT, displayName),
-                    buildMetaData(15, EntityDataTypes.BYTE, 3.toByte())
-                )
+                buildList {
+                    add(buildMetaData(23, EntityDataTypes.ADV_COMPONENT, displayName))
+                    add(buildMetaData(15, EntityDataTypes.BYTE, 3.toByte()))
+
+                    if (transparentBackground) {
+                        add(buildMetaData(25, EntityDataTypes.INT, 0))
+                    }
+                }
             )
         }
 
