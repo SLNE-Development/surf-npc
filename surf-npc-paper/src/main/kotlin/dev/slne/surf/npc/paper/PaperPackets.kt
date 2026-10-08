@@ -199,6 +199,7 @@ sealed class BukkitPackets {
 
                     if (transparentBackground) {
                         add(buildMetaData(25, EntityDataTypes.INT, 0))
+                        add(buildMetaData(27, EntityDataTypes.BYTE, 0x01.toByte()))
                     }
                 }
             )
